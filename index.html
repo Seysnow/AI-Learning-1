@@ -207,129 +207,229 @@ p { font-size: 1rem; }
 }
 
 /* =============================================
-   HERO - fullscreen image
+   HERO — scroll morph image ring, closer to reference
    ============================================= */
-.hero--image {
+.hero {
+  /* Extra scroll height gives the morph animation room to complete while
+     the visual stage stays fixed, so the second headline/buttons no longer
+     appear cut off halfway down the page. */
+  min-height: 175svh;
+  height: 175svh;
   position: relative;
-  min-height: calc(100svh - 70px);
+  overflow: visible;
+  background: #fafafa;
+  isolation: isolate;
+}
+.hero::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(circle at 50% 47%, rgba(255,255,255,0.96) 0%, rgba(250,250,250,0.86) 44%, rgba(244,246,248,0.70) 100%),
+    radial-gradient(circle at 48% 54%, rgba(15,23,42,0.035), transparent 34%);
+  pointer-events: none;
+  z-index: 0;
+}
+.hero__stage {
+  position: relative;
+  z-index: 1;
+  position: sticky;
+  top: 64px;
+  min-height: calc(100svh - 64px);
+  height: calc(100svh - 64px);
   display: flex;
   align-items: center;
   justify-content: center;
+  padding: 52px 24px;
   overflow: hidden;
-  background: #111318;
-  isolation: isolate;
+  perspective: 1000px;
+  background: #fafafa;
 }
-
-.hero-image__bg {
+.hero__ring {
   position: absolute;
-  inset: 0;
-  z-index: 0;
-  background-image: url("https://images.unsplash.com/photo-1516321318423-f06f85e504b3?auto=format&fit=crop&w=2400&q=85");
-  background-size: cover;
-  background-position: center;
-  transform: scale(1.02);
-}
-
-.hero-image__overlay {
-  position: absolute;
-  inset: 0;
+  left: 50%;
+  top: 50%;
+  width: 1px;
+  height: 1px;
   z-index: 1;
-  background:
-    linear-gradient(180deg, rgba(0,0,0,0.36), rgba(0,0,0,0.48)),
-    radial-gradient(circle at center, rgba(0,0,0,0.10), rgba(0,0,0,0.34));
-}
-
-.hero-image__grid {
-  position: absolute;
-  inset: 0;
-  z-index: 3;
-  display: grid;
-  grid-template-columns: 1fr 3fr 4fr 3fr 1fr;
+  transform: translate3d(0,0,0);
+  will-change: transform;
   pointer-events: none;
 }
-
-.hero-image__grid span {
-  border-left: 1px solid rgba(255,255,255,0.18);
+.hero__tile {
+  --tile-width: 68px;
+  --tile-height: 92px;
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: var(--tile-width);
+  height: var(--tile-height);
+  margin-left: calc(var(--tile-width) / -2);
+  margin-top: calc(var(--tile-height) / -2);
+  border-radius: 16px;
+  overflow: hidden;
+  background: #eef1f4;
+  box-shadow:
+    0 18px 36px rgba(15, 23, 42, 0.10),
+    0 2px 8px rgba(15, 23, 42, 0.05);
+  transform-style: preserve-3d;
+  backface-visibility: hidden;
+  opacity: 0;
+  will-change: transform, opacity;
 }
-
-.hero-image__grid span:last-child {
-  border-right: 1px solid rgba(255,255,255,0.18);
+.hero__tile img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+  filter: saturate(0.86) contrast(0.96) brightness(1.04);
+  transition: transform 0.7s cubic-bezier(0.22, 1, 0.36, 1), filter 0.7s ease;
 }
-
-.hero-image__content {
+.hero__tile::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(180deg, rgba(255,255,255,0.02), rgba(15,23,42,0.10));
+  pointer-events: none;
+}
+.hero__tile:hover img {
+  transform: scale(1.06);
+  filter: saturate(1.02) contrast(1) brightness(1);
+}
+.hero__copy {
   position: relative;
-  z-index: 4;
-  max-width: 1120px;
-  margin: 0 auto;
+  z-index: 3;
   text-align: center;
-  color: #FFFFFF;
-  padding: 90px 0;
-}
-
-.hero-image__content h1 {
-  color: #FFFFFF;
-  font-size: 6.4rem;
-  font-weight: 360;
-  letter-spacing: 0;
-  line-height: 0.98;
-  margin: 0 auto 20px;
-  text-shadow: 0 24px 80px rgba(0,0,0,0.28);
-}
-
-.hero-image__content p {
   max-width: 760px;
-  margin: 0 auto 34px;
-  color: rgba(255,255,255,0.88);
-  font-size: 1.14rem;
-  line-height: 1.65;
-  font-weight: 350;
+  margin: 0 auto;
+  pointer-events: none;
+  transition: opacity 0.55s ease, transform 0.55s cubic-bezier(0.22,1,0.36,1), filter 0.55s ease;
 }
-
-.hero-image__cta {
+.hero__copy--intro {
+  transform: translateY(0);
+}
+.hero__copy--detail {
+  position: absolute;
+  top: 12%;
+  left: 50%;
+  width: min(760px, calc(100% - 40px));
+  transform: translate(-50%, 24px);
+  opacity: 0;
+  filter: blur(10px);
+}
+.hero__title {
+  color: #202636;
+  font-family: 'Inter', var(--font-body);
+  font-size: clamp(1.75rem, 3.2vw, 3.1rem);
+  font-weight: 400;
+  line-height: 1.16;
+  letter-spacing: -0.045em;
+  margin-bottom: 18px;
+}
+.hero__title--secondary {
+  font-size: clamp(2.25rem, 4vw, 4.3rem);
+  font-weight: 680;
+  letter-spacing: 0.035em;
+  word-spacing: 0.08em;
+  margin-bottom: 16px;
+}
+.hero__micro {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  gap: 4px;
-  color: #111318;
+  gap: 16px;
+  color: rgba(31,41,55,0.36);
+  font-family: 'Inter', var(--font-body);
+  font-size: 0.76rem;
+  font-weight: 800;
+  letter-spacing: 0.30em;
+  text-transform: uppercase;
+  line-height: 1;
 }
-
-.hero-image__cta span {
+.hero__micro::before,
+.hero__micro::after {
+  content: '';
+  display: block;
+  width: 36px;
+  height: 1px;
+  background: rgba(31,41,55,0.14);
+}
+.hero__subtitle {
+  max-width: 720px;
+  margin: 0 auto 26px;
+  color: rgba(31,41,55,0.64);
+  font-family: 'Inter', var(--font-body);
+  font-size: clamp(1rem, 1.4vw, 1.16rem);
+  line-height: 1.72;
+  letter-spacing: -0.01em;
+}
+.hero__actions {
+  display: flex;
+  justify-content: center;
+  gap: 12px;
+  flex-wrap: wrap;
+  pointer-events: auto;
+}
+.hero__button {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  min-height: 48px;
-  padding: 13px 26px;
+  min-height: 44px;
+  padding: 12px 23px;
   border-radius: 999px;
-  background: #E1FCAD;
-  color: #111318;
-  font-size: 0.95rem;
-  font-weight: 620;
-  transition: background 0.35s ease, color 0.35s ease, transform 0.35s ease;
+  font-size: 0.9rem;
+  font-weight: 750;
+  transition: transform var(--transition), box-shadow var(--transition), background var(--transition);
 }
+.hero__button--dark {
+  background: #0B1020;
+  color: #fff;
+  box-shadow: 0 14px 30px rgba(11,16,32,0.16);
+}
+.hero__button--light {
+  background: rgba(255,255,255,0.76);
+  color: #1F2937;
+  border: 1px solid rgba(31,41,55,0.10);
+}
+.hero__button:hover { transform: translateY(-2px); }
+.hero__button--dark:hover { box-shadow: 0 18px 38px rgba(11,16,32,0.22); }
+.hero__scroll {
+  position: absolute;
+  z-index: 4;
+  left: 50%;
+  bottom: 28px;
+  transform: translateX(-50%);
+  color: rgba(31,41,55,0.40);
+  font-family: 'Inter', var(--font-body);
+  font-size: 0.74rem;
+  font-weight: 800;
+  letter-spacing: 0.30em;
+  text-transform: uppercase;
+}
+.hero.is-morphed .hero__copy--intro {
+  opacity: 0;
+  transform: translateY(-20px);
+  filter: blur(10px);
+}
+.hero.is-morphed .hero__copy--detail {
+  opacity: 1;
+  transform: translate(-50%, 0);
+  filter: blur(0);
+}
+.hero.is-morphed .hero__scroll { opacity: 0; }
 
-.hero-image__cta i {
-  width: 48px;
-  height: 48px;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  border-radius: 999px;
-  background: #E1FCAD;
-  color: #111318;
-  font-style: normal;
-  font-size: 1.05rem;
-  transition: background 0.35s ease, color 0.35s ease, transform 0.35s ease;
+@keyframes fadeInUp {
+  from { opacity: 0; transform: translateY(28px); }
+  to { opacity: 1; transform: translateY(0); }
 }
-
-.hero-image__cta:hover span,
-.hero-image__cta:hover i {
-  background: #122023;
-  color: #E1FCAD;
+.animate-in {
+  opacity: 0;
+  animation: fadeInUp 0.7s ease forwards;
 }
-
-.hero-image__cta:hover i {
-  transform: translate(3px, -3px);
-}
+.delay-1 { animation-delay: 0.15s; }
+.delay-2 { animation-delay: 0.3s; }
+.delay-3 { animation-delay: 0.45s; }
+.delay-4 { animation-delay: 0.6s; }
 /* =============================================
    INTRO
    ============================================= */
@@ -894,10 +994,10 @@ p { font-size: 1rem; }
    RESPONSIVE
    ============================================= */
 @media (max-width: 1024px) {
+  .hero__subtitle { margin-left: auto; margin-right: auto; }
   .modules__grid { grid-template-columns: repeat(2, 1fr); }
   .intro__grid { grid-template-columns: 1fr; gap: 40px; }
   .prompt-tips-grid { grid-template-columns: 1fr 1fr; }
-  .hero-image__content h1 { font-size: 5.35rem; }
 }
 @media (max-width: 768px) {
   .section { padding: 64px 0; }
@@ -919,52 +1019,29 @@ p { font-size: 1rem; }
 }
 
 
-/* Image hero responsive refinements */
-@media (max-width: 768px) {
-  .hero--image {
-    min-height: calc(100svh - 64px);
-  }
-
-  .hero-image__grid {
-    grid-template-columns: 1fr 3fr 4fr 3fr 1fr;
-  }
-
-  .hero-image__content {
-    padding: 82px 0;
-  }
-
-  .hero-image__content h1 {
-    font-size: 4.35rem;
-    line-height: 1.02;
-  }
-
-  .hero-image__content p {
-    font-size: 1rem;
-    line-height: 1.7;
-    margin-bottom: 28px;
-  }
-
+/* Hero image-ring responsive refinements */
+@media (max-width: 1024px) {
+  .hero__stage { height: calc(100svh - 64px); }
+  .hero__tile { --tile-width: 62px; --tile-height: 84px; }
 }
-
+@media (max-width: 768px) {
+  .hero { min-height: 165svh; height: 165svh; }
+  .hero__stage { padding: 44px 18px; min-height: calc(100svh - 64px); height: calc(100svh - 64px); }
+  .hero__title { font-size: clamp(2rem, 9vw, 3rem); }
+  .hero__copy--detail { top: 10%; }
+  .hero__micro { font-size: 0.66rem; letter-spacing: 0.22em; gap: 10px; }
+  .hero__micro::before, .hero__micro::after { width: 22px; }
+  .hero__scroll { bottom: 18px; }
+}
 @media (max-width: 480px) {
-  .hero-image__content h1 {
-    font-size: 3.1rem;
-  }
-
-  .hero-image__cta {
-    width: 100%;
-    max-width: 280px;
-  }
-
-  .hero-image__cta span {
-    flex: 1;
-  }
+  .hero__tile { --tile-width: 54px; --tile-height: 74px; }
+  .hero__copy--detail { top: 9%; }
+  .hero__subtitle { font-size: 0.92rem; line-height: 1.65; }
+  .hero__button { width: 100%; max-width: 240px; }
 }
 @media (prefers-reduced-motion: reduce) {
-  .hero-image__cta span,
-  .hero-image__cta i {
-    transition: none !important;
-  }
+  .hero__tile, .animate-in { animation: none !important; opacity: 1; }
+  .hero__copy { transition: none !important; }
 }
 
 /* =============================================
@@ -1088,25 +1165,29 @@ p { color: var(--text-muted); }
 }
 .navbar__links a:hover { color: #111318; }
 .navbar__cta,
-.btn-primary {
+.btn-primary,
+.hero__button--dark {
   background: #111318;
   color: #FFFFFF;
   box-shadow: none;
   border: 1px solid #111318;
 }
 .navbar__cta:hover,
-.btn-primary:hover {
+.btn-primary:hover,
+.hero__button--dark:hover {
   transform: translateY(-1px);
   box-shadow: 0 14px 36px rgba(17,19,24,0.12);
   opacity: 1;
 }
-.btn-secondary {
+.btn-secondary,
+.hero__button--light {
   background: rgba(255,255,255,0.72);
   border: 1px solid rgba(17,19,24,0.12);
   color: #111318;
   box-shadow: none;
 }
-.btn-secondary:hover {
+.btn-secondary:hover,
+.hero__button--light:hover {
   background: #FFFFFF;
 }
 .mobile-menu { background: #F7F5F1; }
@@ -1378,7 +1459,7 @@ p { color: var(--text-muted); }
 .academy-shell {
   position: relative;
   background: #F7F5F1;
-  padding: 0;
+  padding: 118px 0 112px;
   overflow: hidden;
 }
 .academy-shell::before {
@@ -1744,7 +1825,7 @@ body.is-course-page .academy-shell {
 }
 body.is-course-page .academy-shell::before { display:none; }
 body.is-course-page .academy-shell .container {
-  max-width:1280px;
+  max-width:1180px;
   padding:0 24px;
 }
 body.is-course-page .course-page-stack {
@@ -2211,864 +2292,6 @@ body.is-course-page .course-page-stack {
 }
 
 /* =============================================
-   LUMINA HOMEPAGE — minimal module list
-   ============================================= */
-.academy-shell {
-  background:#f9f9f9;
-  padding:0;
-  overflow:visible;
-}
-.academy-shell::before {
-  display:none !important;
-}
-.academy-shell > .container {
-  max-width:none;
-  padding:0;
-}
-.lumina-home {
-  max-width:1280px;
-  margin:0 auto;
-  padding:96px 64px 112px;
-  background:#f9f9f9;
-  border-top:0.5px solid rgba(195,200,193,0.35);
-}
-.lumina-home__intro {
-  max-width:820px;
-  margin-bottom:64px;
-}
-.lumina-home__intro h2 {
-  font-family:'Plus Jakarta Sans', var(--font-body);
-  color:#1a1c1c;
-  font-size:40px;
-  line-height:48px;
-  font-weight:700;
-  letter-spacing:0;
-  margin-bottom:24px;
-}
-.lumina-home__intro p {
-  font-family:'Plus Jakarta Sans', var(--font-body);
-  max-width:760px;
-  color:#434843;
-  font-size:18px;
-  line-height:28px;
-  font-weight:400;
-}
-.lumina-modules h3 {
-  font-family:'Plus Jakarta Sans', var(--font-body);
-  color:#434843;
-  font-size:12px;
-  line-height:16px;
-  font-weight:600;
-  letter-spacing:0.12em;
-  text-transform:uppercase;
-  margin-bottom:24px;
-}
-.lumina-module-card {
-  display:grid;
-  grid-template-columns:minmax(300px, 34%) minmax(0, 1fr);
-  min-height:240px;
-  background:#ffffff;
-  border:0.5px solid rgba(195,200,193,0.55);
-  border-radius:16px;
-  overflow:hidden;
-  color:#1a1c1c;
-  margin-bottom:16px;
-  transition:transform 240ms ease, box-shadow 240ms ease, border-color 240ms ease, background-color 240ms ease;
-}
-.lumina-module-card:hover {
-  transform:translateY(-2px);
-  border-color:rgba(115,120,114,0.45);
-  box-shadow:0 4px 20px rgba(74,93,78,0.08);
-  background:#ffffff;
-}
-.lumina-module-card__image {
-  background:#e2e2e2;
-  min-height:240px;
-  overflow:hidden;
-}
-.lumina-module-card__image img {
-  width:100%;
-  height:100%;
-  object-fit:cover;
-}
-.lumina-module-card__content {
-  padding:42px 40px;
-  display:flex;
-  flex-direction:column;
-  justify-content:center;
-}
-.lumina-module-card__content span {
-  font-family:'Plus Jakarta Sans', var(--font-body);
-  color:#434843;
-  font-size:12px;
-  line-height:16px;
-  font-weight:600;
-  letter-spacing:0.08em;
-  margin-bottom:10px;
-}
-.lumina-module-card__content h4 {
-  font-family:'Plus Jakarta Sans', var(--font-body);
-  color:#1a1c1c;
-  font-size:20px;
-  line-height:28px;
-  font-weight:600;
-  letter-spacing:0;
-  margin-bottom:12px;
-}
-.lumina-module-card__content p {
-  font-family:'Plus Jakarta Sans', var(--font-body);
-  color:#434843;
-  font-size:16px;
-  line-height:24px;
-  font-weight:400;
-  max-width:720px;
-  margin-bottom:24px;
-}
-.lumina-module-card__content strong {
-  width:fit-content;
-  font-family:'Plus Jakarta Sans', var(--font-body);
-  color:#334537;
-  font-size:12px;
-  line-height:16px;
-  font-weight:700;
-  letter-spacing:0.08em;
-  border-bottom:1px solid currentColor;
-  padding-bottom:4px;
-  text-transform:none;
-}
-.lumina-cta {
-  background:#1a1c1c !important;
-  padding:88px 0 !important;
-}
-.lumina-cta .closing__aurora {
-  display:none;
-}
-.lumina-cta .container {
-  max-width:1280px;
-}
-.lumina-cta .closing__inner {
-  max-width:760px;
-  margin:0 auto;
-  text-align:center;
-}
-.lumina-cta h2 {
-  font-family:'Plus Jakarta Sans', var(--font-body);
-  color:#ffffff;
-  font-size:40px;
-  line-height:48px;
-  font-weight:700;
-  letter-spacing:0;
-  margin-bottom:18px;
-}
-.lumina-cta p {
-  font-family:'Plus Jakarta Sans', var(--font-body);
-  max-width:620px;
-  margin:0 auto 32px;
-  color:rgba(240,241,241,0.78);
-  font-size:18px;
-  line-height:28px;
-}
-.lumina-cta .btn-primary {
-  background:#d4e7d7 !important;
-  color:#0f1f15 !important;
-  border-color:#d4e7d7 !important;
-}
-.lumina-cta .btn-primary:hover {
-  background:#cfe2d2 !important;
-  transform:translateY(-1px);
-}
-.lumina-cta .btn-secondary {
-  background:transparent !important;
-  color:#ffffff !important;
-  border-color:rgba(255,255,255,0.36) !important;
-}
-.lumina-cta .btn-secondary:hover {
-  background:rgba(255,255,255,0.10) !important;
-  transform:translateY(-1px);
-}
-.lumina-footer {
-  background:#f3f3f4 !important;
-  border-top:0.5px solid rgba(195,200,193,0.55);
-  color:#1a1c1c;
-  padding:40px 0 !important;
-}
-.lumina-footer .container {
-  max-width:1280px;
-  padding:0 64px;
-}
-.lumina-footer .footer__inner {
-  display:grid;
-  grid-template-columns:1fr auto 1fr;
-  align-items:center;
-  gap:24px;
-  min-height:auto;
-}
-.lumina-footer__brand {
-  font-family:'Plus Jakarta Sans', var(--font-body);
-  color:#334537;
-  font-size:20px;
-  line-height:28px;
-  font-weight:700;
-}
-.lumina-footer__links {
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  gap:24px;
-  flex-wrap:wrap;
-}
-.lumina-footer__links a {
-  font-family:'Plus Jakarta Sans', var(--font-body);
-  color:#434843;
-  font-size:12px;
-  line-height:16px;
-  font-weight:600;
-  letter-spacing:0.08em;
-  transition:color 220ms ease;
-}
-.lumina-footer__links a:hover {
-  color:#334537;
-}
-.lumina-footer__copy {
-  font-family:'Plus Jakarta Sans', var(--font-body);
-  color:#434843;
-  font-size:14px;
-  line-height:20px;
-  text-align:right;
-}
-@media (max-width:768px) {
-  .lumina-home {
-    padding:72px 16px 88px;
-  }
-  .lumina-home__intro {
-    margin-bottom:48px;
-  }
-  .lumina-home__intro h2 {
-    font-size:32px;
-    line-height:40px;
-  }
-  .lumina-home__intro p {
-    font-size:16px;
-    line-height:24px;
-  }
-  .lumina-module-card {
-    grid-template-columns:1fr;
-    min-height:auto;
-  }
-  .lumina-module-card__image {
-    min-height:220px;
-  }
-  .lumina-module-card__content {
-    padding:28px 24px;
-  }
-  .lumina-cta {
-    padding:72px 0 !important;
-  }
-  .lumina-cta h2 {
-    font-size:32px;
-    line-height:40px;
-  }
-  .lumina-cta p {
-    font-size:16px;
-    line-height:24px;
-  }
-  .lumina-footer .container {
-    padding:0 16px;
-  }
-  .lumina-footer .footer__inner {
-    grid-template-columns:1fr;
-    text-align:center;
-  }
-  .lumina-footer__copy {
-    text-align:center;
-  }
-}
-
-/* =============================================
-   LUMINA COURSE DETAIL — prototype v4
-   ============================================= */
-body.is-course-page {
-  background:#ffffff;
-}
-body.is-course-page .academy-shell {
-  background:#ffffff;
-  padding:56px 0 92px;
-}
-body.is-course-page .academy-shell .container {
-  max-width:1280px;
-  padding:0 64px;
-}
-.stitch-course-page {
-  width:100%;
-  max-width:1280px;
-  margin:0 auto;
-  color:#1a1c1c;
-  font-family:'Plus Jakarta Sans', var(--font-body);
-}
-.stitch-course-hero {
-  display:grid;
-  grid-template-columns:repeat(12, minmax(0,1fr));
-  gap:24px;
-  align-items:center;
-  padding:10px 0 76px;
-}
-.stitch-course-hero__copy {
-  grid-column:span 6;
-  min-width:0;
-}
-.stitch-course-hero__media {
-  grid-column:7 / -1;
-  position:relative;
-  overflow:hidden;
-  border-radius:24px;
-  background:#ffffff;
-  border:0.5px solid rgba(195,200,193,0.55);
-  padding:8px;
-  box-shadow:0 4px 20px rgba(74,93,78,0.08);
-}
-.stitch-course-hero__media img {
-  width:100%;
-  aspect-ratio:4 / 3;
-  object-fit:cover;
-  border-radius:18px;
-}
-.stitch-breadcrumb {
-  display:flex;
-  align-items:center;
-  gap:8px;
-  color:#434843;
-  font-family:'Plus Jakarta Sans', var(--font-body);
-  font-size:12px;
-  line-height:16px;
-  font-weight:700;
-  letter-spacing:0.10em;
-  text-transform:uppercase;
-  margin-bottom:24px;
-}
-.stitch-course-hero h1 {
-  max-width:640px;
-  color:#1a1c1c;
-  font-family:'Plus Jakarta Sans', var(--font-body);
-  font-size:64px;
-  line-height:70px;
-  font-weight:700;
-  letter-spacing:0;
-  margin:0 0 18px;
-}
-.stitch-course-hero p {
-  max-width:600px;
-  color:#434843;
-  font-family:'Plus Jakarta Sans', var(--font-body);
-  font-size:18px;
-  line-height:28px;
-  font-weight:400;
-}
-.stitch-course-actions {
-  display:flex;
-  align-items:center;
-  flex-wrap:wrap;
-  gap:14px;
-  margin:30px 0 30px;
-}
-.stitch-primary-btn {
-  display:inline-flex;
-  align-items:center;
-  justify-content:center;
-  min-height:48px;
-  padding:13px 24px;
-  border-radius:999px;
-  background:#d4e7d7;
-  color:#0f1f15;
-  font-family:'Plus Jakarta Sans', var(--font-body);
-  font-size:14px;
-  line-height:20px;
-  font-weight:700;
-  transition:transform 220ms ease, background 220ms ease;
-}
-.stitch-primary-btn:hover {
-  background:#cfe2d2;
-  transform:translateY(-1px);
-}
-.stitch-internal-badge {
-  display:inline-flex;
-  align-items:center;
-  min-height:26px;
-  padding:5px 11px;
-  border-radius:999px;
-  background:#f3f3f4;
-  color:#334537;
-  font-family:'Plus Jakarta Sans', var(--font-body);
-  font-size:12px;
-  line-height:16px;
-  font-weight:700;
-  letter-spacing:0.08em;
-}
-.stitch-course-actions p {
-  margin-top:5px;
-  color:#434843;
-  font-size:12px;
-  line-height:18px;
-}
-.stitch-meta-row {
-  display:flex;
-  align-items:center;
-  flex-wrap:wrap;
-  gap:14px 24px;
-  padding-top:24px;
-  border-top:0.5px solid rgba(195,200,193,0.55);
-  color:#434843;
-  font-family:'Plus Jakarta Sans', var(--font-body);
-  font-size:14px;
-  line-height:20px;
-}
-.stitch-about-card {
-  display:none;
-}
-.stitch-course-sections {
-  max-width:1000px;
-  margin:0 0 96px;
-}
-.stitch-course-sections > h2 {
-  display:none;
-}
-.stitch-timeline {
-  display:grid;
-  gap:0;
-}
-.stitch-section {
-  position:relative;
-  padding:0 0 64px 40px;
-  border-left:0.5px solid rgba(195,200,193,0.68);
-}
-.stitch-section:last-child {
-  padding-bottom:0;
-}
-.stitch-section__dot {
-  position:absolute;
-  left:-6px;
-  top:8px;
-  width:12px;
-  height:12px;
-  border-radius:999px;
-  background:#d4e7d7;
-  border:2px solid #ffffff;
-}
-.stitch-section__intro {
-  margin-bottom:18px;
-}
-.stitch-section__intro h3 {
-  color:#1a1c1c;
-  font-family:'Plus Jakarta Sans', var(--font-body);
-  font-size:40px;
-  line-height:48px;
-  font-weight:700;
-  letter-spacing:0;
-  margin-bottom:8px;
-}
-.stitch-section__intro p {
-  max-width:760px;
-  color:#434843;
-  font-size:16px;
-  line-height:24px;
-}
-.stitch-lesson-card {
-  overflow:hidden;
-  margin-top:18px;
-  background:#ffffff;
-  border:0.5px solid rgba(195,200,193,0.68);
-  border-radius:20px;
-  box-shadow:0 4px 20px rgba(74,93,78,0.045);
-  transition:box-shadow 220ms ease, border-color 220ms ease;
-}
-.stitch-lesson-card:hover {
-  border-color:rgba(115,120,114,0.38);
-  box-shadow:0 4px 20px rgba(74,93,78,0.08);
-}
-.stitch-lesson-summary {
-  width:100%;
-  display:flex;
-  align-items:center;
-  justify-content:space-between;
-  gap:24px;
-  padding:24px 28px;
-  text-align:left;
-  color:#1a1c1c;
-}
-.stitch-lesson-summary:hover {
-  background:#f9f9f9;
-}
-.stitch-lesson-summary span {
-  display:block;
-  color:#334537;
-  font-family:'Plus Jakarta Sans', var(--font-body);
-  font-size:12px;
-  line-height:16px;
-  font-weight:700;
-  letter-spacing:0.08em;
-  text-transform:uppercase;
-  margin-bottom:8px;
-}
-.stitch-lesson-summary h4 {
-  color:#1a1c1c;
-  font-family:'Plus Jakarta Sans', var(--font-body);
-  font-size:28px;
-  line-height:36px;
-  font-weight:600;
-  letter-spacing:0;
-}
-.stitch-lesson-summary em {
-  display:inline-flex;
-  align-items:center;
-  color:#434843;
-  background:#eeeeee;
-  border-radius:999px;
-  padding:5px 12px;
-  font-style:normal;
-  font-size:12px;
-  line-height:16px;
-  font-weight:600;
-  white-space:nowrap;
-}
-.stitch-lesson-summary i {
-  display:inline-flex;
-  align-items:center;
-  justify-content:center;
-  margin-left:10px;
-  width:28px;
-  height:28px;
-  color:#334537;
-  font-style:normal;
-  font-size:20px;
-  line-height:1;
-  transition:transform 260ms ease;
-}
-.stitch-lesson-card.open .stitch-lesson-summary i {
-  transform:rotate(180deg);
-}
-.stitch-lesson-body {
-  overflow:hidden;
-  max-height:0;
-  transition:max-height 340ms ease;
-}
-.stitch-lesson-card.open .stitch-lesson-body {
-  max-height:5200px;
-}
-.stitch-lesson-inner {
-  display:grid;
-  gap:28px;
-  padding:24px 28px 30px;
-  border-top:0.5px solid rgba(195,200,193,0.55);
-}
-.stitch-info-block {
-  padding-top:0;
-}
-.stitch-info-block h5,
-.stitch-prompt-block h5,
-.stitch-preview-block h5 {
-  color:#434843;
-  font-family:'Plus Jakarta Sans', var(--font-body);
-  font-size:12px;
-  line-height:16px;
-  font-weight:700;
-  letter-spacing:0.08em;
-  text-transform:uppercase;
-  margin-bottom:12px;
-}
-.stitch-info-block p {
-  max-width:none;
-  margin:0;
-  padding:14px 16px;
-  color:#1a1c1c;
-  background:#f3f3f4;
-  border:0.5px solid rgba(195,200,193,0.45);
-  border-radius:10px;
-  font-size:15px;
-  line-height:24px;
-}
-.stitch-info-block ol {
-  margin:0;
-  padding-left:20px;
-  color:#1a1c1c;
-  font-size:15px;
-  line-height:28px;
-}
-.stitch-info-block li + li {
-  margin-top:2px;
-}
-.stitch-tip-block p {
-  border-left:2px solid #4a5d4e;
-}
-.stitch-prompt-block {
-  background:#f3f3f4;
-  border:0.5px solid rgba(195,200,193,0.55);
-  border-radius:14px;
-  padding:22px;
-}
-.stitch-prompt-block__top {
-  display:flex;
-  align-items:center;
-  justify-content:space-between;
-  gap:14px;
-  margin-bottom:16px;
-}
-.stitch-prompt-block button,
-.stitch-prompt-card .prompt-box__copy {
-  display:inline-flex;
-  align-items:center;
-  justify-content:center;
-  min-height:32px;
-  padding:7px 13px;
-  border-radius:999px;
-  background:#ffffff;
-  color:#434843;
-  border:0.5px solid rgba(195,200,193,0.75);
-  font-family:'Plus Jakarta Sans', var(--font-body);
-  font-size:12px;
-  line-height:16px;
-  font-weight:700;
-  transition:background 220ms ease, color 220ms ease, border-color 220ms ease;
-}
-.stitch-prompt-block button:hover,
-.stitch-prompt-card .prompt-box__copy:hover {
-  background:#334537;
-  color:#ffffff;
-  border-color:#334537;
-}
-.stitch-prompt-block pre {
-  margin:0;
-  padding:2px 0 2px 16px;
-  color:#1a1c1c;
-  border-left:2px solid #4a5d4e;
-  white-space:pre-wrap;
-  font-family:'Plus Jakarta Sans', var(--font-body);
-  font-size:15px;
-  line-height:24px;
-  font-style:italic;
-}
-.stitch-preview-block {
-  padding-top:0;
-  border-top:0.5px solid rgba(195,200,193,0.45);
-  padding-top:24px;
-}
-.stitch-preview-grid {
-  display:grid;
-  grid-template-columns:repeat(2, minmax(0,1fr));
-  gap:16px;
-}
-.stitch-preview-grid img {
-  width:100%;
-  aspect-ratio:16 / 11;
-  object-fit:cover;
-  border-radius:14px;
-  background:#f3f3f4;
-  border:0.5px solid rgba(195,200,193,0.5);
-  padding:10px;
-}
-.stitch-prompt-grid {
-  display:grid;
-  grid-template-columns:repeat(2, minmax(0,1fr));
-  gap:16px;
-  margin-top:18px;
-}
-.stitch-prompt-card {
-  background:#ffffff;
-  border:0.5px solid rgba(195,200,193,0.68);
-  border-radius:16px;
-  padding:22px;
-  box-shadow:0 4px 20px rgba(74,93,78,0.045);
-}
-.stitch-prompt-card:hover {
-  transform:translateY(-1px);
-  box-shadow:0 4px 20px rgba(74,93,78,0.08);
-}
-.stitch-prompt-card h4 {
-  color:#1a1c1c;
-  font-family:'Plus Jakarta Sans', var(--font-body);
-  font-size:20px;
-  line-height:28px;
-  font-weight:600;
-  letter-spacing:0;
-  margin-bottom:14px;
-  padding-right:0;
-}
-.stitch-prompt-card .prompt-box__copy {
-  position:static;
-  width:fit-content;
-  margin-bottom:16px;
-}
-.stitch-prompt-card .prompt-card__text {
-  color:#1a1c1c;
-  font-family:'Plus Jakarta Sans', var(--font-body);
-  font-size:15px;
-  line-height:24px;
-  white-space:pre-line;
-  border-left:2px solid #4a5d4e;
-  padding-left:14px;
-}
-.course-faq {
-  max-width:none;
-  margin:104px 0 0;
-  padding-top:64px;
-  border-top:0.5px solid rgba(195,200,193,0.55);
-}
-.course-faq h2 {
-  color:#1a1c1c;
-  font-family:'Plus Jakarta Sans', var(--font-body);
-  font-size:40px;
-  line-height:48px;
-  font-weight:700;
-  letter-spacing:0;
-  margin-bottom:28px;
-}
-.course-note-list {
-  border-top:0.5px solid rgba(195,200,193,0.6);
-}
-.course-note-item {
-  border-bottom:0.5px solid rgba(195,200,193,0.6);
-}
-.course-note-question {
-  width:100%;
-  display:flex;
-  align-items:center;
-  justify-content:space-between;
-  gap:22px;
-  padding:26px 0;
-  color:#1a1c1c;
-  text-align:left;
-  font-family:'Plus Jakarta Sans', var(--font-body);
-  font-size:28px;
-  line-height:36px;
-  font-weight:600;
-}
-.course-note-icon {
-  flex:0 0 auto;
-  color:#334537;
-  font-size:22px;
-  font-weight:400;
-  transition:transform 220ms ease;
-}
-.course-note-answer {
-  display:block;
-  max-height:0;
-  overflow:hidden;
-  color:#434843;
-  font-size:18px;
-  line-height:28px;
-  padding:0;
-  transition:max-height 260ms ease, padding 260ms ease;
-}
-.course-note-item.open .course-note-answer {
-  max-height:360px;
-  padding:0 56px 24px 0;
-}
-.course-note-item.open .course-note-icon {
-  transform:rotate(45deg);
-}
-@media (max-width:980px) {
-  body.is-course-page .academy-shell {
-    padding-top:34px;
-  }
-  body.is-course-page .academy-shell .container {
-    padding:0 24px;
-  }
-  .stitch-course-hero {
-    grid-template-columns:1fr;
-    gap:34px;
-    padding:8px 0 62px;
-  }
-  .stitch-course-hero__copy,
-  .stitch-course-hero__media {
-    grid-column:auto;
-  }
-  .stitch-course-hero h1 {
-    font-size:48px;
-    line-height:56px;
-  }
-}
-@media (max-width:768px) {
-  body.is-course-page .academy-shell {
-    padding:28px 0 72px;
-  }
-  body.is-course-page .academy-shell .container {
-    padding:0 16px;
-  }
-  .stitch-course-hero {
-    padding-bottom:52px;
-  }
-  .stitch-course-hero h1 {
-    font-size:40px;
-    line-height:48px;
-  }
-  .stitch-course-hero p {
-    font-size:16px;
-    line-height:24px;
-  }
-  .stitch-course-actions {
-    align-items:flex-start;
-    flex-direction:column;
-  }
-  .stitch-meta-row {
-    gap:10px 18px;
-    font-size:12px;
-    line-height:18px;
-  }
-  .stitch-course-sections {
-    margin-bottom:72px;
-  }
-  .stitch-section {
-    padding-left:28px;
-    padding-bottom:54px;
-  }
-  .stitch-section__intro h3,
-  .course-faq h2 {
-    font-size:32px;
-    line-height:40px;
-  }
-  .stitch-lesson-summary {
-    align-items:flex-start;
-    flex-direction:column;
-    gap:14px;
-    padding:22px;
-  }
-  .stitch-lesson-summary > div:last-child {
-    display:flex;
-    align-items:center;
-    justify-content:space-between;
-    width:100%;
-  }
-  .stitch-lesson-summary h4 {
-    font-size:22px;
-    line-height:30px;
-  }
-  .stitch-lesson-summary em {
-    white-space:normal;
-  }
-  .stitch-lesson-inner {
-    padding:22px;
-  }
-  .stitch-prompt-block__top {
-    align-items:flex-start;
-    flex-direction:column;
-  }
-  .stitch-preview-grid,
-  .stitch-prompt-grid {
-    grid-template-columns:1fr;
-  }
-  .course-note-question {
-    font-size:20px;
-    line-height:28px;
-    padding:22px 0;
-  }
-  .course-note-answer {
-    font-size:16px;
-    line-height:24px;
-  }
-  .course-note-item.open .course-note-answer {
-    padding-right:28px;
-  }
-}
-
-/* =============================================
    CLOSING CTA — animated aurora background
    Adapted from the aurora prompt for this static HTML website.
    Applies only to the dark CTA section above the footer, not the footer.
@@ -3193,41 +2416,6 @@ body.is-course-page .academy-shell .container {
 @media (prefers-reduced-motion: reduce) {
   .closing__aurora-wave { animation: none !important; }
 }
-
-.closing.lumina-cta {
-  background:#1a1c1c !important;
-}
-.closing.lumina-cta .closing__aurora {
-  display:none !important;
-}
-.closing.lumina-cta h2 {
-  color:#ffffff !important;
-  text-shadow:none !important;
-}
-.closing.lumina-cta p {
-  color:rgba(240,241,241,0.78) !important;
-}
-.closing.lumina-cta .btn-primary {
-  background:#d4e7d7 !important;
-  color:#0f1f15 !important;
-  border-color:#d4e7d7 !important;
-  backdrop-filter:none !important;
-  -webkit-backdrop-filter:none !important;
-}
-.closing.lumina-cta .btn-primary:hover {
-  background:#cfe2d2 !important;
-}
-.closing.lumina-cta .btn-secondary {
-  background:transparent !important;
-  color:#ffffff !important;
-  border-color:rgba(255,255,255,0.36) !important;
-}
-.closing.lumina-cta .btn-secondary:hover {
-  background:rgba(255,255,255,0.10) !important;
-}
-.hero-image__grid {
-  display:none !important;
-}
 </style>
 </head>
 <body>
@@ -3274,34 +2462,90 @@ body.is-course-page .academy-shell .container {
 </header>
 
 <!-- ========================= HERO ========================= -->
-<section class="hero hero--image" id="hero">
-  <div class="hero-image__grid" aria-hidden="true">
-    <span></span>
-    <span></span>
-    <span></span>
-    <span></span>
-    <span></span>
-  </div>
-
-  <div class="hero-image__bg" aria-hidden="true"></div>
-  <div class="hero-image__overlay" aria-hidden="true"></div>
-
-  <div class="container">
-    <div class="hero-image__content">
-      <h1>
-        AI Learning Guide<br>
-        for Smarter Daily Work
-      </h1>
-
-      <p>
-        Panduan praktis menggunakan Microsoft Copilot untuk membantu pekerjaan operasional DMC, mulai dari email, meeting recap, itinerary, prompt, hingga hotel knowledge agent.
-      </p>
-
-      <a href="#academy" class="hero-image__cta">
-        <span>Mulai Belajar</span>
-        <i>↗</i>
-      </a>
+<section class="hero" id="hero">
+  <div class="hero__stage" id="heroStage">
+    <!--
+      Replace these image URLs with your own files anytime.
+      Example: assets/hero/hero-01.jpg, assets/hero/hero-02.jpg, etc.
+    -->
+    <div class="hero__ring" id="heroRing" aria-hidden="true">
+      <figure class="hero__tile" data-index="0">
+        <img src="https://images.unsplash.com/photo-1516321318423-f06f85e504b3?auto=format&fit=crop&w=420&q=80" alt="AI learning visual 01" loading="eager" />
+      </figure>
+      <figure class="hero__tile" data-index="1">
+        <img src="https://images.unsplash.com/photo-1498050108023-c5249f4df085?auto=format&fit=crop&w=420&q=80" alt="AI learning visual 02" loading="eager" />
+      </figure>
+      <figure class="hero__tile" data-index="2">
+        <img src="https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?auto=format&fit=crop&w=420&q=80" alt="AI learning visual 03" loading="eager" />
+      </figure>
+      <figure class="hero__tile" data-index="3">
+        <img src="https://images.unsplash.com/photo-1516321165247-4aa89a48be28?auto=format&fit=crop&w=420&q=80" alt="AI learning visual 04" loading="eager" />
+      </figure>
+      <figure class="hero__tile" data-index="4">
+        <img src="https://images.unsplash.com/photo-1520607162513-77705c0f0d4a?auto=format&fit=crop&w=420&q=80" alt="AI learning visual 05" loading="eager" />
+      </figure>
+      <figure class="hero__tile" data-index="5">
+        <img src="https://images.unsplash.com/photo-1519389950473-47ba0277781c?auto=format&fit=crop&w=420&q=80" alt="AI learning visual 06" loading="eager" />
+      </figure>
+      <figure class="hero__tile" data-index="6">
+        <img src="https://images.unsplash.com/photo-1516321318423-f06f85e504b3?auto=format&fit=crop&w=420&q=80" alt="AI learning visual 07" loading="eager" />
+      </figure>
+      <figure class="hero__tile" data-index="7">
+        <img src="https://images.unsplash.com/photo-1522202176988-66273c2fd55f?auto=format&fit=crop&w=420&q=80" alt="AI learning visual 08" loading="eager" />
+      </figure>
+      <figure class="hero__tile" data-index="8">
+        <img src="https://images.unsplash.com/photo-1516321497487-e288fb19713f?auto=format&fit=crop&w=420&q=80" alt="AI learning visual 09" loading="eager" />
+      </figure>
+      <figure class="hero__tile" data-index="9">
+        <img src="https://images.unsplash.com/photo-1498050108023-c5249f4df085?auto=format&fit=crop&w=420&q=80" alt="AI learning visual 10" loading="eager" />
+      </figure>
+      <figure class="hero__tile" data-index="10">
+        <img src="https://images.unsplash.com/photo-1517245386807-bb43f82c33c4?auto=format&fit=crop&w=420&q=80" alt="AI learning visual 11" loading="eager" />
+      </figure>
+      <figure class="hero__tile" data-index="11">
+        <img src="https://images.unsplash.com/photo-1552664730-d307ca884978?auto=format&fit=crop&w=420&q=80" alt="AI learning visual 12" loading="eager" />
+      </figure>
+      <figure class="hero__tile" data-index="12">
+        <img src="https://images.unsplash.com/photo-1497366811353-6870744d04b2?auto=format&fit=crop&w=420&q=80" alt="AI learning visual 13" loading="eager" />
+      </figure>
+      <figure class="hero__tile" data-index="13">
+        <img src="https://images.unsplash.com/photo-1496171367470-9ed9a91ea931?auto=format&fit=crop&w=420&q=80" alt="AI learning visual 14" loading="eager" />
+      </figure>
+      <figure class="hero__tile" data-index="14">
+        <img src="https://images.unsplash.com/photo-1516321165247-4aa89a48be28?auto=format&fit=crop&w=420&q=80" alt="AI learning visual 15" loading="eager" />
+      </figure>
+      <figure class="hero__tile" data-index="15">
+        <img src="https://images.unsplash.com/photo-1497366216548-37526070297c?auto=format&fit=crop&w=420&q=80" alt="AI learning visual 16" loading="eager" />
+      </figure>
+      <figure class="hero__tile" data-index="16">
+        <img src="https://images.unsplash.com/photo-1504384308090-c894fdcc538d?auto=format&fit=crop&w=420&q=80" alt="AI learning visual 17" loading="eager" />
+      </figure>
+      <figure class="hero__tile" data-index="17">
+        <img src="https://images.unsplash.com/photo-1484417894907-623942c8ee29?auto=format&fit=crop&w=420&q=80" alt="AI learning visual 18" loading="eager" />
+      </figure>
+      <figure class="hero__tile" data-index="18">
+        <img src="https://images.unsplash.com/photo-1527631746610-bca00a040d60?auto=format&fit=crop&w=420&q=80" alt="AI learning visual 19" loading="eager" />
+      </figure>
+      <figure class="hero__tile" data-index="19">
+        <img src="https://images.unsplash.com/photo-1566073771259-6a8506099945?auto=format&fit=crop&w=420&q=80" alt="AI learning visual 20" loading="eager" />
+      </figure>
     </div>
+
+    <div class="hero__copy hero__copy--intro animate-in">
+      <h1 class="hero__title">Panduan AI &amp; Copilot<br/>untuk Kerja Sehari-hari</h1>
+      <div class="hero__micro">Scroll untuk mulai</div>
+    </div>
+
+    <div class="hero__copy hero__copy--detail">
+      <h2 class="hero__title hero__title--secondary">Pelajari Copilot dengan Lebih Mudah</h2>
+      <p class="hero__subtitle">Gunakan panduan ini untuk memahami modul, contoh prompt, langkah penggunaan, dan praktik terbaik dalam memakai AI sebagai asisten kerja, bukan pengganti manusia.</p>
+      <div class="hero__actions">
+        <a href="#academy" class="hero__button hero__button--dark">Mulai Belajar →</a>
+        <a href="#course-email" class="hero__button hero__button--light">Lihat Panduan</a>
+      </div>
+    </div>
+
+    <a class="hero__scroll" href="#academy">Scroll</a>
   </div>
 </section>
 
@@ -3310,209 +2554,293 @@ body.is-course-page .academy-shell .container {
   <span class="anchor-alias" id="modules"></span>
   <div class="container">
     <div class="academy-home-view">
-      <section class="lumina-home" id="academy-courses">
-        <div class="lumina-home__intro">
-          <h2>AI Learning Academy</h2>
-          <p>Platform pelatihan internal komprehensif untuk menguasai teknologi AI guna meningkatkan produktivitas dan efisiensi kerja harian Anda.</p>
-        </div>
+    <div class="academy-hero reveal">
+      <div class="academy-kicker">AI Learning Center</div>
+      <h2>AI Learning Academy</h2>
+      <p>Panduan praktis menggunakan Microsoft Copilot untuk membantu pekerjaan operasional DMC, mulai dari email, jadwal meeting, rekap rapat, itinerary, hingga hotel knowledge agent.</p>
+    </div>
 
-        <div class="lumina-modules">
-          <h3>Comprehensive Modules</h3>
+    <div class="academy-featured reveal">
+      <div class="academy-featured__copy">
+        <h3>Featured Learning</h3>
+        <p>Mulai dari kebutuhan kerja yang paling sering digunakan oleh tim: membalas email, merangkum meeting, membuat itinerary, mencari informasi kerja, dan membangun knowledge agent.</p>
+        <a class="academy-pill" href="#course-email">Lihat Semua Course</a>
+      </div>
+      <div class="featured-course-grid" aria-label="Featured courses">
+        <a class="featured-course" href="#course-email"><span>Featured Course</span><strong>Outlook Copilot for Email</strong><i>→</i></a>
+        <a class="featured-course" href="#course-meeting"><span>Featured Course</span><strong>Calendar &amp; Meeting Productivity</strong><i>→</i></a>
+        <a class="featured-course" href="#course-agent"><span>Featured Course</span><strong>Hotel Knowledge Agent</strong><i>→</i></a>
+      </div>
+    </div>
 
-          <a class="lumina-module-card" href="#course-email">
-            <div class="lumina-module-card__image">
-              <img src="assets/preview-email.png" alt="Email &amp; Communication" loading="lazy" />
-            </div>
-            <div class="lumina-module-card__content">
-              <span>Module 01</span>
-              <h4>Email &amp; Communication</h4>
-              <p>Kuasai seni korespondensi cepat dengan bantuan AI untuk draf, ringkasan, dan terjemahan.</p>
-              <strong>Buka Course →</strong>
-            </div>
-          </a>
+    <div class="academy-note reveal">
+      <span class="academy-note__mark">AI</span>
+      <p>AI adalah assistant kerja, bukan pengganti manusia. Gunakan Copilot untuk mempercepat pekerjaan repetitif, lalu selalu review nama, angka, rate, tanggal, availability, sumber informasi, dan gaya komunikasi sebelum dikirim ke klien, supplier, partner, atau tim internal. Untuk pencarian email dan file lama, gunakan Microsoft 365 Copilot karena Copilot Chat biasa tidak dapat membaca email kerja.</p>
+    </div>
 
-          <a class="lumina-module-card" href="#course-meeting">
-            <div class="lumina-module-card__image">
-              <img src="assets/preview-calendar.png" alt="Calendar &amp; Meeting Intelligence" loading="lazy" />
-            </div>
-            <div class="lumina-module-card__content">
-              <span>Module 02</span>
-              <h4>Calendar &amp; Meeting Intelligence</h4>
-              <p>Optimalkan jadwal dan ringkas poin penting dari setiap rapat Teams secara otomatis.</p>
-              <strong>Buka Course →</strong>
-            </div>
-          </a>
+    <div class="academy-course-grid" id="academy-courses">
+      <a class="academy-course-card academy-course-card--green reveal" href="#course-email">
+        <div class="academy-course-card__body"><div><div class="academy-course-card__eyebrow">Course 01</div><h3>Email &amp; Communication</h3><p>Gunakan Copilot untuk membalas email, merangkum thread panjang, menerjemahkan inquiry, memperbaiki gaya penulisan, dan membuat booking request ke supplier.</p></div><span class="academy-pill">Buka Course</span></div>
+        <div class="academy-course-card__visual"><img src="assets/preview-email.png" alt="Preview mockup Outlook email panel" loading="lazy" /></div>
+      </a>
+      <a class="academy-course-card reveal" href="#course-meeting">
+        <div class="academy-course-card__body"><div><div class="academy-course-card__eyebrow">Course 02</div><h3>Calendar &amp; Meeting</h3><p>Pelajari cara menggunakan Copilot untuk mengecek jadwal, mencari waktu meeting, membuat agenda, dan merangkum hasil rapat Teams menjadi action items.</p></div><span class="academy-pill">Buka Course</span></div>
+        <div class="academy-course-card__visual"><img src="assets/preview-calendar.png" alt="Preview mockup calendar schedule panel" loading="lazy" /></div>
+      </a>
+      <a class="academy-course-card academy-course-card--clay reveal" href="#course-itinerary">
+        <div class="academy-course-card__body"><div><div class="academy-course-card__eyebrow">Course 03</div><h3>Itinerary &amp; Work Drafting</h3><p>Gunakan Copilot Chat untuk membuat draft itinerary awal, menyusun ide program, dan membuat draft dokumen kerja yang bisa diedit kembali oleh tim.</p></div><span class="academy-pill">Buka Course</span></div>
+        <div class="academy-course-card__visual"><img src="assets/preview-itinerary.png" alt="Preview mockup itinerary table" loading="lazy" /></div>
+      </a>
+      <a class="academy-course-card academy-course-card--green reveal" href="#course-agent">
+        <div class="academy-course-card__body"><div><div class="academy-course-card__eyebrow">Course 04</div><h3>Knowledge Agent</h3><p>Bangun hotel knowledge agent dari file internal agar tim bisa mencari informasi hotel berdasarkan area, star rating, rate, fasilitas, direct contact, dan catatan penting.</p></div><span class="academy-pill">Buka Course</span></div>
+        <div class="academy-course-card__visual"><img src="assets/preview-agent.png" alt="Preview mockup hotel knowledge agent chat" loading="lazy" /></div>
+      </a>
+      <a class="academy-course-card academy-course-card--gray reveal" href="#course-prompting">
+        <div class="academy-course-card__body"><div><div class="academy-course-card__eyebrow">Course 05</div><h3>Prompt Library</h3><p>Kumpulan prompt siap pakai untuk email, translation, meeting recap, booking request, itinerary, schedule, dan hotel knowledge agent.</p></div><span class="academy-pill">Lihat Prompt</span></div>
+        <div class="academy-course-card__visual"><img src="assets/preview-prompting.png" alt="Preview mockup prompt card library" loading="lazy" /></div>
+      </a>
+    </div>
 
-          <a class="lumina-module-card" href="#course-itinerary">
-            <div class="lumina-module-card__image">
-              <img src="assets/preview-itinerary.png" alt="Smart Travel Itinerary" loading="lazy" />
-            </div>
-            <div class="lumina-module-card__content">
-              <span>Module 03</span>
-              <h4>Smart Travel Itinerary</h4>
-              <p>Susun rencana perjalanan dan draft itinerary awal dengan bantuan assistant cerdas.</p>
-              <strong>Buka Course →</strong>
-            </div>
-          </a>
-
-          <a class="lumina-module-card" href="#course-agent">
-            <div class="lumina-module-card__image">
-              <img src="assets/preview-agent.png" alt="Knowledge Agent Setup" loading="lazy" />
-            </div>
-            <div class="lumina-module-card__content">
-              <span>Module 04</span>
-              <h4>Knowledge Agent Setup</h4>
-              <p>Pelajari cara membangun knowledge agent dari file internal yang mudah diakses oleh tim Anda.</p>
-              <strong>Buka Course →</strong>
-            </div>
-          </a>
-
-          <a class="lumina-module-card" href="#course-prompting">
-            <div class="lumina-module-card__image">
-              <img src="assets/preview-prompting.png" alt="Prompt Library" loading="lazy" />
-            </div>
-            <div class="lumina-module-card__content">
-              <span>Module 05</span>
-              <h4>Prompt Library</h4>
-              <p>Koleksi instruksi siap pakai untuk berbagai skenario kerja harian di DMC.</p>
-              <strong>Buka Course →</strong>
-            </div>
-          </a>
-        </div>
-      </section>
     </div>
 
     <div class="course-page-stack">
       <span class="anchor-alias" id="usecases"></span>
 
       <section class="course-page-view view-hidden" id="course-email" data-course="email">
-        <main class="stitch-course-page">
-          <section class="stitch-course-hero">
-            <div class="stitch-course-hero__copy">
-              <div class="stitch-breadcrumb"><span>AI LEARNING ACADEMY</span><span>/</span><span>COURSES</span></div>
+        <main class="skilljar-course-page">
+          <section class="skilljar-course-hero">
+            <div class="course-hero-left">
+              <div class="course-breadcrumb">AI Learning Academy / Courses</div>
               <h1>Email &amp; Communication</h1>
               <p>Pelajari cara menggunakan Copilot di Outlook untuk mempercepat pekerjaan email harian, mulai dari membuat draft balasan, merangkum thread panjang, menerjemahkan inquiry, memperbaiki gaya penulisan, hingga membuat permintaan booking ke supplier.</p>
-              <div class="stitch-course-actions">
-                <button class="stitch-primary-btn" type="button" onclick="scrollCourseSections(this)">Mulai Course →</button>
-                <div><span class="stitch-internal-badge">INTERNAL</span><p>Panduan ini dibuat untuk karyawan DMC.</p></div>
+              <div class="course-actions">
+                <button class="enroll-button" type="button" onclick="scrollCourseSections(this)">Mulai Course</button>
+                <span class="course-free-badge">INTERNAL</span>
               </div>
-              <div class="stitch-meta-row"><span>▣ 5 lessons</span><span>◷ ±60 min guide</span><span>Outlook</span><span>✓ review required</span></div>
+              <p class="already-note">Panduan ini dibuat untuk karyawan DMC.</p>
             </div>
-            <div class="stitch-course-hero__media"><img src="assets/preview-email.png" alt="Preview Outlook email course" loading="lazy" /></div>
+            <div class="course-hero-right">
+              <div class="course-hero-media"><img src="assets/preview-email.png" alt="Preview Outlook email course" loading="lazy" /></div>
+              <div class="course-meta-row">
+                <span><strong>5</strong> lessons</span>
+                <span><strong>±60</strong> min guide</span>
+                <span><strong>Outlook</strong></span>
+                <span><strong>✓</strong> review required</span>
+              </div>
+            </div>
           </section>
 
-          <section class="stitch-about-card">
+          <section class="about-course-card">
             <h2>About this course</h2>
             <p>Course ini membantu tim memahami bagaimana Copilot dapat digunakan sebagai assistant kerja untuk menangani email operasional DMC. Materi mencakup pembuatan draft balasan, ringkasan thread panjang, translation inquiry, perbaikan tone email, dan booking request ke supplier. Semua hasil tetap perlu dicek ulang sebelum dikirim ke klien atau supplier.</p>
           </section>
 
-          <section class="stitch-course-sections">
+          <section class="course-sections">
             <h2>Course sections</h2>
-            <div class="stitch-timeline">
-              <article class="stitch-section">
-                <div class="stitch-section__dot"></div>
-                <div class="stitch-section__intro">
-                  <h3>Outlook Email Basics</h3>
-                  <p>Mulai dari membuat draft balasan email dan merangkum thread panjang agar informasi penting lebih cepat dipahami.</p>
-                </div>
-                <div class="stitch-lesson-card open">
-                  <button class="stitch-lesson-summary" type="button" onclick="toggleStitchLesson(this)" aria-expanded="true">
-                    <div><span>LESSON 01</span><h4>Balas Email Secara Otomatis</h4></div>
-                    <div><em>Outlook · ±15 menit</em><i>−</i></div>
-                  </button>
-                  <div class="stitch-lesson-body">
-                    <div class="stitch-lesson-inner">
-                      <div class="stitch-info-block"><h5>⌖ Di mana klik</h5><p>Buka email → Klik Reply → Cari ikon Copilot di toolbar → Klik “Draft with Copilot”. Jika ikon tidak terlihat, klik tiga titik (...) di toolbar reply.</p></div>
-                      <div class="stitch-info-block"><h5>▤ Langkah operasional</h5><ol><li>Buka email dari travel agent atau klien.</li><li>Klik Reply.</li><li>Buka Copilot atau Draft with Copilot.</li><li>Tulis poin utama yang ingin disampaikan.</li><li>Review nama, tanggal, jumlah tamu, budget, dan tone email.</li><li>Edit jika perlu, lalu kirim.</li></ol></div>
-                      <div class="stitch-prompt-block"><div class="stitch-prompt-block__top"><h5>▸ Prompt siap pakai</h5><button onclick="copyPrompt(this)">Salin</button></div><pre class="prompt-card__text">Konfirmasi bahwa kami sudah menerima inquiry mereka. Tanyakan tanggal perjalanan, jumlah tamu, dan kisaran budget. Gunakan bahasa yang profesional dan ramah.</pre></div>
-                      <div class="stitch-info-block stitch-tip-block"><h5>Hasil / Tips</h5><p>Email balasan profesional bisa dibuat lebih cepat, tetapi tetap wajib direview sebelum dikirim.</p></div>
-                      <div class="stitch-preview-block"><h5>▧ Course preview images</h5><div class="stitch-preview-grid"><img src="assets/preview-email.png" alt="Outlook email panel preview" loading="lazy" /><img src="assets/preview-prompting.png" alt="Prompting preview" loading="lazy" /></div></div>
+            <div class="course-section-list">
+              <article class="course-section-card">
+                <div class="course-section-card__top"><h3>Outlook Email Basics</h3><span class="course-section-card__count">2 lessons</span></div>
+                <p>Mulai dari membuat draft balasan email dan merangkum thread panjang agar informasi penting lebih cepat dipahami.</p>
+                <ul class="course-section-lessons"><li>Balas Email Secara Otomatis</li><li>Rangkum Thread Email Panjang</li></ul>
+                <div class="course-lesson-content">
+                <div class="course-lesson-block">
+                  <div class="course-lesson-block__head">
+                    <span class="course-lesson-number">01</span>
+                    <div>
+                      <h4>Balas Email Secara Otomatis</h4>
+                      <p>Outlook · ±15 menit</p>
                     </div>
                   </div>
+                    <div class="course-lesson-text-grid">
+                      <div>
+                        <h5>Di mana klik</h5>
+                        <p>Buka email → Klik Reply → Cari ikon Copilot di toolbar → Klik “Draft with Copilot”. Jika ikon tidak terlihat, klik tiga titik (...) di toolbar reply.</p>
+                      </div>
+                      <div>
+                        <h5>Langkah operasional</h5>
+                        <ol>
+                  <li>Buka email dari travel agent atau klien.</li>
+                  <li>Klik Reply.</li>
+                  <li>Buka Copilot atau Draft with Copilot.</li>
+                  <li>Tulis poin utama yang ingin disampaikan.</li>
+                  <li>Review nama, tanggal, jumlah tamu, budget, dan tone email.</li>
+                  <li>Edit jika perlu, lalu kirim.</li>
+                        </ol>
+                      </div>
+                    </div>
+                    <div class="course-lesson-prompt">
+                      <div class="course-lesson-prompt__top">
+                        <h5>Prompt siap pakai</h5>
+                        <button onclick="copyPrompt(this)">Salin Prompt</button>
+                      </div>
+                      <pre class="prompt-card__text">Konfirmasi bahwa kami sudah menerima inquiry mereka. Tanyakan tanggal perjalanan, jumlah tamu, dan kisaran budget. Gunakan bahasa yang profesional dan ramah.</pre>
+                    </div>
+                    <div class="course-lesson-tip"><strong>Hasil / Tips:</strong> Email balasan profesional bisa dibuat lebih cepat, tetapi tetap wajib direview sebelum dikirim.</div>
                 </div>
-                <div class="stitch-lesson-card">
-                  <button class="stitch-lesson-summary" type="button" onclick="toggleStitchLesson(this)" aria-expanded="false">
-                    <div><span>LESSON 02</span><h4>Rangkum Thread Email Panjang</h4></div>
-                    <div><em>Outlook · ±10 menit</em><i>+</i></div>
-                  </button>
-                  <div class="stitch-lesson-body">
-                    <div class="stitch-lesson-inner">
-                      <div class="stitch-info-block"><h5>⌖ Di mana klik</h5><p>Buka thread email → Bagian atas email pilih “Summarize this email” atau klik ikon Copilot di toolbar.</p></div>
-                      <div class="stitch-info-block"><h5>▤ Langkah operasional</h5><ol><li>Buka thread email yang panjang.</li><li>Klik Summary by Copilot / Summarize this email.</li><li>Baca ringkasan awal.</li><li>Tanyakan hal lanjutan seperti keputusan terakhir, pending item, atau pilihan hotel terakhir.</li><li>Cek ulang email sumber jika ada angka, tanggal, atau keputusan penting.</li></ol></div>
-                      <div class="stitch-prompt-block"><div class="stitch-prompt-block__top"><h5>▸ Prompt siap pakai</h5><button onclick="copyPrompt(this)">Salin</button></div><pre class="prompt-card__text">Apa yang sudah disetujui klien dalam thread ini? Apa yang masih belum dikonfirmasi? Hotel apa yang akhirnya mereka pilih?</pre></div>
-                      <div class="stitch-info-block stitch-tip-block"><h5>Hasil / Tips</h5><p>Ringkasan membantu memahami siapa yang tanya apa, apa yang sudah disepakati, dan apa yang masih pending.</p></div>
-                      <div class="stitch-preview-block"><h5>▧ Course preview images</h5><div class="stitch-preview-grid"><img src="assets/preview-email.png" alt="Outlook email panel preview" loading="lazy" /><img src="assets/preview-prompting.png" alt="Prompting preview" loading="lazy" /></div></div>
+                <div class="course-lesson-block">
+                  <div class="course-lesson-block__head">
+                    <span class="course-lesson-number">02</span>
+                    <div>
+                      <h4>Rangkum Thread Email Panjang</h4>
+                      <p>Outlook · ±10 menit</p>
                     </div>
                   </div>
+                    <div class="course-lesson-text-grid">
+                      <div>
+                        <h5>Di mana klik</h5>
+                        <p>Buka thread email → Bagian atas email pilih “Summarize this email” atau klik ikon Copilot di toolbar.</p>
+                      </div>
+                      <div>
+                        <h5>Langkah operasional</h5>
+                        <ol>
+                  <li>Buka thread email yang panjang.</li>
+                  <li>Klik Summary by Copilot / Summarize this email.</li>
+                  <li>Baca ringkasan awal.</li>
+                  <li>Tanyakan hal lanjutan seperti keputusan terakhir, pending item, atau pilihan hotel terakhir.</li>
+                  <li>Cek ulang email sumber jika ada angka, tanggal, atau keputusan penting.</li>
+                        </ol>
+                      </div>
+                    </div>
+                    <div class="course-lesson-prompt">
+                      <div class="course-lesson-prompt__top">
+                        <h5>Prompt siap pakai</h5>
+                        <button onclick="copyPrompt(this)">Salin Prompt</button>
+                      </div>
+                      <pre class="prompt-card__text">Apa yang sudah disetujui klien dalam thread ini? Apa yang masih belum dikonfirmasi? Hotel apa yang akhirnya mereka pilih?</pre>
+                    </div>
+                    <div class="course-lesson-tip"><strong>Hasil / Tips:</strong> Ringkasan membantu memahami siapa yang tanya apa, apa yang sudah disepakati, dan apa yang masih pending.</div>
                 </div>
+                </div>
+                <div class="course-preview-label">Course preview images</div>
+                <div class="course-preview-images"><img src="assets/preview-email.png" alt="Outlook email panel preview" loading="lazy" /><img src="assets/preview-prompting.png" alt="Prompting preview" loading="lazy" /></div>
               </article>
-              <article class="stitch-section">
-                <div class="stitch-section__dot"></div>
-                <div class="stitch-section__intro">
-                  <h3>Inquiry Translation &amp; Writing Style</h3>
-                  <p>Gunakan Copilot untuk menerjemahkan inquiry berbahasa asing dan memperbaiki gaya penulisan email agar lebih profesional.</p>
-                </div>
-                <div class="stitch-lesson-card">
-                  <button class="stitch-lesson-summary" type="button" onclick="toggleStitchLesson(this)" aria-expanded="false">
-                    <div><span>LESSON 03</span><h4>Terjemahkan Inquiry &amp; Buat Balasan</h4></div>
-                    <div><em>Outlook web · ±20 menit</em><i>+</i></div>
-                  </button>
-                  <div class="stitch-lesson-body">
-                    <div class="stitch-lesson-inner">
-                      <div class="stitch-info-block"><h5>⌖ Di mana klik</h5><p>Outlook web → Buka email berbahasa asing → Klik ikon Copilot di kanan atas → Sidebar Copilot terbuka.</p></div>
-                      <div class="stitch-info-block"><h5>▤ Langkah operasional</h5><ol><li>Buka inquiry berbahasa asing.</li><li>Klik ikon Copilot di kanan atas Outlook.</li><li>Masukkan prompt ke sidebar Copilot.</li><li>Salin draft balasan dari Copilot.</li><li>Tempel ke reply email.</li><li>Review istilah, tanggal, jumlah tamu, dan gaya bahasa sebelum dikirim.</li></ol></div>
-                      <div class="stitch-prompt-block"><div class="stitch-prompt-block__top"><h5>▸ Prompt siap pakai</h5><button onclick="copyPrompt(this)">Salin</button></div><pre class="prompt-card__text">Terjemahkan email yang sedang saya baca. Lalu buat balasan profesional dalam Bahasa Inggris yang mengkonfirmasi bahwa kami sudah menerima inquiry, dan tanyakan: tanggal perjalanan, jumlah tamu, preferensi kategori hotel, dan total budget.</pre></div>
-                      <div class="stitch-info-block stitch-tip-block"><h5>Hasil / Tips</h5><p>Jika ingin balasan dalam bahasa klien juga, tambahkan: “Buat juga versi balasan dalam Bahasa Jepang.”</p></div>
-                      <div class="stitch-preview-block"><h5>▧ Course preview images</h5><div class="stitch-preview-grid"><img src="assets/preview-email.png" alt="Translation inquiry preview" loading="lazy" /><img src="assets/preview-prompting.png" alt="Writing style prompt preview" loading="lazy" /></div></div>
+              <article class="course-section-card">
+                <div class="course-section-card__top"><h3>Inquiry Translation &amp; Writing Style</h3><span class="course-section-card__count">2 lessons</span></div>
+                <p>Gunakan Copilot untuk menerjemahkan inquiry berbahasa asing dan memperbaiki gaya penulisan email agar lebih profesional.</p>
+                <ul class="course-section-lessons"><li>Terjemahkan Inquiry &amp; Buat Balasan</li><li>Perbaiki Nada &amp; Gaya Penulisan Email</li></ul>
+                <div class="course-lesson-content">
+                <div class="course-lesson-block">
+                  <div class="course-lesson-block__head">
+                    <span class="course-lesson-number">03</span>
+                    <div>
+                      <h4>Terjemahkan Inquiry &amp; Buat Balasan</h4>
+                      <p>Outlook web · ±20 menit</p>
                     </div>
                   </div>
+                    <div class="course-lesson-text-grid">
+                      <div>
+                        <h5>Di mana klik</h5>
+                        <p>Outlook web → Buka email berbahasa asing → Klik ikon Copilot di kanan atas → Sidebar Copilot terbuka.</p>
+                      </div>
+                      <div>
+                        <h5>Langkah operasional</h5>
+                        <ol>
+                  <li>Buka inquiry berbahasa asing.</li>
+                  <li>Klik ikon Copilot di kanan atas Outlook.</li>
+                  <li>Masukkan prompt ke sidebar Copilot.</li>
+                  <li>Salin draft balasan dari Copilot.</li>
+                  <li>Tempel ke reply email.</li>
+                  <li>Review istilah, tanggal, jumlah tamu, dan gaya bahasa sebelum dikirim.</li>
+                        </ol>
+                      </div>
+                    </div>
+                    <div class="course-lesson-prompt">
+                      <div class="course-lesson-prompt__top">
+                        <h5>Prompt siap pakai</h5>
+                        <button onclick="copyPrompt(this)">Salin Prompt</button>
+                      </div>
+                      <pre class="prompt-card__text">Terjemahkan email yang sedang saya baca. Lalu buat balasan profesional dalam Bahasa Inggris yang mengkonfirmasi bahwa kami sudah menerima inquiry, dan tanyakan: tanggal perjalanan, jumlah tamu, preferensi kategori hotel, dan total budget.</pre>
+                    </div>
+                    <div class="course-lesson-tip"><strong>Hasil / Tips:</strong> Jika ingin balasan dalam bahasa klien juga, tambahkan: “Buat juga versi balasan dalam Bahasa Jepang.”</div>
                 </div>
-                <div class="stitch-lesson-card">
-                  <button class="stitch-lesson-summary" type="button" onclick="toggleStitchLesson(this)" aria-expanded="false">
-                    <div><span>LESSON 04</span><h4>Perbaiki Nada &amp; Gaya Penulisan Email</h4></div>
-                    <div><em>Outlook · ±5-10 menit</em><i>+</i></div>
-                  </button>
-                  <div class="stitch-lesson-body">
-                    <div class="stitch-lesson-inner">
-                      <div class="stitch-info-block"><h5>⌖ Di mana klik</h5><p>Outlook → Pilih teks draft email → Gunakan Rewrite with Copilot atau Coaching by Copilot jika tersedia.</p></div>
-                      <div class="stitch-info-block"><h5>▤ Langkah operasional</h5><ol><li>Tulis draft email singkat terlebih dahulu.</li><li>Pilih teks yang ingin diperbaiki.</li><li>Gunakan Rewrite with Copilot atau Coaching by Copilot.</li><li>Pilih atau tulis instruksi tone seperti formal, ramah, singkat, atau lebih jelas.</li><li>Bandingkan hasil dengan maksud awal.</li><li>Pastikan Copilot tidak mengubah maksud pesan.</li></ol></div>
-                      <div class="stitch-prompt-block"><div class="stitch-prompt-block__top"><h5>▸ Prompt siap pakai</h5><button onclick="copyPrompt(this)">Salin</button></div><pre class="prompt-card__text">Buat lebih profesional dan formal.
+                <div class="course-lesson-block">
+                  <div class="course-lesson-block__head">
+                    <span class="course-lesson-number">04</span>
+                    <div>
+                      <h4>Perbaiki Nada &amp; Gaya Penulisan Email</h4>
+                      <p>Outlook · ±5-10 menit</p>
+                    </div>
+                  </div>
+                    <div class="course-lesson-text-grid">
+                      <div>
+                        <h5>Di mana klik</h5>
+                        <p>Outlook → Pilih teks draft email → Gunakan Rewrite with Copilot atau Coaching by Copilot jika tersedia.</p>
+                      </div>
+                      <div>
+                        <h5>Langkah operasional</h5>
+                        <ol>
+                  <li>Tulis draft email singkat terlebih dahulu.</li>
+                  <li>Pilih teks yang ingin diperbaiki.</li>
+                  <li>Gunakan Rewrite with Copilot atau Coaching by Copilot.</li>
+                  <li>Pilih atau tulis instruksi tone seperti formal, ramah, singkat, atau lebih jelas.</li>
+                  <li>Bandingkan hasil dengan maksud awal.</li>
+                  <li>Pastikan Copilot tidak mengubah maksud pesan.</li>
+                        </ol>
+                      </div>
+                    </div>
+                    <div class="course-lesson-prompt">
+                      <div class="course-lesson-prompt__top">
+                        <h5>Prompt siap pakai</h5>
+                        <button onclick="copyPrompt(this)">Salin Prompt</button>
+                      </div>
+                      <pre class="prompt-card__text">Buat lebih profesional dan formal.
 Buat lebih hangat dan ramah.
 Persingkat - pertahankan hanya poin utamanya.
-Tulis ulang dalam Bahasa Inggris yang jelas dan mudah dipahami.</pre></div>
-                      <div class="stitch-info-block stitch-tip-block"><h5>Hasil / Tips</h5><p>Gunakan untuk memperbaiki tone, bukan untuk mengubah isi utama pesan.</p></div>
-                      <div class="stitch-preview-block"><h5>▧ Course preview images</h5><div class="stitch-preview-grid"><img src="assets/preview-email.png" alt="Translation inquiry preview" loading="lazy" /><img src="assets/preview-prompting.png" alt="Writing style prompt preview" loading="lazy" /></div></div>
+Tulis ulang dalam Bahasa Inggris yang jelas dan mudah dipahami.</pre>
+                    </div>
+                    <div class="course-lesson-tip"><strong>Hasil / Tips:</strong> Gunakan untuk memperbaiki tone, bukan untuk mengubah isi utama pesan.</div>
+                </div>
+                </div>
+                <div class="course-preview-label">Course preview images</div>
+                <div class="course-preview-images"><img src="assets/preview-email.png" alt="Translation inquiry preview" loading="lazy" /><img src="assets/preview-prompting.png" alt="Writing style prompt preview" loading="lazy" /></div>
+              </article>
+              <article class="course-section-card">
+                <div class="course-section-card__top"><h3>Supplier Booking Request</h3><span class="course-section-card__count">1 lesson</span></div>
+                <p>Buat email permintaan booking ke hotel atau supplier dengan detail yang lengkap dan nada profesional.</p>
+                <ul class="course-section-lessons"><li>Tulis Permintaan Booking ke Supplier</li></ul>
+                <div class="course-lesson-content">
+                <div class="course-lesson-block">
+                  <div class="course-lesson-block__head">
+                    <span class="course-lesson-number">05</span>
+                    <div>
+                      <h4>Tulis Permintaan Booking ke Supplier</h4>
+                      <p>Outlook · ±10 menit</p>
                     </div>
                   </div>
-                </div>
-              </article>
-              <article class="stitch-section">
-                <div class="stitch-section__dot"></div>
-                <div class="stitch-section__intro">
-                  <h3>Supplier Booking Request</h3>
-                  <p>Buat email permintaan booking ke hotel atau supplier dengan detail yang lengkap dan nada profesional.</p>
-                </div>
-                <div class="stitch-lesson-card">
-                  <button class="stitch-lesson-summary" type="button" onclick="toggleStitchLesson(this)" aria-expanded="false">
-                    <div><span>LESSON 05</span><h4>Tulis Permintaan Booking ke Supplier</h4></div>
-                    <div><em>Outlook · ±10 menit</em><i>+</i></div>
-                  </button>
-                  <div class="stitch-lesson-body">
-                    <div class="stitch-lesson-inner">
-                      <div class="stitch-info-block"><h5>⌖ Di mana klik</h5><p>Compose email baru → Toolbar → Draft with Copilot.</p></div>
-                      <div class="stitch-info-block"><h5>▤ Langkah operasional</h5><ol><li>Buka compose email baru ke hotel atau supplier.</li><li>Klik Draft with Copilot.</li><li>Masukkan detail booking.</li><li>Review rate, periode, availability, tipe kamar, dan kontak supplier.</li><li>Edit jika perlu, lalu kirim.</li></ol></div>
-                      <div class="stitch-prompt-block"><div class="stitch-prompt-block__top"><h5>▸ Prompt siap pakai</h5><button onclick="copyPrompt(this)">Salin</button></div><pre class="prompt-card__text">Tulis permintaan booking ke hotel. Detail:
+                    <div class="course-lesson-text-grid">
+                      <div>
+                        <h5>Di mana klik</h5>
+                        <p>Compose email baru → Toolbar → Draft with Copilot.</p>
+                      </div>
+                      <div>
+                        <h5>Langkah operasional</h5>
+                        <ol>
+                  <li>Buka compose email baru ke hotel atau supplier.</li>
+                  <li>Klik Draft with Copilot.</li>
+                  <li>Masukkan detail booking.</li>
+                  <li>Review rate, periode, availability, tipe kamar, dan kontak supplier.</li>
+                  <li>Edit jika perlu, lalu kirim.</li>
+                        </ol>
+                      </div>
+                    </div>
+                    <div class="course-lesson-prompt">
+                      <div class="course-lesson-prompt__top">
+                        <h5>Prompt siap pakai</h5>
+                        <button onclick="copyPrompt(this)">Salin Prompt</button>
+                      </div>
+                      <pre class="prompt-card__text">Tulis permintaan booking ke hotel. Detail:
 - Hotel: The Layar Seminyak
 - Grup: 22 pax, semua dewasa
 - Tanggal: 14-18 Agustus 2025
 - Tipe kamar: Deluxe dengan sarapan
 - Butuh: konfirmasi ketersediaan dan harga terbaik untuk grup
-- Nada: profesional</pre></div>
-                      <div class="stitch-info-block stitch-tip-block"><h5>Hasil / Tips</h5><p>Semakin lengkap detail yang diberikan, semakin siap draft yang dihasilkan. Selalu sertakan nama hotel, tanggal, jumlah pax, tipe kamar, dan kebutuhan konfirmasi.</p></div>
-                      <div class="stitch-preview-block"><h5>▧ Course preview images</h5><div class="stitch-preview-grid"><img src="assets/preview-email.png" alt="Supplier booking request preview" loading="lazy" /></div></div>
+- Nada: profesional</pre>
                     </div>
-                  </div>
+                    <div class="course-lesson-tip"><strong>Hasil / Tips:</strong> Semakin lengkap detail yang diberikan, semakin siap draft yang dihasilkan. Selalu sertakan nama hotel, tanggal, jumlah pax, tipe kamar, dan kebutuhan konfirmasi.</div>
                 </div>
+                </div>
+                <div class="course-preview-label">Course preview images</div>
+                <div class="course-preview-images"><img src="assets/preview-email.png" alt="Supplier booking request preview" loading="lazy" /></div>
               </article>
             </div>
           </section>
@@ -3529,53 +2857,113 @@ Tulis ulang dalam Bahasa Inggris yang jelas dan mudah dipahami.</pre></div>
       </section>
 
       <section class="course-page-view view-hidden" id="course-meeting" data-course="meeting">
-        <main class="stitch-course-page">
-          <section class="stitch-course-hero">
-            <div class="stitch-course-hero__copy">
-              <div class="stitch-breadcrumb"><span>AI LEARNING ACADEMY</span><span>/</span><span>COURSES</span></div>
+        <main class="skilljar-course-page">
+          <section class="skilljar-course-hero">
+            <div class="course-hero-left">
+              <div class="course-breadcrumb">AI Learning Academy / Courses</div>
               <h1>Calendar &amp; Meeting</h1>
               <p>Gunakan Copilot untuk membantu mengecek jadwal, mencari slot meeting, membuat agenda, serta merangkum rapat Teams menjadi poin utama dan action items.</p>
-              <div class="stitch-course-actions"><button class="stitch-primary-btn" type="button" onclick="scrollCourseSections(this)">Mulai Course →</button><div><span class="stitch-internal-badge">INTERNAL</span><p>Panduan ini dibuat untuk karyawan DMC.</p></div></div>
-              <div class="stitch-meta-row"><span>▣ 2 lessons</span><span>◷ ±35 min guide</span><span>Outlook Calendar / Teams</span><span>✓ transcript required</span></div>
+              <div class="course-actions"><button class="enroll-button" type="button" onclick="scrollCourseSections(this)">Mulai Course</button><span class="course-free-badge">INTERNAL</span></div>
+              <p class="already-note">Panduan ini dibuat untuk karyawan DMC.</p>
             </div>
-            <div class="stitch-course-hero__media"><img src="assets/preview-calendar.png" alt="Preview calendar and meeting course" loading="lazy" /></div>
+            <div class="course-hero-right">
+              <div class="course-hero-media"><img src="assets/preview-calendar.png" alt="Preview calendar and meeting course" loading="lazy" /></div>
+              <div class="course-meta-row"><span><strong>2</strong> lessons</span><span><strong>±35</strong> min guide</span><span><strong>Outlook Calendar / Teams</strong></span><span><strong>✓</strong> transcript required</span></div>
+            </div>
           </section>
 
-          <section class="stitch-about-card">
+          <section class="about-course-card">
             <h2>About this course</h2>
             <p>Course ini membantu tim menggunakan Copilot untuk pekerjaan meeting dan schedule. Materi mencakup pencarian slot meeting, pembuatan agenda singkat, dan rekap rapat Teams menjadi action items yang bisa langsung ditindaklanjuti.</p>
           </section>
 
-          <section class="stitch-course-sections">
+          <section class="course-sections">
             <h2>Course sections</h2>
-            <div class="stitch-timeline">
-              <article class="stitch-section">
-                <div class="stitch-section__dot"></div>
-                <div class="stitch-section__intro"><h3>Calendar Scheduling</h3><p>Pelajari cara meminta Copilot mencari waktu meeting, menyusun agenda, dan membantu membuat draft undangan.</p></div>
-                <div class="stitch-lesson-card open">
-                  <button class="stitch-lesson-summary" type="button" onclick="toggleStitchLesson(this)" aria-expanded="true"><div><span>LESSON 01</span><h4>Cek Jadwal &amp; Cari Waktu Meeting</h4></div><div><em>Outlook Calendar · ±15 menit</em><i>−</i></div></button>
-                  <div class="stitch-lesson-body"><div class="stitch-lesson-inner">
-                    <div class="stitch-info-block"><h5>⌖ Di mana klik</h5><p>Outlook Calendar → New Event → Copilot / Scheduling Assistant, atau email thread → Schedule with Copilot.</p></div>
-                    <div class="stitch-info-block"><h5>▤ Langkah operasional</h5><ol><li>Buka Outlook Calendar atau email thread terkait.</li><li>Buka Copilot atau Schedule with Copilot.</li><li>Masukkan peserta, durasi meeting, topik, dan rentang waktu.</li><li>Minta Copilot mencari slot kosong.</li><li>Review tanggal, jam, peserta, agenda, zona waktu, dan link Teams sebelum mengirim.</li></ol></div>
-                    <div class="stitch-prompt-block"><div class="stitch-prompt-block__top"><h5>▸ Prompt siap pakai</h5><button onclick="copyPrompt(this)">Salin</button></div><pre class="prompt-card__text">Cek schedule saya minggu ini dan sarankan waktu kosong untuk meeting 30 menit dengan tim Sales. Jika memungkinkan, pilih slot antara pukul 10:00-16:00. Buatkan juga draft agenda singkat untuk membahas update inquiry, pending quotation, dan next action.</pre></div>
-                    <div class="stitch-info-block stitch-tip-block"><h5>Hasil / Tips</h5><p>Gunakan nama peserta yang jelas, sebutkan durasi meeting, dan tambahkan zona waktu jika meeting lintas negara.</p></div>
-                    <div class="stitch-preview-block"><h5>▧ Course preview images</h5><div class="stitch-preview-grid"><img src="assets/preview-calendar.png" alt="Calendar scheduling preview" loading="lazy" /></div></div>
-                  </div></div>
+            <div class="course-section-list">
+              <article class="course-section-card">
+                <div class="course-section-card__top"><h3>Calendar Scheduling</h3><span class="course-section-card__count">1 lesson</span></div>
+                <p>Pelajari cara meminta Copilot mencari waktu meeting, menyusun agenda, dan membantu membuat draft undangan.</p>
+                <ul class="course-section-lessons"><li>Cek Jadwal &amp; Cari Waktu Meeting</li></ul>
+                <div class="course-lesson-content">
+                <div class="course-lesson-block">
+                  <div class="course-lesson-block__head">
+                    <span class="course-lesson-number">01</span>
+                    <div>
+                      <h4>Cek Jadwal &amp; Cari Waktu Meeting</h4>
+                      <p>Outlook Calendar · ±15 menit</p>
+                    </div>
+                  </div>
+                    <div class="course-lesson-text-grid">
+                      <div>
+                        <h5>Di mana klik</h5>
+                        <p>Outlook Calendar → New Event → Copilot / Scheduling Assistant, atau email thread → Schedule with Copilot.</p>
+                      </div>
+                      <div>
+                        <h5>Langkah operasional</h5>
+                        <ol>
+                  <li>Buka Outlook Calendar atau email thread terkait.</li>
+                  <li>Buka Copilot atau Schedule with Copilot.</li>
+                  <li>Masukkan peserta, durasi meeting, topik, dan rentang waktu.</li>
+                  <li>Minta Copilot mencari slot kosong.</li>
+                  <li>Review tanggal, jam, peserta, agenda, zona waktu, dan link Teams sebelum mengirim.</li>
+                        </ol>
+                      </div>
+                    </div>
+                    <div class="course-lesson-prompt">
+                      <div class="course-lesson-prompt__top">
+                        <h5>Prompt siap pakai</h5>
+                        <button onclick="copyPrompt(this)">Salin Prompt</button>
+                      </div>
+                      <pre class="prompt-card__text">Cek schedule saya minggu ini dan sarankan waktu kosong untuk meeting 30 menit dengan tim Sales. Jika memungkinkan, pilih slot antara pukul 10:00-16:00. Buatkan juga draft agenda singkat untuk membahas update inquiry, pending quotation, dan next action.</pre>
+                    </div>
+                    <div class="course-lesson-tip"><strong>Hasil / Tips:</strong> Gunakan nama peserta yang jelas, sebutkan durasi meeting, dan tambahkan zona waktu jika meeting lintas negara.</div>
                 </div>
+                </div>
+                <div class="course-preview-label">Course preview images</div>
+                <div class="course-preview-images"><img src="assets/preview-calendar.png" alt="Calendar scheduling preview" loading="lazy" /></div>
               </article>
-              <article class="stitch-section">
-                <div class="stitch-section__dot"></div>
-                <div class="stitch-section__intro"><h3>Teams Meeting Recap</h3><p>Gunakan Copilot untuk mengambil ringkasan rapat, keputusan utama, dan daftar tindakan dari Teams recap.</p></div>
-                <div class="stitch-lesson-card">
-                  <button class="stitch-lesson-summary" type="button" onclick="toggleStitchLesson(this)" aria-expanded="false"><div><span>LESSON 02</span><h4>Rekap Rapat &amp; Daftar Tindakan</h4></div><div><em>Teams · ±20 menit</em><i>+</i></div></button>
-                  <div class="stitch-lesson-body"><div class="stitch-lesson-inner">
-                    <div class="stitch-info-block"><h5>⌖ Di mana klik</h5><p>Kalender Teams → Klik rapat yang sudah lewat → Tab Recap → Klik Copilot.</p></div>
-                    <div class="stitch-info-block"><h5>▤ Langkah operasional</h5><ol><li>Pastikan Record &amp; Transcribe aktif saat meeting.</li><li>Setelah rapat selesai, buka meeting dari kalender Teams.</li><li>Masuk ke tab Recap.</li><li>Klik Copilot.</li><li>Minta daftar action item, keputusan, atau ringkasan poin utama.</li><li>Review hasil sebelum dibagikan.</li></ol></div>
-                    <div class="stitch-prompt-block"><div class="stitch-prompt-block__top"><h5>▸ Prompt siap pakai</h5><button onclick="copyPrompt(this)">Salin</button></div><pre class="prompt-card__text">Daftarkan semua action item dari rapat ini. Hotel apa yang kita sepakati untuk dimasukkan ke dalam program? Apa keputusan tentang kedatangan grup di Hari 1? Rangkum poin utama dalam 5 bullet point.</pre></div>
-                    <div class="stitch-info-block stitch-tip-block"><h5>Hasil / Tips</h5><p>Teams recap membutuhkan meeting yang direkam atau transkripsi aktif. Tanpa transkrip, Copilot tidak punya sumber untuk dibaca.</p></div>
-                    <div class="stitch-preview-block"><h5>▧ Course preview images</h5><div class="stitch-preview-grid"><img src="assets/preview-meeting.png" alt="Teams recap preview" loading="lazy" /></div></div>
-                  </div></div>
+              <article class="course-section-card">
+                <div class="course-section-card__top"><h3>Teams Meeting Recap</h3><span class="course-section-card__count">1 lesson</span></div>
+                <p>Gunakan Copilot untuk mengambil ringkasan rapat, keputusan utama, dan daftar tindakan dari Teams recap.</p>
+                <ul class="course-section-lessons"><li>Rekap Rapat &amp; Daftar Tindakan</li></ul>
+                <div class="course-lesson-content">
+                <div class="course-lesson-block">
+                  <div class="course-lesson-block__head">
+                    <span class="course-lesson-number">02</span>
+                    <div>
+                      <h4>Rekap Rapat &amp; Daftar Tindakan</h4>
+                      <p>Teams · ±20 menit</p>
+                    </div>
+                  </div>
+                    <div class="course-lesson-text-grid">
+                      <div>
+                        <h5>Di mana klik</h5>
+                        <p>Kalender Teams → Klik rapat yang sudah lewat → Tab Recap → Klik Copilot.</p>
+                      </div>
+                      <div>
+                        <h5>Langkah operasional</h5>
+                        <ol>
+                  <li>Pastikan Record &amp; Transcribe aktif saat meeting.</li>
+                  <li>Setelah rapat selesai, buka meeting dari kalender Teams.</li>
+                  <li>Masuk ke tab Recap.</li>
+                  <li>Klik Copilot.</li>
+                  <li>Minta daftar action item, keputusan, atau ringkasan poin utama.</li>
+                  <li>Review hasil sebelum dibagikan.</li>
+                        </ol>
+                      </div>
+                    </div>
+                    <div class="course-lesson-prompt">
+                      <div class="course-lesson-prompt__top">
+                        <h5>Prompt siap pakai</h5>
+                        <button onclick="copyPrompt(this)">Salin Prompt</button>
+                      </div>
+                      <pre class="prompt-card__text">Daftarkan semua action item dari rapat ini. Hotel apa yang kita sepakati untuk dimasukkan ke dalam program? Apa keputusan tentang kedatangan grup di Hari 1? Rangkum poin utama dalam 5 bullet point.</pre>
+                    </div>
+                    <div class="course-lesson-tip"><strong>Hasil / Tips:</strong> Teams recap membutuhkan meeting yang direkam atau transkripsi aktif. Tanpa transkrip, Copilot tidak punya sumber untuk dibaca.</div>
                 </div>
+                </div>
+                <div class="course-preview-label">Course preview images</div>
+                <div class="course-preview-images"><img src="assets/preview-meeting.png" alt="Teams recap preview" loading="lazy" /></div>
               </article>
             </div>
           </section>
@@ -3592,35 +2980,64 @@ Tulis ulang dalam Bahasa Inggris yang jelas dan mudah dipahami.</pre></div>
       </section>
 
       <section class="course-page-view view-hidden" id="course-itinerary" data-course="itinerary">
-        <main class="stitch-course-page">
-          <section class="stitch-course-hero">
-            <div class="stitch-course-hero__copy">
-              <div class="stitch-breadcrumb"><span>AI LEARNING ACADEMY</span><span>/</span><span>COURSES</span></div>
+        <main class="skilljar-course-page">
+          <section class="skilljar-course-hero">
+            <div class="course-hero-left">
+              <div class="course-breadcrumb">AI Learning Academy / Courses</div>
               <h1>Itinerary &amp; Work Drafting</h1>
               <p>Gunakan Copilot Chat untuk membuat draft itinerary awal berdasarkan detail grup, area perjalanan, budget, minat wisata, dan format output yang dibutuhkan.</p>
-              <div class="stitch-course-actions"><button class="stitch-primary-btn" type="button" onclick="scrollCourseSections(this)">Mulai Course →</button><div><span class="stitch-internal-badge">INTERNAL</span><p>Panduan ini dibuat untuk karyawan DMC.</p></div></div>
-              <div class="stitch-meta-row"><span>▣ 1 lesson</span><span>◷ ±30 min guide</span><span>Copilot Chat</span><span>✓ manual edit required</span></div>
+              <div class="course-actions"><button class="enroll-button" type="button" onclick="scrollCourseSections(this)">Mulai Course</button><span class="course-free-badge">INTERNAL</span></div>
+              <p class="already-note">Panduan ini dibuat untuk karyawan DMC.</p>
             </div>
-            <div class="stitch-course-hero__media"><img src="assets/preview-itinerary.png" alt="Preview itinerary drafting course" loading="lazy" /></div>
+            <div class="course-hero-right">
+              <div class="course-hero-media"><img src="assets/preview-itinerary.png" alt="Preview itinerary drafting course" loading="lazy" /></div>
+              <div class="course-meta-row"><span><strong>1</strong> lesson</span><span><strong>±30</strong> min guide</span><span><strong>Copilot Chat</strong></span><span><strong>✓</strong> manual edit required</span></div>
+            </div>
           </section>
 
-          <section class="stitch-about-card">
+          <section class="about-course-card">
             <h2>About this course</h2>
             <p>Course ini membantu tim membuat draft awal itinerary dan dokumen kerja menggunakan Copilot Chat. Output dari Copilot bersifat draft awal dan harus diedit kembali agar sesuai dengan supplier kontrak, durasi perjalanan, hotel, aktivitas, dan kebutuhan klien.</p>
           </section>
 
-          <section class="stitch-course-sections">
+          <section class="course-sections">
             <h2>Course sections</h2>
-            <div class="stitch-timeline">
-              <article class="stitch-section">
-                <div class="stitch-section__dot"></div>
-                <div class="stitch-section__intro"><h3>Draft Itinerary Creation</h3><p>Buat itinerary awal dalam format tabel berdasarkan detail grup, destinasi, budget, minat, dan area perjalanan.</p></div>
-                <div class="stitch-lesson-card open">
-                  <button class="stitch-lesson-summary" type="button" onclick="toggleStitchLesson(this)" aria-expanded="true"><div><span>LESSON 01</span><h4>Buat Draft Itinerary Tur</h4></div><div><em>Copilot Chat · ±30 menit</em><i>−</i></div></button>
-                  <div class="stitch-lesson-body"><div class="stitch-lesson-inner">
-                    <div class="stitch-info-block"><h5>⌖ Di mana klik</h5><p>Buka copilot.microsoft.com atau Teams → aplikasi Copilot, atau Microsoft 365 → Copilot.</p></div>
-                    <div class="stitch-info-block"><h5>▤ Langkah operasional</h5><ol><li>Buka Microsoft Copilot Chat.</li><li>Tulis prompt dengan detail grup, budget, minat, area, dan format output.</li><li>Salin hasil ke Word atau dokumen kerja.</li><li>Ganti hotel generik dengan hotel/supplier kontrak.</li><li>Sesuaikan waktu, aktivitas, transfer, dan kebutuhan klien.</li></ol></div>
-                    <div class="stitch-prompt-block"><div class="stitch-prompt-block__top"><h5>▸ Prompt siap pakai</h5><button onclick="copyPrompt(this)">Salin</button></div><pre class="prompt-card__text">Buat itinerary tur Bali 5 hari untuk grup 20 orang dewasa dari Australia. Budget menengah. Minat: budaya, sawah, makanan lokal.
+            <div class="course-section-list">
+              <article class="course-section-card">
+                <div class="course-section-card__top"><h3>Draft Itinerary Creation</h3><span class="course-section-card__count">1 lesson</span></div>
+                <p>Buat itinerary awal dalam format tabel berdasarkan detail grup, destinasi, budget, minat, dan area perjalanan.</p>
+                <ul class="course-section-lessons"><li>Buat Draft Itinerary Tur</li></ul>
+                <div class="course-lesson-content">
+                <div class="course-lesson-block">
+                  <div class="course-lesson-block__head">
+                    <span class="course-lesson-number">01</span>
+                    <div>
+                      <h4>Buat Draft Itinerary Tur</h4>
+                      <p>Copilot Chat · ±30 menit</p>
+                    </div>
+                  </div>
+                    <div class="course-lesson-text-grid">
+                      <div>
+                        <h5>Di mana klik</h5>
+                        <p>Buka copilot.microsoft.com atau Teams → aplikasi Copilot, atau Microsoft 365 → Copilot.</p>
+                      </div>
+                      <div>
+                        <h5>Langkah operasional</h5>
+                        <ol>
+                  <li>Buka Microsoft Copilot Chat.</li>
+                  <li>Tulis prompt dengan detail grup, budget, minat, area, dan format output.</li>
+                  <li>Salin hasil ke Word atau dokumen kerja.</li>
+                  <li>Ganti hotel generik dengan hotel/supplier kontrak.</li>
+                  <li>Sesuaikan waktu, aktivitas, transfer, dan kebutuhan klien.</li>
+                        </ol>
+                      </div>
+                    </div>
+                    <div class="course-lesson-prompt">
+                      <div class="course-lesson-prompt__top">
+                        <h5>Prompt siap pakai</h5>
+                        <button onclick="copyPrompt(this)">Salin Prompt</button>
+                      </div>
+                      <pre class="prompt-card__text">Buat itinerary tur Bali 5 hari untuk grup 20 orang dewasa dari Australia. Budget menengah. Minat: budaya, sawah, makanan lokal.
 Hari 1-2: Area Ubud
 Hari 3: Transfer ke Seminyak
 Hari 4-5: Seminyak dan pantai
@@ -3630,11 +3047,13 @@ Untuk setiap hari sertakan:
 - Aktivitas sore
 - Saran makan malam
 - Kategori hotel (bintang 3 atau 4)
-Format sebagai tabel.</pre></div>
-                    <div class="stitch-info-block stitch-tip-block"><h5>Hasil / Tips</h5><p>Copilot memberikan itinerary generik. Tim tetap harus mengganti hotel, aktivitas, supplier, waktu, dan info transfer sebelum dikirim ke klien.</p></div>
-                    <div class="stitch-preview-block"><h5>▧ Course preview images</h5><div class="stitch-preview-grid"><img src="assets/preview-itinerary.png" alt="Itinerary table preview" loading="lazy" /><img src="assets/preview-prompting.png" alt="Itinerary prompt preview" loading="lazy" /></div></div>
-                  </div></div>
+Format sebagai tabel.</pre>
+                    </div>
+                    <div class="course-lesson-tip"><strong>Hasil / Tips:</strong> Copilot memberikan itinerary generik. Tim tetap harus mengganti hotel, aktivitas, supplier, waktu, dan info transfer sebelum dikirim ke klien.</div>
                 </div>
+                </div>
+                <div class="course-preview-label">Course preview images</div>
+                <div class="course-preview-images"><img src="assets/preview-itinerary.png" alt="Itinerary table preview" loading="lazy" /><img src="assets/preview-prompting.png" alt="Itinerary prompt preview" loading="lazy" /></div>
               </article>
             </div>
           </section>
@@ -3651,35 +3070,66 @@ Format sebagai tabel.</pre></div>
       </section>
 
       <section class="course-page-view view-hidden" id="course-agent" data-course="agent">
-        <main class="stitch-course-page">
-          <section class="stitch-course-hero">
-            <div class="stitch-course-hero__copy">
-              <div class="stitch-breadcrumb"><span>AI LEARNING ACADEMY</span><span>/</span><span>COURSES</span></div>
+        <main class="skilljar-course-page">
+          <section class="skilljar-course-hero">
+            <div class="course-hero-left">
+              <div class="course-breadcrumb">AI Learning Academy / Courses</div>
               <h1>Knowledge Agent</h1>
               <p>Buat hotel knowledge agent menggunakan Microsoft 365 Copilot Agent Builder atau Copilot Studio agar tim dapat mencari informasi hotel dari file internal dengan lebih cepat.</p>
-              <div class="stitch-course-actions"><button class="stitch-primary-btn" type="button" onclick="scrollCourseSections(this)">Mulai Course →</button><div><span class="stitch-internal-badge">INTERNAL</span><p>Panduan ini dibuat untuk karyawan DMC.</p></div></div>
-              <div class="stitch-meta-row"><span>▣ 1 lesson</span><span>◷ ±45 min setup guide</span><span>Agent Builder / Copilot Studio</span><span>✓ knowledge source required</span></div>
+              <div class="course-actions"><button class="enroll-button" type="button" onclick="scrollCourseSections(this)">Mulai Course</button><span class="course-free-badge">INTERNAL</span></div>
+              <p class="already-note">Panduan ini dibuat untuk karyawan DMC.</p>
             </div>
-            <div class="stitch-course-hero__media"><img src="assets/preview-agent.png" alt="Preview knowledge agent course" loading="lazy" /></div>
+            <div class="course-hero-right">
+              <div class="course-hero-media"><img src="assets/preview-agent.png" alt="Preview knowledge agent course" loading="lazy" /></div>
+              <div class="course-meta-row"><span><strong>1</strong> lesson</span><span><strong>±45</strong> min setup guide</span><span><strong>Agent Builder / Copilot Studio</strong></span><span><strong>✓</strong> knowledge source required</span></div>
+            </div>
           </section>
 
-          <section class="stitch-about-card">
+          <section class="about-course-card">
             <h2>About this course</h2>
             <p>Course ini menjelaskan cara membuat hotel knowledge agent dari file internal agar tim dapat mencari informasi hotel berdasarkan area, star rating, room type, rate, inclusion, direct contact, blackout date, group size, notes, dan last updated. Agent hanya boleh menjawab berdasarkan file atau knowledge source yang diberikan.</p>
           </section>
 
-          <section class="stitch-course-sections">
+          <section class="course-sections">
             <h2>Course sections</h2>
-            <div class="stitch-timeline">
-              <article class="stitch-section">
-                <div class="stitch-section__dot"></div>
-                <div class="stitch-section__intro"><h3>Build Hotel Knowledge Agent</h3><p>Siapkan file hotel, upload sebagai knowledge source, test jawaban agent, lalu share jika sudah siap digunakan oleh tim.</p></div>
-                <div class="stitch-lesson-card open">
-                  <button class="stitch-lesson-summary" type="button" onclick="toggleStitchLesson(this)" aria-expanded="true"><div><span>LESSON 01</span><h4>Buat dan Gunakan Hotel Knowledge Agent</h4></div><div><em>Agent Builder / Copilot Studio · ±45 menit</em><i>−</i></div></button>
-                  <div class="stitch-lesson-body"><div class="stitch-lesson-inner">
-                    <div class="stitch-info-block"><h5>⌖ Di mana klik</h5><p>Microsoft 365 Copilot → New agent → Describe / Configure → Add knowledge → Upload files atau Attach cloud files → Test. Alternatif: copilotstudio.microsoft.com → Create agent → Add knowledge → Upload file / OneDrive / SharePoint → Test → Share/Publish jika diperlukan.</p></div>
-                    <div class="stitch-info-block"><h5>▤ Langkah operasional</h5><ol><li>Siapkan file hotel yang rapi.</li><li>Pastikan data berisi Hotel Name, Area, Star Rating, Room Types, Rate/Night, Currency, Period, Inclusions, Direct Contact, Blackout Dates, Group Size, Notes, dan Last Updated.</li><li>Buat agent baru di Microsoft 365 Copilot atau Copilot Studio.</li><li>Tambahkan knowledge source melalui upload file langsung atau OneDrive/SharePoint.</li><li>Test pertanyaan tentang area, harga, room type, inclusion, direct contact, atau blackout date.</li><li>Review hasil agent.</li><li>Share jika sudah siap. Teams hanya opsional jika agent ingin dipakai bersama tim.</li></ol></div>
-                    <div class="stitch-prompt-block"><div class="stitch-prompt-block__top"><h5>▸ Prompt siap pakai</h5><button onclick="copyPrompt(this)">Salin</button></div><pre class="prompt-card__text">Create a hotel knowledge assistant for DMC operations. Use the uploaded hotel data file as the main knowledge source. Help staff search hotel information by area, star rating, room type, rate/night, period, inclusions, direct contact, blackout date, group size, and notes.
+            <div class="course-section-list">
+              <article class="course-section-card">
+                <div class="course-section-card__top"><h3>Build Hotel Knowledge Agent</h3><span class="course-section-card__count">1 lesson</span></div>
+                <p>Siapkan file hotel, upload sebagai knowledge source, test jawaban agent, lalu share jika sudah siap digunakan oleh tim.</p>
+                <ul class="course-section-lessons"><li>Buat dan Gunakan Hotel Knowledge Agent</li></ul>
+                <div class="course-lesson-content">
+                <div class="course-lesson-block">
+                  <div class="course-lesson-block__head">
+                    <span class="course-lesson-number">01</span>
+                    <div>
+                      <h4>Buat dan Gunakan Hotel Knowledge Agent</h4>
+                      <p>Agent Builder / Copilot Studio · ±45 menit</p>
+                    </div>
+                  </div>
+                    <div class="course-lesson-text-grid">
+                      <div>
+                        <h5>Di mana klik</h5>
+                        <p>Microsoft 365 Copilot → New agent → Describe / Configure → Add knowledge → Upload files atau Attach cloud files → Test. Alternatif: copilotstudio.microsoft.com → Create agent → Add knowledge → Upload file / OneDrive / SharePoint → Test → Share/Publish jika diperlukan.</p>
+                      </div>
+                      <div>
+                        <h5>Langkah operasional</h5>
+                        <ol>
+                  <li>Siapkan file hotel yang rapi.</li>
+                  <li>Pastikan data berisi Hotel Name, Area, Star Rating, Room Types, Rate/Night, Currency, Period, Inclusions, Direct Contact, Blackout Dates, Group Size, Notes, dan Last Updated.</li>
+                  <li>Buat agent baru di Microsoft 365 Copilot atau Copilot Studio.</li>
+                  <li>Tambahkan knowledge source melalui upload file langsung atau OneDrive/SharePoint.</li>
+                  <li>Test pertanyaan tentang area, harga, room type, inclusion, direct contact, atau blackout date.</li>
+                  <li>Review hasil agent.</li>
+                  <li>Share jika sudah siap. Teams hanya opsional jika agent ingin dipakai bersama tim.</li>
+                        </ol>
+                      </div>
+                    </div>
+                    <div class="course-lesson-prompt">
+                      <div class="course-lesson-prompt__top">
+                        <h5>Prompt siap pakai</h5>
+                        <button onclick="copyPrompt(this)">Salin Prompt</button>
+                      </div>
+                      <pre class="prompt-card__text">Create a hotel knowledge assistant for DMC operations. Use the uploaded hotel data file as the main knowledge source. Help staff search hotel information by area, star rating, room type, rate/night, period, inclusions, direct contact, blackout date, group size, and notes.
 
 Rules:
 - Answer only based on the uploaded file or connected knowledge source.
@@ -3692,11 +3142,13 @@ Starter prompts:
 1. Find a 4-star hotel in Seminyak for 10 pax, under USD 90/night, with breakfast.
 2. Which hotels in Ubud have a pool and accept groups over 20 pax?
 3. What is the direct contact for Villa Tjitrap in Canggu?
-4. Which hotels have blackout dates in August?</pre></div>
-                    <div class="stitch-info-block stitch-tip-block"><h5>Hasil / Tips</h5><p>Agent hanya menjawab berdasarkan file atau knowledge source. Jika data tidak ditemukan, gunakan kalimat “Data not found in the uploaded hotel file.” Tetap cek rate, periode, availability, dan direct contact sebelum informasi dibagikan.</p></div>
-                    <div class="stitch-preview-block"><h5>▧ Course preview images</h5><div class="stitch-preview-grid"><img src="assets/preview-agent.png" alt="Hotel agent chat preview" loading="lazy" /><img src="assets/preview-meeting.png" alt="Knowledge source preview" loading="lazy" /></div></div>
-                  </div></div>
+4. Which hotels have blackout dates in August?</pre>
+                    </div>
+                    <div class="course-lesson-tip"><strong>Hasil / Tips:</strong> Agent hanya menjawab berdasarkan file atau knowledge source. Jika data tidak ditemukan, gunakan kalimat “Data not found in the uploaded hotel file.” Tetap cek rate, periode, availability, dan direct contact sebelum informasi dibagikan.</div>
                 </div>
+                </div>
+                <div class="course-preview-label">Course preview images</div>
+                <div class="course-preview-images"><img src="assets/preview-agent.png" alt="Hotel agent chat preview" loading="lazy" /><img src="assets/preview-meeting.png" alt="Knowledge source preview" loading="lazy" /></div>
               </article>
             </div>
           </section>
@@ -3713,85 +3165,74 @@ Starter prompts:
       </section>
 
       <span class="anchor-alias" id="prompting"></span>
-
       <section class="course-page-view view-hidden" id="course-prompting" data-course="prompting">
-        <main class="stitch-course-page">
-          <section class="stitch-course-hero">
-            <div class="stitch-course-hero__copy">
-              <div class="stitch-breadcrumb"><span>AI LEARNING ACADEMY</span><span>/</span><span>COURSES</span></div>
+        <main class="skilljar-course-page">
+          <section class="skilljar-course-hero">
+            <div class="course-hero-left">
+              <div class="course-breadcrumb">AI Learning Academy / Courses</div>
               <h1>Prompt Library</h1>
               <p>Kumpulan prompt siap pakai untuk email, translation, meeting recap, booking request, itinerary, schedule, dan hotel knowledge agent.</p>
-              <div class="stitch-course-actions"><button class="stitch-primary-btn" type="button" onclick="scrollCourseSections(this)">Mulai Course →</button><div><span class="stitch-internal-badge">INTERNAL</span><p>Prompt ini bisa langsung disalin dan disesuaikan dengan kebutuhan kerja harian.</p></div></div>
-              <div class="stitch-meta-row"><span>▣ 8 prompts</span><span>Copy ready</span><span>All workflows</span><span>✓ review required</span></div>
+              <div class="course-actions"><button class="enroll-button" type="button" onclick="scrollCourseSections(this)">Mulai Course</button><span class="course-free-badge">INTERNAL</span></div>
+              <p class="already-note">Prompt ini bisa langsung disalin dan disesuaikan dengan kebutuhan kerja harian.</p>
             </div>
-            <div class="stitch-course-hero__media"><img src="assets/preview-prompting.png" alt="Preview prompt library course" loading="lazy" /></div>
+            <div class="course-hero-right">
+              <div class="course-hero-media"><img src="assets/preview-prompting.png" alt="Preview prompt library course" loading="lazy" /></div>
+              <div class="course-meta-row"><span><strong>8</strong> prompts</span><span><strong>Copy</strong> ready</span><span><strong>All workflows</strong></span><span><strong>✓</strong> review required</span></div>
+            </div>
           </section>
 
-          <section class="stitch-about-card">
+          <section class="about-course-card">
             <h2>About this course</h2>
             <p>Prompt Library berisi prompt yang bisa langsung disalin dan disesuaikan dengan kebutuhan kerja harian. Prompt ini membantu user memberikan konteks yang jelas kepada Copilot agar hasilnya lebih rapi, relevan, dan mudah direview.</p>
           </section>
 
-          <section class="stitch-course-sections">
+          <section class="course-sections">
             <h2>Course sections</h2>
-            <div class="stitch-timeline">
-              <article class="stitch-section">
-                <div class="stitch-section__dot"></div>
-                <div class="stitch-section__intro"><h3>Email &amp; Translation Prompts</h3><p>Prompt untuk balasan email, ringkasan thread, dan menerjemahkan inquiry.</p></div>
-                <div class="stitch-lesson-card open">
-                  <button class="stitch-lesson-summary" type="button" onclick="toggleStitchLesson(this)" aria-expanded="true"><div><span>PROMPT GROUP 01</span><h4>Email &amp; Translation Prompt Set</h4></div><div><em>Prompt Library · 3 prompts</em><i>−</i></div></button>
-                  <div class="stitch-lesson-body"><div class="stitch-lesson-inner">
-                    <div class="stitch-info-block stitch-tip-block"><h5>Detail</h5><p>Digunakan untuk reply email, summarize thread, translate inquiry, dan memperbaiki gaya bahasa. Prompt siap salin tetap tersedia di bagian Prompt Library di bawah.</p></div>
-                    <div class="stitch-preview-block"><h5>▧ Course preview images</h5><div class="stitch-preview-grid"><img src="assets/preview-email.png" alt="Email prompt preview" loading="lazy" /><img src="assets/preview-prompting.png" alt="Prompt card preview" loading="lazy" /></div></div>
-                    <div class="stitch-prompt-grid">
-                      <article class="prompt-card stitch-prompt-card"><h4>Email reply prompt</h4><button class="prompt-box__copy" onclick="copyPrompt(this)">Salin Prompt</button><div class="prompt-card__text">Konfirmasi bahwa kami sudah menerima inquiry mereka. Tanyakan tanggal perjalanan, jumlah tamu, dan kisaran budget. Gunakan bahasa yang profesional dan ramah.</div></article>
-                      <article class="prompt-card stitch-prompt-card"><h4>Email thread summary prompt</h4><button class="prompt-box__copy" onclick="copyPrompt(this)">Salin Prompt</button><div class="prompt-card__text">Apa yang sudah disetujui klien dalam thread ini? Apa yang masih belum dikonfirmasi? Hotel apa yang akhirnya mereka pilih?</div></article>
-                      <article class="prompt-card stitch-prompt-card"><h4>Translation inquiry prompt</h4><button class="prompt-box__copy" onclick="copyPrompt(this)">Salin Prompt</button><div class="prompt-card__text">Terjemahkan email yang sedang saya baca. Lalu buat balasan profesional dalam Bahasa Inggris yang mengkonfirmasi bahwa kami sudah menerima inquiry, dan tanyakan: tanggal perjalanan, jumlah tamu, preferensi kategori hotel, dan total budget.</div></article>
-                    </div>
-                  </div></div>
-                </div>
+            <div class="course-section-list">
+              <article class="course-section-card">
+                <div class="course-section-card__top"><h3>Email &amp; Translation Prompts</h3><span class="course-section-card__count">3 prompts</span></div>
+                <p>Prompt untuk balasan email, ringkasan thread, dan menerjemahkan inquiry.</p>
+                <div class="course-lesson-tip"><strong>Detail:</strong> Digunakan untuk reply email, summarize thread, translate inquiry, dan memperbaiki gaya bahasa. Prompt siap salin tetap tersedia di bagian Prompt Library di bawah.</div>
+                <div class="course-preview-label">Course preview images</div>
+                <div class="course-preview-images"><img src="assets/preview-email.png" alt="Email prompt preview" loading="lazy" /><img src="assets/preview-prompting.png" alt="Prompt card preview" loading="lazy" /></div>
               </article>
-              <article class="stitch-section">
-                <div class="stitch-section__dot"></div>
-                <div class="stitch-section__intro"><h3>Meeting &amp; Schedule Prompts</h3><p>Prompt untuk mencari waktu meeting, membuat agenda, dan merangkum hasil rapat.</p></div>
-                <div class="stitch-lesson-card">
-                  <button class="stitch-lesson-summary" type="button" onclick="toggleStitchLesson(this)" aria-expanded="false"><div><span>PROMPT GROUP 02</span><h4>Meeting &amp; Schedule Prompt Set</h4></div><div><em>Prompt Library · 2 prompts</em><i>+</i></div></button>
-                  <div class="stitch-lesson-body"><div class="stitch-lesson-inner">
-                    <div class="stitch-info-block stitch-tip-block"><h5>Detail</h5><p>Digunakan untuk mencari jadwal kosong, membuat agenda singkat, dan merangkum meeting Teams menjadi action items.</p></div>
-                    <div class="stitch-preview-block"><h5>▧ Course preview images</h5><div class="stitch-preview-grid"><img src="assets/preview-calendar.png" alt="Calendar prompt preview" loading="lazy" /><img src="assets/preview-meeting.png" alt="Meeting recap prompt preview" loading="lazy" /></div></div>
-                    <div class="stitch-prompt-grid">
-                      <article class="prompt-card stitch-prompt-card"><h4>Meeting recap prompt</h4><button class="prompt-box__copy" onclick="copyPrompt(this)">Salin Prompt</button><div class="prompt-card__text">Daftarkan semua action item dari rapat ini. Hotel apa yang kita sepakati untuk dimasukkan ke dalam program? Apa keputusan tentang kedatangan grup di Hari 1? Rangkum poin utama dalam 5 bullet point.</div></article>
-                      <article class="prompt-card stitch-prompt-card"><h4>Calendar/schedule prompt</h4><button class="prompt-box__copy" onclick="copyPrompt(this)">Salin Prompt</button><div class="prompt-card__text">Cek schedule saya minggu ini dan sarankan waktu kosong untuk meeting 30 menit dengan tim Sales. Jika memungkinkan, pilih slot antara pukul 10:00-16:00. Buatkan juga draft agenda singkat untuk membahas update inquiry, pending quotation, dan next action.</div></article>
-                    </div>
-                  </div></div>
-                </div>
+              <article class="course-section-card">
+                <div class="course-section-card__top"><h3>Meeting &amp; Schedule Prompts</h3><span class="course-section-card__count">2 prompts</span></div>
+                <p>Prompt untuk mencari waktu meeting, membuat agenda, dan merangkum hasil rapat.</p>
+                <div class="course-lesson-tip"><strong>Detail:</strong> Digunakan untuk mencari jadwal kosong, membuat agenda singkat, dan merangkum meeting Teams menjadi action items.</div>
+                <div class="course-preview-label">Course preview images</div>
+                <div class="course-preview-images"><img src="assets/preview-calendar.png" alt="Calendar prompt preview" loading="lazy" /><img src="assets/preview-meeting.png" alt="Meeting recap prompt preview" loading="lazy" /></div>
               </article>
-              <article class="stitch-section">
-                <div class="stitch-section__dot"></div>
-                <div class="stitch-section__intro"><h3>DMC Work Drafting Prompts</h3><p>Prompt untuk booking request, itinerary, dan hotel knowledge agent.</p></div>
-                <div class="stitch-lesson-card">
-                  <button class="stitch-lesson-summary" type="button" onclick="toggleStitchLesson(this)" aria-expanded="false"><div><span>PROMPT GROUP 03</span><h4>DMC Work Drafting Prompt Set</h4></div><div><em>Prompt Library · 3 prompts</em><i>+</i></div></button>
-                  <div class="stitch-lesson-body"><div class="stitch-lesson-inner">
-                    <div class="stitch-info-block stitch-tip-block"><h5>Detail</h5><p>Digunakan untuk booking request, draft itinerary, pencarian info kerja, dan build instruction untuk hotel knowledge agent.</p></div>
-                    <div class="stitch-preview-block"><h5>▧ Course preview images</h5><div class="stitch-preview-grid"><img src="assets/preview-itinerary.png" alt="Itinerary prompt preview" loading="lazy" /><img src="assets/preview-agent.png" alt="Hotel agent prompt preview" loading="lazy" /></div></div>
-                    <div class="stitch-prompt-grid">
-                      <article class="prompt-card stitch-prompt-card"><h4>Booking request prompt</h4><button class="prompt-box__copy" onclick="copyPrompt(this)">Salin Prompt</button><div class="prompt-card__text">Tulis permintaan booking ke hotel. Detail:
+              <article class="course-section-card">
+                <div class="course-section-card__top"><h3>DMC Work Drafting Prompts</h3><span class="course-section-card__count">3 prompts</span></div>
+                <p>Prompt untuk booking request, itinerary, dan hotel knowledge agent.</p>
+                <div class="course-lesson-tip"><strong>Detail:</strong> Digunakan untuk booking request, draft itinerary, pencarian info kerja, dan build instruction untuk hotel knowledge agent.</div>
+                <div class="course-preview-label">Course preview images</div>
+                <div class="course-preview-images"><img src="assets/preview-itinerary.png" alt="Itinerary prompt preview" loading="lazy" /><img src="assets/preview-agent.png" alt="Hotel agent prompt preview" loading="lazy" /></div>
+              </article>
+            </div>
+
+            <div class="course-prompt-panel">
+              <div class="skilljar-prompt-grid">
+                <article class="prompt-card"><h4>Email reply prompt</h4><button class="prompt-box__copy" onclick="copyPrompt(this)">Salin Prompt</button><div class="prompt-card__text">Konfirmasi bahwa kami sudah menerima inquiry mereka. Tanyakan tanggal perjalanan, jumlah tamu, dan kisaran budget. Gunakan bahasa yang profesional dan ramah.</div></article>
+                <article class="prompt-card"><h4>Email thread summary prompt</h4><button class="prompt-box__copy" onclick="copyPrompt(this)">Salin Prompt</button><div class="prompt-card__text">Apa yang sudah disetujui klien dalam thread ini? Apa yang masih belum dikonfirmasi? Hotel apa yang akhirnya mereka pilih?</div></article>
+                <article class="prompt-card"><h4>Translation inquiry prompt</h4><button class="prompt-box__copy" onclick="copyPrompt(this)">Salin Prompt</button><div class="prompt-card__text">Terjemahkan email yang sedang saya baca. Lalu buat balasan profesional dalam Bahasa Inggris yang mengkonfirmasi bahwa kami sudah menerima inquiry, dan tanyakan: tanggal perjalanan, jumlah tamu, preferensi kategori hotel, dan total budget.</div></article>
+                <article class="prompt-card"><h4>Meeting recap prompt</h4><button class="prompt-box__copy" onclick="copyPrompt(this)">Salin Prompt</button><div class="prompt-card__text">Daftarkan semua action item dari rapat ini. Hotel apa yang kita sepakati untuk dimasukkan ke dalam program? Apa keputusan tentang kedatangan grup di Hari 1? Rangkum poin utama dalam 5 bullet point.</div></article>
+                <article class="prompt-card"><h4>Booking request prompt</h4><button class="prompt-box__copy" onclick="copyPrompt(this)">Salin Prompt</button><div class="prompt-card__text">Tulis permintaan booking ke hotel. Detail:
 - Hotel: The Layar Seminyak
 - Grup: 22 pax, semua dewasa
 - Tanggal: 14-18 Agustus 2025
 - Tipe kamar: Deluxe dengan sarapan
 - Butuh: konfirmasi ketersediaan dan harga terbaik untuk grup
 - Nada: profesional</div></article>
-                      <article class="prompt-card stitch-prompt-card"><h4>Itinerary prompt</h4><button class="prompt-box__copy" onclick="copyPrompt(this)">Salin Prompt</button><div class="prompt-card__text">Buat itinerary tur Bali 5 hari untuk grup 20 orang dewasa dari Australia. Budget menengah. Minat: budaya, sawah, makanan lokal.
+                <article class="prompt-card"><h4>Calendar/schedule prompt</h4><button class="prompt-box__copy" onclick="copyPrompt(this)">Salin Prompt</button><div class="prompt-card__text">Cek schedule saya minggu ini dan sarankan waktu kosong untuk meeting 30 menit dengan tim Sales. Jika memungkinkan, pilih slot antara pukul 10:00-16:00. Buatkan juga draft agenda singkat untuk membahas update inquiry, pending quotation, dan next action.</div></article>
+                <article class="prompt-card"><h4>Itinerary prompt</h4><button class="prompt-box__copy" onclick="copyPrompt(this)">Salin Prompt</button><div class="prompt-card__text">Buat itinerary tur Bali 5 hari untuk grup 20 orang dewasa dari Australia. Budget menengah. Minat: budaya, sawah, makanan lokal.
 Hari 1-2: Area Ubud
 Hari 3: Transfer ke Seminyak
 Hari 4-5: Seminyak dan pantai
 Untuk setiap hari sertakan aktivitas pagi, saran makan siang, aktivitas sore, saran makan malam, dan kategori hotel. Format sebagai tabel.</div></article>
-                      <article class="prompt-card stitch-prompt-card"><h4>Hotel agent build prompt</h4><button class="prompt-box__copy" onclick="copyPrompt(this)">Salin Prompt</button><div class="prompt-card__text">Create a hotel knowledge assistant for DMC operations. Use the uploaded hotel data file as the main knowledge source. Help staff search hotel information by area, star rating, room type, rate/night, currency, period, inclusions, direct contact, blackout date, group size, and notes. Answer only based on the uploaded file or connected knowledge source. If information is missing, say: “Data not found in the uploaded hotel file.” Do not invent hotel rates, contact details, availability, or inclusions.</div></article>
-                    </div>
-                  </div></div>
-                </div>
-              </article>
+                <article class="prompt-card"><h4>Hotel agent build prompt</h4><button class="prompt-box__copy" onclick="copyPrompt(this)">Salin Prompt</button><div class="prompt-card__text">Create a hotel knowledge assistant for DMC operations. Use the uploaded hotel data file as the main knowledge source. Help staff search hotel information by area, star rating, room type, rate/night, currency, period, inclusions, direct contact, blackout date, group size, and notes. Answer only based on the uploaded file or connected knowledge source. If information is missing, say: “Data not found in the uploaded hotel file.” Do not invent hotel rates, contact details, availability, or inclusions.</div></article>
+              </div>
             </div>
           </section>
 
@@ -3805,7 +3246,6 @@ Untuk setiap hari sertakan aktivitas pagi, saran makan siang, aktivitas sore, sa
           </section>
         </main>
       </section>
-
     </div>
   </div>
 </section>
@@ -3823,7 +3263,7 @@ Untuk setiap hari sertakan aktivitas pagi, saran makan siang, aktivitas sore, sa
 </footer>
 
 <!-- ========================= CLOSING CTA ========================= -->
-<section class="closing lumina-cta" id="closing">
+<section class="closing" id="closing">
   <div class="closing__aurora" aria-hidden="true">
     <div class="closing__aurora-base"></div>
     <div class="closing__aurora-wave closing__aurora-wave--1"></div>
@@ -3834,28 +3274,27 @@ Untuk setiap hari sertakan aktivitas pagi, saran makan siang, aktivitas sore, sa
   </div>
   <div class="container">
     <div class="closing__inner">
-      <h2 class="reveal">Butuh bantuan memakai AI?</h2>
-      <p class="reveal">Tim Support Internal siap membantu Anda menggunakan Copilot dan menyesuaikan prompt dengan kebutuhan kerja harian.</p>
+      <span class="label reveal" style="margin-bottom:20px;">Butuh Bantuan?</span>
+      <h2 class="reveal">Butuh bantuan memakai AI?<br/>Kami siap mendampingi</h2>
+      <p class="reveal">Jika ada pertanyaan, butuh arahan penggunaan, atau ingin menyesuaikan prompt dengan kebutuhan kerja, hubungi kami melalui WhatsApp.</p>
       <div class="closing__actions reveal">
-        <a href="https://wa.me/6285156945398?text=Halo%20tim%20AI%20Learning%2C%20saya%20perlu%20bantuan%20terkait%20penggunaan%20Copilot%20dan%20panduan%20AI." target="_blank" rel="noopener noreferrer" class="btn-primary">Hubungi via WhatsApp</a>
-        <a href="AI_Copilot_Guideline_DMC_v3.docx" download class="btn-secondary">Unduh PDF Panduan</a>
+        <a href="https://wa.me/6285156945398?text=Halo%20tim%20AI%20Learning%2C%20saya%20perlu%20bantuan%20terkait%20penggunaan%20Copilot%20dan%20panduan%20AI." target="_blank" rel="noopener noreferrer" class="btn-primary">Hubungi via WhatsApp →</a>
+        <a href="AI_Copilot_Guideline_DMC_v3.docx" download class="btn-secondary">Download Modul ↓</a>
       </div>
     </div>
   </div>
 </section>
 
 <!-- ========================= FOOTER ========================= -->
-<footer class="footer lumina-footer">
+<footer class="footer">
   <div class="container">
     <div class="footer__inner">
-      <div class="lumina-footer__brand">AI Learning</div>
-      <div class="lumina-footer__links">
-        <a href="#academy-courses">Modul</a>
-        <a href="#closing">Bantuan</a>
-        <a href="#academy">Kebijakan</a>
-        <a href="AI_Copilot_Guideline_DMC_v3.docx" download>Panduan Platform</a>
+      <div class="footer__copy">© 2025 AI Learning Guide — Internal Training. Dibuat untuk karyawan DMC.</div>
+      <div class="footer__links">
+        <a href="#intro">Tentang</a>
+        <a href="#modules">Modul</a>
+        <a href="#usecases">Panduan</a>
       </div>
-      <div class="lumina-footer__copy">© 2026 AI Learning Academy. All rights reserved.</div>
     </div>
   </div>
 </footer>
@@ -3911,51 +3350,6 @@ function toggleCourseLesson(trigger) {
   }
 }
 
-function resetStitchLessons(root) {
-  if (!root) return;
-  const cards = Array.from(root.querySelectorAll('.stitch-lesson-card'));
-  cards.forEach(card => {
-    card.classList.remove('open');
-    const button = card.querySelector('.stitch-lesson-summary');
-    const icon = card.querySelector('.stitch-lesson-summary i');
-    if (button) button.setAttribute('aria-expanded', 'false');
-    if (icon) icon.textContent = '+';
-  });
-  const first = cards[0];
-  if (first) {
-    first.classList.add('open');
-    const button = first.querySelector('.stitch-lesson-summary');
-    const icon = first.querySelector('.stitch-lesson-summary i');
-    if (button) button.setAttribute('aria-expanded', 'true');
-    if (icon) icon.textContent = '−';
-  }
-}
-
-function toggleStitchLesson(trigger) {
-  const card = trigger.closest('.stitch-lesson-card');
-  if (!card) return;
-
-  const parent = card.closest('.stitch-course-sections');
-  const isOpen = card.classList.contains('open');
-
-  if (parent) {
-    parent.querySelectorAll('.stitch-lesson-card').forEach(item => {
-      item.classList.remove('open');
-      const button = item.querySelector('.stitch-lesson-summary');
-      const icon = item.querySelector('.stitch-lesson-summary i');
-      if (button) button.setAttribute('aria-expanded', 'false');
-      if (icon) icon.textContent = '+';
-    });
-  }
-
-  if (!isOpen) {
-    card.classList.add('open');
-    trigger.setAttribute('aria-expanded', 'true');
-    const icon = trigger.querySelector('i');
-    if (icon) icon.textContent = '−';
-  }
-}
-
 /* ---------- Course page notes ---------- */
 function toggleCourseNote(trigger) {
   const item = trigger.closest('.course-note-item');
@@ -3974,14 +3368,14 @@ function toggleCourseNote(trigger) {
 }
 
 function scrollCourseSections(trigger) {
-  const page = trigger.closest('.stitch-course-page') || trigger.closest('.skilljar-course-page');
-  const target = page ? page.querySelector('.stitch-course-sections, .course-sections') : null;
+  const page = trigger.closest('.skilljar-course-page');
+  const target = page ? page.querySelector('.course-sections') : null;
   if (target) target.scrollIntoView({ behavior: 'smooth', block: 'start' });
 }
 
 /* ---------- Copy prompt ---------- */
 function copyPrompt(btn) {
-  const scope = btn.closest('.prompt-box') || btn.closest('.prompt-card') || btn.closest('.stitch-prompt-block') || btn.closest('.course-lesson-prompt');
+  const scope = btn.closest('.prompt-box') || btn.closest('.prompt-card') || btn.closest('.course-lesson-prompt');
   const source = scope ? scope.querySelector('.prompt-box__text, .prompt-card__text') : null;
   if (!source) return;
   const text = source.textContent.trim();
@@ -4065,7 +3459,6 @@ function showCourse(courseId, updateHash = true, behavior = 'smooth') {
     item.classList.remove('visible');
   });
   page.classList.add('visible');
-  resetStitchLessons(page);
   if (academy) academy.classList.add('course-mode');
   if (typeof closeMobileMenu === 'function') closeMobileMenu();
   if (updateHash && window.location.hash !== '#' + routeKey) {
@@ -4110,6 +3503,156 @@ document.querySelectorAll('.reveal').forEach(el => revealObserver.observe(el));
 routeFromHash('auto');
 window.addEventListener('hashchange', () => routeFromHash('smooth'));
 document.addEventListener('DOMContentLoaded', () => routeFromHash('auto'));
+
+/* ---------- Hero scroll-morph image ring ---------- */
+(function initHeroMorph() {
+  const hero = document.getElementById('hero');
+  const stage = document.getElementById('heroStage');
+  const cards = Array.from(document.querySelectorAll('.hero__tile'));
+  if (!hero || !stage || !cards.length) return;
+
+  const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const total = cards.length;
+  const scatter = cards.map((_, i) => {
+    const seed = Math.sin(i * 37.719) * 10000;
+    const rand = seed - Math.floor(seed);
+    const seed2 = Math.sin(i * 12.417) * 10000;
+    const rand2 = seed2 - Math.floor(seed2);
+    return {
+      x: (rand - 0.5) * 980,
+      y: (rand2 - 0.5) * 640,
+      r: (rand - 0.5) * 120,
+      s: 0.62,
+      o: 0
+    };
+  });
+
+  let phase = 'scatter';
+  let morphProgress = 0;
+  let targetProgress = 0;
+  let mouseShift = 0;
+  let rafId = null;
+
+  const lerp = (a, b, t) => a + (b - a) * t;
+  const clamp = (v, min, max) => Math.min(max, Math.max(min, v));
+  const ease = t => 1 - Math.pow(1 - t, 3);
+
+  function getMetrics() {
+    const rect = stage.getBoundingClientRect();
+    const w = rect.width || window.innerWidth;
+    const h = rect.height || window.innerHeight;
+    const mobile = w < 640;
+    return {
+      w,
+      h,
+      mobile,
+      circleRx: mobile ? Math.min(w * 0.42, 190) : Math.min(w * 0.31, 385),
+      circleRy: mobile ? Math.min(h * 0.27, 180) : Math.min(h * 0.30, 268),
+      lineSpacing: mobile ? 48 : 72,
+      bottomRx: mobile ? w * 0.72 : w * 0.58,
+      bottomRy: mobile ? 70 : 132,
+      bottomBaseline: mobile ? h * 0.45 : h * 0.48
+    };
+  }
+
+  function circlePosition(i, m) {
+    const angle = (i / total) * Math.PI * 2 - Math.PI / 2;
+    const x = Math.cos(angle) * m.circleRx;
+    const y = Math.sin(angle) * m.circleRy;
+    const r = (angle * 180 / Math.PI) + 90;
+    return { x, y, r, s: 1, o: 1 };
+  }
+
+  function linePosition(i, m) {
+    const center = (total - 1) / 2;
+    const x = (i - center) * m.lineSpacing;
+    return { x, y: 0, r: 0, s: 0.95, o: 1 };
+  }
+
+  function bottomArcPosition(i, m) {
+    const start = 205 * Math.PI / 180;
+    const end = 335 * Math.PI / 180;
+    const angle = start + (end - start) * (i / (total - 1));
+    const x = Math.cos(angle) * m.bottomRx;
+    const y = m.bottomBaseline + Math.sin(angle) * m.bottomRy;
+    const r = (angle * 180 / Math.PI) - 270;
+    return { x, y, r, s: m.mobile ? 0.84 : 1.02, o: 1 };
+  }
+
+  function blend(a, b, t) {
+    return {
+      x: lerp(a.x, b.x, t),
+      y: lerp(a.y, b.y, t),
+      r: lerp(a.r, b.r, t),
+      s: lerp(a.s, b.s, t),
+      o: lerp(a.o, b.o, t)
+    };
+  }
+
+  function setCard(card, pos, delay = 0) {
+    card.style.opacity = pos.o.toFixed(3);
+    card.style.transition = reduceMotion ? 'none' : `transform 900ms cubic-bezier(0.22, 1, 0.36, 1) ${delay}ms, opacity 700ms ease ${delay}ms`;
+    card.style.transform = `translate3d(${pos.x + mouseShift}px, ${pos.y}px, 0) rotate(${pos.r}deg) scale(${pos.s})`;
+  }
+
+  function paint(immediate = false) {
+    const m = getMetrics();
+    const t = ease(morphProgress);
+    cards.forEach((card, i) => {
+      let base;
+      if (phase === 'scatter') base = scatter[i];
+      else if (phase === 'line') base = linePosition(i, m);
+      else base = circlePosition(i, m);
+      const bottom = bottomArcPosition(i, m);
+      const pos = phase === 'circle' ? blend(base, bottom, t) : base;
+      if (immediate) card.style.transition = 'none';
+      setCard(card, pos, immediate ? 0 : i * 18);
+    });
+    hero.classList.toggle('is-morphed', morphProgress > 0.52);
+  }
+
+  function updateTargetFromScroll() {
+    if (reduceMotion) {
+      targetProgress = 0;
+      return;
+    }
+    const rect = hero.getBoundingClientRect();
+    const range = Math.min(620, window.innerHeight * 0.70);
+    targetProgress = clamp(-rect.top / range, 0, 1);
+  }
+
+  function animate() {
+    morphProgress += (targetProgress - morphProgress) * 0.09;
+    if (Math.abs(targetProgress - morphProgress) < 0.001) morphProgress = targetProgress;
+    paint(true);
+    rafId = requestAnimationFrame(animate);
+  }
+
+  function startIntro() {
+    paint(true);
+    if (reduceMotion) {
+      phase = 'circle';
+      paint(true);
+      return;
+    }
+    setTimeout(() => { phase = 'line'; paint(); }, 180);
+    setTimeout(() => { phase = 'circle'; paint(); }, 1500);
+  }
+
+  stage.addEventListener('mousemove', (e) => {
+    if (reduceMotion || window.innerWidth < 768) return;
+    const rect = stage.getBoundingClientRect();
+    const normalized = ((e.clientX - rect.left) / rect.width) * 2 - 1;
+    mouseShift = normalized * 22;
+  });
+  stage.addEventListener('mouseleave', () => { mouseShift = 0; });
+  window.addEventListener('scroll', updateTargetFromScroll, { passive: true });
+  window.addEventListener('resize', () => { updateTargetFromScroll(); paint(true); });
+
+  startIntro();
+  updateTargetFromScroll();
+  if (!reduceMotion) animate();
+})();
 </script>
 </body>
 </html>
