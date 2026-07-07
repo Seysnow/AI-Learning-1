@@ -1,0 +1,3658 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>AI Learning Guide — DMC</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet" />
+
+<style>
+/* =============================================
+   DESIGN TOKENS — customize here
+   ============================================= */
+:root {
+  --navy-900: #060C24;
+  --navy-800: #0B1437;
+  --navy-700: #0F1D50;
+  --navy-600: #152268;
+  --blue-500: #2563EB;
+  --blue-400: #3B82F6;
+  --cyan-400: #22D3EE;
+  --cyan-300: #67E8F9;
+  --purple-400: #A78BFA;
+  --white: #FFFFFF;
+  --gray-50: #F8FAFF;
+  --gray-100: #EEF2FF;
+  --gray-200: #E0E7FF;
+  --gray-500: #6B7280;
+  --gray-700: #374151;
+  --gray-900: #111827;
+  --text-body: #374151;
+  --text-muted: #6B7280;
+  --radius-sm: 8px;
+  --radius-md: 14px;
+  --radius-lg: 20px;
+  --radius-xl: 28px;
+  --shadow-sm: 0 2px 8px rgba(0,0,0,0.06);
+  --shadow-md: 0 8px 32px rgba(37,99,235,0.10);
+  --shadow-lg: 0 20px 60px rgba(37,99,235,0.15);
+  --font-display: 'Inter', sans-serif;
+  --font-body: 'Inter', 'Plus Jakarta Sans', sans-serif;
+  --transition: 0.28s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* =============================================
+   RESET & BASE
+   ============================================= */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; font-size: 16px; }
+body {
+  font-family: var(--font-body);
+  color: var(--text-body);
+  background: var(--white);
+  line-height: 1.65;
+  overflow-x: hidden;
+}
+img { max-width: 100%; display: block; }
+a { text-decoration: none; color: inherit; }
+ul { list-style: none; }
+button { cursor: pointer; font-family: var(--font-body); border: none; background: none; }
+
+/* =============================================
+   TYPOGRAPHY
+   ============================================= */
+h1, h2, h3, h4 { font-family: var(--font-display); line-height: 1.25; }
+h1 { font-size: clamp(2rem, 5vw, 3.6rem); font-weight: 700; }
+h2 { font-size: clamp(1.6rem, 3vw, 2.5rem); font-weight: 700; }
+h3 { font-size: clamp(1.1rem, 2vw, 1.35rem); font-weight: 600; }
+h4 { font-size: 1rem; font-weight: 600; }
+p { font-size: 1rem; }
+
+/* =============================================
+   UTILITIES
+   ============================================= */
+.container { max-width: 1140px; margin: 0 auto; padding: 0 24px; }
+.section { padding: 96px 0; }
+.section--alt { background: var(--gray-50); }
+.label {
+  display: inline-block;
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--blue-400);
+  background: rgba(59,130,246,0.1);
+  border: 1px solid rgba(59,130,246,0.2);
+  border-radius: 100px;
+  padding: 4px 14px;
+  margin-bottom: 16px;
+}
+.label--cyan { color: var(--cyan-400); background: rgba(34,211,238,0.1); border-color: rgba(34,211,238,0.25); }
+.section-header { text-align: center; margin-bottom: 64px; }
+.section-header p { font-size: 1.05rem; color: var(--text-muted); max-width: 580px; margin: 12px auto 0; }
+.gradient-text {
+  background: linear-gradient(135deg, var(--blue-400) 0%, var(--cyan-400) 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+/* =============================================
+   NAVBAR
+   ============================================= */
+.navbar {
+  position: sticky;
+  top: 0;
+  z-index: 999;
+  background: rgba(250,250,250,0.88);
+  backdrop-filter: blur(18px);
+  -webkit-backdrop-filter: blur(18px);
+  border-bottom: 1px solid rgba(17,24,39,0.08);
+  transition: var(--transition);
+}
+.navbar__inner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: 64px;
+  gap: 32px;
+}
+.navbar__logo {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  color: #111827;
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 1.05rem;
+  letter-spacing: -0.03em;
+}
+.navbar__logo-icon {
+  width: 34px; height: 34px;
+  background: linear-gradient(135deg, #38BDF8, #2563EB);
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--white);
+  font-size: 1rem;
+  flex-shrink: 0;
+  box-shadow: 0 10px 24px rgba(37,99,235,0.18);
+}
+.navbar__links {
+  display: flex;
+  align-items: center;
+  gap: 28px;
+  flex: 1;
+  justify-content: center;
+}
+.navbar__links a {
+  color: rgba(17,24,39,0.62);
+  font-size: 0.9rem;
+  font-weight: 500;
+  transition: color var(--transition);
+  white-space: nowrap;
+}
+.navbar__links a:hover { color: #111827; }
+.navbar__cta {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: #0B1020;
+  color: var(--white);
+  padding: 10px 24px;
+  border-radius: 100px;
+  font-size: 0.875rem;
+  font-weight: 700;
+  transition: opacity var(--transition), transform var(--transition), box-shadow var(--transition);
+  white-space: nowrap;
+  box-shadow: 0 12px 30px rgba(11,16,32,0.16);
+}
+.navbar__cta:hover { opacity: 0.92; transform: translateY(-1px); box-shadow: 0 16px 36px rgba(11,16,32,0.2); }
+.navbar__hamburger {
+  display: none;
+  flex-direction: column;
+  gap: 5px;
+  padding: 6px;
+  cursor: pointer;
+}
+.navbar__hamburger span {
+  display: block;
+  width: 24px;
+  height: 2px;
+  background: #111827;
+  border-radius: 2px;
+  transition: var(--transition);
+}
+.mobile-menu {
+  display: none;
+  position: fixed;
+  inset: 64px 0 0;
+  background: rgba(250,250,250,0.98);
+  z-index: 998;
+  padding: 32px 24px;
+  flex-direction: column;
+  gap: 24px;
+  border-top: 1px solid rgba(17,24,39,0.08);
+}
+.mobile-menu.open { display: flex; }
+.mobile-menu a {
+  color: rgba(17,24,39,0.78);
+  font-size: 1.1rem;
+  font-weight: 600;
+  padding: 10px 0;
+  border-bottom: 1px solid rgba(17,24,39,0.08);
+}
+
+/* =============================================
+   HERO — scroll morph image ring, closer to reference
+   ============================================= */
+.hero {
+  /* Extra scroll height gives the morph animation room to complete while
+     the visual stage stays fixed, so the second headline/buttons no longer
+     appear cut off halfway down the page. */
+  min-height: 175svh;
+  height: 175svh;
+  position: relative;
+  overflow: visible;
+  background: #fafafa;
+  isolation: isolate;
+}
+.hero::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(circle at 50% 47%, rgba(255,255,255,0.96) 0%, rgba(250,250,250,0.86) 44%, rgba(244,246,248,0.70) 100%),
+    radial-gradient(circle at 48% 54%, rgba(15,23,42,0.035), transparent 34%);
+  pointer-events: none;
+  z-index: 0;
+}
+.hero__stage {
+  position: relative;
+  z-index: 1;
+  position: sticky;
+  top: 64px;
+  min-height: calc(100svh - 64px);
+  height: calc(100svh - 64px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 52px 24px;
+  overflow: hidden;
+  perspective: 1000px;
+  background: #fafafa;
+}
+.hero__ring {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 1px;
+  height: 1px;
+  z-index: 1;
+  transform: translate3d(0,0,0);
+  will-change: transform;
+  pointer-events: none;
+}
+.hero__tile {
+  --tile-width: 68px;
+  --tile-height: 92px;
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: var(--tile-width);
+  height: var(--tile-height);
+  margin-left: calc(var(--tile-width) / -2);
+  margin-top: calc(var(--tile-height) / -2);
+  border-radius: 16px;
+  overflow: hidden;
+  background: #eef1f4;
+  box-shadow:
+    0 18px 36px rgba(15, 23, 42, 0.10),
+    0 2px 8px rgba(15, 23, 42, 0.05);
+  transform-style: preserve-3d;
+  backface-visibility: hidden;
+  opacity: 0;
+  will-change: transform, opacity;
+}
+.hero__tile img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+  filter: saturate(0.86) contrast(0.96) brightness(1.04);
+  transition: transform 0.7s cubic-bezier(0.22, 1, 0.36, 1), filter 0.7s ease;
+}
+.hero__tile::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(180deg, rgba(255,255,255,0.02), rgba(15,23,42,0.10));
+  pointer-events: none;
+}
+.hero__tile:hover img {
+  transform: scale(1.06);
+  filter: saturate(1.02) contrast(1) brightness(1);
+}
+.hero__copy {
+  position: relative;
+  z-index: 3;
+  text-align: center;
+  max-width: 760px;
+  margin: 0 auto;
+  pointer-events: none;
+  transition: opacity 0.55s ease, transform 0.55s cubic-bezier(0.22,1,0.36,1), filter 0.55s ease;
+}
+.hero__copy--intro {
+  transform: translateY(0);
+}
+.hero__copy--detail {
+  position: absolute;
+  top: 12%;
+  left: 50%;
+  width: min(760px, calc(100% - 40px));
+  transform: translate(-50%, 24px);
+  opacity: 0;
+  filter: blur(10px);
+}
+.hero__title {
+  color: #202636;
+  font-family: 'Inter', var(--font-body);
+  font-size: clamp(1.75rem, 3.2vw, 3.1rem);
+  font-weight: 400;
+  line-height: 1.16;
+  letter-spacing: -0.045em;
+  margin-bottom: 18px;
+}
+.hero__title--secondary {
+  font-size: clamp(2.25rem, 4vw, 4.3rem);
+  font-weight: 680;
+  letter-spacing: 0.035em;
+  word-spacing: 0.08em;
+  margin-bottom: 16px;
+}
+.hero__micro {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+  color: rgba(31,41,55,0.36);
+  font-family: 'Inter', var(--font-body);
+  font-size: 0.76rem;
+  font-weight: 800;
+  letter-spacing: 0.30em;
+  text-transform: uppercase;
+  line-height: 1;
+}
+.hero__micro::before,
+.hero__micro::after {
+  content: '';
+  display: block;
+  width: 36px;
+  height: 1px;
+  background: rgba(31,41,55,0.14);
+}
+.hero__subtitle {
+  max-width: 720px;
+  margin: 0 auto 26px;
+  color: rgba(31,41,55,0.64);
+  font-family: 'Inter', var(--font-body);
+  font-size: clamp(1rem, 1.4vw, 1.16rem);
+  line-height: 1.72;
+  letter-spacing: -0.01em;
+}
+.hero__actions {
+  display: flex;
+  justify-content: center;
+  gap: 12px;
+  flex-wrap: wrap;
+  pointer-events: auto;
+}
+.hero__button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 44px;
+  padding: 12px 23px;
+  border-radius: 999px;
+  font-size: 0.9rem;
+  font-weight: 750;
+  transition: transform var(--transition), box-shadow var(--transition), background var(--transition);
+}
+.hero__button--dark {
+  background: #0B1020;
+  color: #fff;
+  box-shadow: 0 14px 30px rgba(11,16,32,0.16);
+}
+.hero__button--light {
+  background: rgba(255,255,255,0.76);
+  color: #1F2937;
+  border: 1px solid rgba(31,41,55,0.10);
+}
+.hero__button:hover { transform: translateY(-2px); }
+.hero__button--dark:hover { box-shadow: 0 18px 38px rgba(11,16,32,0.22); }
+.hero__scroll {
+  position: absolute;
+  z-index: 4;
+  left: 50%;
+  bottom: 28px;
+  transform: translateX(-50%);
+  color: rgba(31,41,55,0.40);
+  font-family: 'Inter', var(--font-body);
+  font-size: 0.74rem;
+  font-weight: 800;
+  letter-spacing: 0.30em;
+  text-transform: uppercase;
+}
+.hero.is-morphed .hero__copy--intro {
+  opacity: 0;
+  transform: translateY(-20px);
+  filter: blur(10px);
+}
+.hero.is-morphed .hero__copy--detail {
+  opacity: 1;
+  transform: translate(-50%, 0);
+  filter: blur(0);
+}
+.hero.is-morphed .hero__scroll { opacity: 0; }
+
+@keyframes fadeInUp {
+  from { opacity: 0; transform: translateY(28px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+.animate-in {
+  opacity: 0;
+  animation: fadeInUp 0.7s ease forwards;
+}
+.delay-1 { animation-delay: 0.15s; }
+.delay-2 { animation-delay: 0.3s; }
+.delay-3 { animation-delay: 0.45s; }
+.delay-4 { animation-delay: 0.6s; }
+/* =============================================
+   INTRO
+   ============================================= */
+.intro__grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 56px;
+  align-items: center;
+}
+.intro__cards {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+}
+.intro__card {
+  background: var(--white);
+  border: 1.5px solid var(--gray-200);
+  border-radius: var(--radius-lg);
+  padding: 24px 20px;
+  transition: border-color var(--transition), box-shadow var(--transition), transform var(--transition);
+}
+.intro__card:hover {
+  border-color: rgba(59,130,246,0.4);
+  box-shadow: var(--shadow-md);
+  transform: translateY(-4px);
+}
+.intro__card-icon {
+  font-size: 1.8rem;
+  margin-bottom: 12px;
+}
+.intro__card h4 { margin-bottom: 6px; color: var(--gray-900); }
+.intro__card p { font-size: 0.875rem; color: var(--text-muted); line-height: 1.55; }
+.intro__card--wide {
+  grid-column: 1 / -1;
+  background: linear-gradient(135deg, rgba(37,99,235,0.06), rgba(34,211,238,0.04));
+  border-color: rgba(59,130,246,0.25);
+}
+.intro__text p { color: var(--text-muted); margin-top: 14px; line-height: 1.75; }
+.intro__text .highlight {
+  background: linear-gradient(135deg, rgba(37,99,235,0.08), rgba(34,211,238,0.06));
+  border-left: 3px solid var(--blue-400);
+  border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
+  padding: 14px 18px;
+  margin-top: 24px;
+  font-size: 0.95rem;
+  color: var(--gray-700);
+  font-weight: 500;
+}
+
+/* =============================================
+   MODULES (TABS)
+   ============================================= */
+.modules__tabs {
+  display: flex;
+  gap: 8px;
+  background: var(--gray-100);
+  border-radius: 100px;
+  padding: 5px;
+  width: fit-content;
+  margin: 0 auto 52px;
+}
+.modules__tab {
+  padding: 10px 28px;
+  border-radius: 100px;
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: var(--text-muted);
+  transition: all var(--transition);
+}
+.modules__tab.active {
+  background: var(--navy-800);
+  color: var(--white);
+  box-shadow: 0 4px 14px rgba(6,12,36,0.25);
+}
+.modules__panel { display: none; }
+.modules__panel.active { display: block; }
+.modules__note {
+  background: var(--gray-100);
+  border: 1px solid var(--gray-200);
+  border-radius: var(--radius-md);
+  padding: 14px 20px;
+  font-size: 0.875rem;
+  color: var(--text-muted);
+  margin-bottom: 36px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.modules__grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 20px;
+}
+.module-card {
+  background: var(--white);
+  border: 1.5px solid var(--gray-200);
+  border-radius: var(--radius-lg);
+  padding: 28px 24px;
+  transition: all var(--transition);
+  cursor: pointer;
+  position: relative;
+  overflow: hidden;
+}
+.module-card::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 3px;
+  background: linear-gradient(90deg, var(--blue-400), var(--cyan-400));
+  transform: scaleX(0);
+  transition: transform var(--transition);
+  transform-origin: left;
+}
+.module-card:hover::before { transform: scaleX(1); }
+.module-card:hover {
+  border-color: rgba(59,130,246,0.35);
+  box-shadow: var(--shadow-md);
+  transform: translateY(-5px);
+}
+.module-card__num {
+  font-family: var(--font-display);
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: var(--blue-400);
+  letter-spacing: 0.08em;
+  margin-bottom: 12px;
+}
+.module-card__app {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  background: var(--gray-100);
+  border-radius: 6px;
+  padding: 3px 10px;
+  font-size: 0.72rem;
+  font-weight: 600;
+  color: var(--gray-700);
+  margin-bottom: 14px;
+}
+.module-card h3 { color: var(--gray-900); margin-bottom: 10px; font-size: 1.05rem; }
+.module-card p { font-size: 0.875rem; color: var(--text-muted); line-height: 1.6; }
+.module-card__time {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  margin-top: 18px;
+  font-size: 0.78rem;
+  font-weight: 600;
+  color: var(--blue-400);
+}
+
+/* =============================================
+   USE CASES (accordion tasks)
+   ============================================= */
+.usecases__level {
+  margin-bottom: 64px;
+}
+.usecases__level-title {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 32px;
+}
+.usecases__level-badge {
+  padding: 5px 16px;
+  border-radius: 100px;
+  font-size: 0.78rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+}
+.usecases__level-badge--beginner {
+  background: rgba(34,211,238,0.12);
+  color: var(--cyan-400);
+  border: 1px solid rgba(34,211,238,0.25);
+}
+.usecases__level-badge--intermediate {
+  background: rgba(167,139,250,0.12);
+  color: var(--purple-400);
+  border: 1px solid rgba(167,139,250,0.25);
+}
+.usecases__level-line { flex: 1; height: 1px; background: var(--gray-200); }
+.task-item {
+  background: var(--white);
+  border: 1.5px solid var(--gray-200);
+  border-radius: var(--radius-lg);
+  margin-bottom: 16px;
+  overflow: hidden;
+  transition: border-color var(--transition), box-shadow var(--transition);
+}
+.task-item:hover { border-color: rgba(59,130,246,0.3); }
+.task-item.open { border-color: rgba(59,130,246,0.4); box-shadow: var(--shadow-md); }
+.task-header {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 22px 24px;
+  cursor: pointer;
+  user-select: none;
+}
+.task-header__num {
+  width: 36px; height: 36px;
+  background: linear-gradient(135deg, var(--blue-500), #1d4ed8);
+  border-radius: 10px;
+  display: flex; align-items: center; justify-content: center;
+  color: var(--white);
+  font-family: var(--font-display);
+  font-size: 0.85rem;
+  font-weight: 700;
+  flex-shrink: 0;
+}
+.task-header__meta { flex: 1; }
+.task-header__meta h3 { font-size: 1rem; color: var(--gray-900); }
+.task-header__app { font-size: 0.78rem; color: var(--text-muted); margin-top: 2px; }
+.task-header__time {
+  font-size: 0.78rem;
+  font-weight: 600;
+  color: var(--blue-400);
+  white-space: nowrap;
+  padding: 0 16px;
+}
+.task-header__chevron {
+  width: 28px; height: 28px;
+  border-radius: 50%;
+  background: var(--gray-100);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 0.8rem;
+  color: var(--text-muted);
+  transition: transform var(--transition), background var(--transition);
+  flex-shrink: 0;
+}
+.task-item.open .task-header__chevron {
+  transform: rotate(180deg);
+  background: rgba(59,130,246,0.12);
+  color: var(--blue-400);
+}
+.task-body {
+  display: none;
+  padding: 0 24px 28px;
+  border-top: 1px solid var(--gray-100);
+  padding-top: 24px;
+}
+.task-item.open .task-body { display: block; }
+.task-steps { display: flex; flex-direction: column; gap: 20px; margin-bottom: 20px; }
+.task-step {
+  display: flex;
+  gap: 16px;
+}
+.task-step__num {
+  width: 28px; height: 28px;
+  border-radius: 50%;
+  background: var(--gray-100);
+  border: 2px solid var(--gray-200);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: var(--blue-400);
+  flex-shrink: 0;
+  margin-top: 2px;
+}
+.task-step__content h4 { font-size: 0.9rem; color: var(--gray-900); margin-bottom: 6px; }
+.task-step__content p { font-size: 0.875rem; color: var(--text-muted); }
+.task-step__location {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  background: var(--gray-50);
+  border: 1px solid var(--gray-200);
+  border-radius: var(--radius-sm);
+  padding: 4px 10px;
+  font-size: 0.75rem;
+  color: var(--gray-700);
+  margin-top: 6px;
+}
+.prompt-box {
+  background: var(--navy-800);
+  border: 1px solid rgba(59,130,246,0.2);
+  border-radius: var(--radius-md);
+  padding: 18px 20px;
+  margin-top: 8px;
+  position: relative;
+}
+.prompt-box__label {
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--cyan-300);
+  margin-bottom: 8px;
+}
+.prompt-box__text {
+  font-family: 'Courier New', monospace;
+  font-size: 0.83rem;
+  color: rgba(255,255,255,0.85);
+  line-height: 1.7;
+  white-space: pre-line;
+}
+.prompt-box__copy {
+  position: absolute;
+  top: 12px; right: 12px;
+  background: rgba(59,130,246,0.2);
+  border: 1px solid rgba(59,130,246,0.3);
+  color: var(--cyan-300);
+  font-size: 0.72rem;
+  font-weight: 600;
+  padding: 4px 10px;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all var(--transition);
+}
+.prompt-box__copy:hover { background: rgba(59,130,246,0.4); }
+.result-box {
+  background: rgba(34,211,238,0.05);
+  border: 1px solid rgba(34,211,238,0.2);
+  border-radius: var(--radius-md);
+  padding: 14px 18px;
+  margin-top: 16px;
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+}
+.result-box__icon { font-size: 1.1rem; flex-shrink: 0; margin-top: 1px; }
+.result-box__text { font-size: 0.875rem; color: var(--gray-700); }
+.tip-box {
+  background: rgba(59,130,246,0.05);
+  border: 1px solid rgba(59,130,246,0.15);
+  border-radius: var(--radius-sm);
+  padding: 10px 14px;
+  margin-top: 12px;
+  font-size: 0.82rem;
+  color: var(--gray-700);
+}
+.tip-box strong { color: var(--blue-400); }
+
+/* =============================================
+   PROMPTING GUIDE
+   ============================================= */
+.prompt-guide__grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 24px;
+  margin-bottom: 40px;
+}
+.prompt-guide-card {
+  background: var(--white);
+  border: 1.5px solid var(--gray-200);
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  transition: all var(--transition);
+}
+.prompt-guide-card:hover {
+  border-color: rgba(59,130,246,0.3);
+  box-shadow: var(--shadow-md);
+  transform: translateY(-3px);
+}
+.prompt-guide-card__header {
+  padding: 20px 22px 14px;
+  border-bottom: 1px solid var(--gray-100);
+}
+.prompt-guide-card__header h4 { color: var(--gray-900); font-size: 0.95rem; margin-top: 6px; }
+.prompt-guide-card__body { padding: 16px 22px 20px; }
+.prompt-guide-card__body .prompt-box { margin-top: 0; }
+.prompt-tag {
+  display: inline-block;
+  font-size: 0.68rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  background: rgba(59,130,246,0.1);
+  color: var(--blue-400);
+  border-radius: 4px;
+  padding: 2px 8px;
+}
+.prompt-tips-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 16px;
+}
+.prompt-tip-item {
+  background: var(--white);
+  border: 1.5px solid var(--gray-200);
+  border-radius: var(--radius-md);
+  padding: 20px;
+  transition: all var(--transition);
+}
+.prompt-tip-item:hover {
+  border-color: rgba(59,130,246,0.3);
+  box-shadow: var(--shadow-sm);
+}
+.prompt-tip-item__icon { font-size: 1.5rem; margin-bottom: 10px; }
+.prompt-tip-item h4 { font-size: 0.88rem; color: var(--gray-900); margin-bottom: 6px; }
+.prompt-tip-item p { font-size: 0.8rem; color: var(--text-muted); line-height: 1.55; }
+
+/* =============================================
+   DO & DON'T — not in source, use disclaimer
+   BEST PRACTICES
+   ============================================= */
+.best-practices__grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 24px;
+}
+.bp-list {
+  background: var(--white);
+  border: 1.5px solid var(--gray-200);
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+}
+.bp-list__header {
+  padding: 20px 24px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  border-bottom: 1px solid var(--gray-100);
+}
+.bp-list__header h3 { font-size: 1rem; }
+.bp-list--do .bp-list__header { background: rgba(34,211,238,0.06); }
+.bp-list--dont .bp-list__header { background: rgba(239,68,68,0.04); }
+.bp-list__items { padding: 16px 24px 20px; }
+.bp-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  padding: 12px 0;
+  border-bottom: 1px solid var(--gray-100);
+  font-size: 0.88rem;
+  color: var(--gray-700);
+}
+.bp-item:last-child { border-bottom: none; }
+.bp-item__icon {
+  width: 20px; height: 20px;
+  border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 0.65rem;
+  flex-shrink: 0;
+  margin-top: 1px;
+}
+.bp-list--do .bp-item__icon { background: rgba(34,211,238,0.15); color: #0891b2; }
+.bp-list--dont .bp-item__icon { background: rgba(239,68,68,0.1); color: #dc2626; }
+
+/* =============================================
+   FAQ
+   ============================================= */
+.faq__list { max-width: 760px; margin: 0 auto; }
+.faq-item {
+  border: 1.5px solid var(--gray-200);
+  border-radius: var(--radius-md);
+  margin-bottom: 12px;
+  overflow: hidden;
+  transition: border-color var(--transition);
+}
+.faq-item:hover { border-color: rgba(59,130,246,0.3); }
+.faq-item.open { border-color: rgba(59,130,246,0.4); }
+.faq-q {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 18px 22px;
+  cursor: pointer;
+  font-weight: 600;
+  font-size: 0.95rem;
+  color: var(--gray-900);
+}
+.faq-icon {
+  width: 24px; height: 24px;
+  border-radius: 50%;
+  background: var(--gray-100);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 0.75rem;
+  color: var(--text-muted);
+  transition: transform var(--transition), background var(--transition);
+  flex-shrink: 0;
+}
+.faq-item.open .faq-icon {
+  transform: rotate(180deg);
+  background: rgba(59,130,246,0.12);
+  color: var(--blue-400);
+}
+.faq-a {
+  display: none;
+  padding: 0 22px 18px;
+  font-size: 0.9rem;
+  color: var(--text-muted);
+  line-height: 1.7;
+  border-top: 1px solid var(--gray-100);
+  padding-top: 14px;
+}
+.faq-item.open .faq-a { display: block; }
+
+/* =============================================
+   CTA CLOSING
+   ============================================= */
+.closing {
+  background: var(--navy-800);
+  position: relative;
+  overflow: hidden;
+  text-align: center;
+  padding: 96px 0;
+}
+.closing::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(circle at 30% 50%, rgba(37,99,235,0.18) 0%, transparent 55%),
+    radial-gradient(circle at 75% 40%, rgba(34,211,238,0.1) 0%, transparent 45%);
+  pointer-events: none;
+}
+.closing__inner { position: relative; z-index: 1; }
+.closing h2 { color: var(--white); margin-bottom: 16px; }
+.closing p { color: rgba(255,255,255,0.6); font-size: 1.05rem; max-width: 520px; margin: 0 auto 36px; }
+.closing__actions { display: flex; justify-content: center; gap: 14px; flex-wrap: wrap; }
+
+/* =============================================
+   FOOTER
+   ============================================= */
+.footer {
+  background: var(--navy-900);
+  border-top: 1px solid rgba(255,255,255,0.06);
+  padding: 36px 0;
+}
+.footer__inner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 16px;
+}
+.footer__copy {
+  font-size: 0.82rem;
+  color: rgba(255,255,255,0.35);
+}
+.footer__links {
+  display: flex;
+  gap: 24px;
+}
+.footer__links a {
+  font-size: 0.82rem;
+  color: rgba(255,255,255,0.4);
+  transition: color var(--transition);
+}
+.footer__links a:hover { color: rgba(255,255,255,0.8); }
+
+/* =============================================
+   SCROLL REVEAL
+   ============================================= */
+.reveal {
+  opacity: 0;
+  transform: translateY(24px);
+  transition: opacity 0.65s ease, transform 0.65s ease;
+}
+.reveal.visible {
+  opacity: 1;
+  transform: none;
+}
+.reveal-delay-1 { transition-delay: 0.1s; }
+.reveal-delay-2 { transition-delay: 0.2s; }
+.reveal-delay-3 { transition-delay: 0.3s; }
+.reveal-delay-4 { transition-delay: 0.4s; }
+
+/* =============================================
+   RESPONSIVE
+   ============================================= */
+@media (max-width: 1024px) {
+  .hero__subtitle { margin-left: auto; margin-right: auto; }
+  .modules__grid { grid-template-columns: repeat(2, 1fr); }
+  .intro__grid { grid-template-columns: 1fr; gap: 40px; }
+  .prompt-tips-grid { grid-template-columns: 1fr 1fr; }
+}
+@media (max-width: 768px) {
+  .section { padding: 64px 0; }
+  .navbar__links { display: none; }
+  .navbar__cta { display: none; }
+  .navbar__hamburger { display: flex; }
+  .modules__grid { grid-template-columns: 1fr; }
+  .prompt-guide__grid { grid-template-columns: 1fr; }
+  .best-practices__grid { grid-template-columns: 1fr; }
+  .prompt-tips-grid { grid-template-columns: 1fr; }
+  .intro__cards { grid-template-columns: 1fr; }
+  .task-header__time { display: none; }
+  .footer__inner { flex-direction: column; text-align: center; }
+  .footer__links { justify-content: center; }
+}
+@media (max-width: 480px) {
+  .modules__tabs { flex-direction: column; border-radius: var(--radius-md); width: auto; }
+  .modules__tab { border-radius: var(--radius-sm); text-align: center; }
+}
+
+
+/* Hero image-ring responsive refinements */
+@media (max-width: 1024px) {
+  .hero__stage { height: calc(100svh - 64px); }
+  .hero__tile { --tile-width: 62px; --tile-height: 84px; }
+}
+@media (max-width: 768px) {
+  .hero { min-height: 165svh; height: 165svh; }
+  .hero__stage { padding: 44px 18px; min-height: calc(100svh - 64px); height: calc(100svh - 64px); }
+  .hero__title { font-size: clamp(2rem, 9vw, 3rem); }
+  .hero__copy--detail { top: 10%; }
+  .hero__micro { font-size: 0.66rem; letter-spacing: 0.22em; gap: 10px; }
+  .hero__micro::before, .hero__micro::after { width: 22px; }
+  .hero__scroll { bottom: 18px; }
+}
+@media (max-width: 480px) {
+  .hero__tile { --tile-width: 54px; --tile-height: 74px; }
+  .hero__copy--detail { top: 9%; }
+  .hero__subtitle { font-size: 0.92rem; line-height: 1.65; }
+  .hero__button { width: 100%; max-width: 240px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .hero__tile, .animate-in { animation: none !important; opacity: 1; }
+  .hero__copy { transition: none !important; }
+}
+
+/* =============================================
+   VAONIS-INSPIRED MINIMAL THEME OVERRIDES
+   Clean editorial palette, less neon, more premium whitespace
+   ============================================= */
+:root {
+  --navy-900: #0E1117;
+  --navy-800: #151923;
+  --navy-700: #202633;
+  --navy-600: #2E3545;
+  --blue-500: #1F2937;
+  --blue-400: #374151;
+  --cyan-400: #8B8F98;
+  --cyan-300: #C5C8CF;
+  --purple-400: #9A9286;
+  --white: #FFFFFF;
+  --gray-50: #F7F5F1;
+  --gray-100: #EFECE6;
+  --gray-200: #DDD8CF;
+  --gray-500: #8A877F;
+  --gray-700: #3D403F;
+  --gray-900: #111318;
+  --text-body: #333638;
+  --text-muted: #75716A;
+  --radius-sm: 10px;
+  --radius-md: 16px;
+  --radius-lg: 24px;
+  --radius-xl: 34px;
+  --shadow-sm: 0 8px 20px rgba(17,19,24,0.04);
+  --shadow-md: 0 18px 44px rgba(17,19,24,0.07);
+  --shadow-lg: 0 28px 80px rgba(17,19,24,0.10);
+  --font-display: 'Inter', sans-serif;
+  --font-body: 'Inter', 'Plus Jakarta Sans', sans-serif;
+}
+
+body {
+  background: #F7F5F1;
+  color: var(--text-body);
+  letter-spacing: -0.01em;
+}
+
+h1, h2, h3, h4 {
+  color: var(--gray-900);
+  font-weight: 560;
+  letter-spacing: -0.045em;
+}
+
+h2 { font-size: clamp(2.05rem, 4.4vw, 4.5rem); line-height: 1.05; }
+h3 { font-weight: 560; }
+p { color: var(--text-muted); }
+
+.container { max-width: 1180px; }
+.section { padding: 132px 0; background: #F7F5F1; }
+.section--alt { background: #FFFFFF; }
+
+.section-header { margin-bottom: 74px; }
+.section-header p {
+  max-width: 660px;
+  margin-top: 22px;
+  font-size: clamp(1rem, 1.45vw, 1.18rem);
+  line-height: 1.8;
+  color: #68645E;
+}
+
+.label,
+.label--cyan {
+  color: #7B776F;
+  background: transparent;
+  border: 0;
+  border-radius: 0;
+  padding: 0;
+  margin-bottom: 24px;
+  font-size: 0.72rem;
+  letter-spacing: 0.22em;
+  font-weight: 650;
+}
+
+.label::before,
+.label--cyan::before {
+  content: "";
+  display: inline-block;
+  width: 34px;
+  height: 1px;
+  background: #B8B2A7;
+  vertical-align: middle;
+  margin-right: 13px;
+}
+
+.gradient-text {
+  background: none;
+  -webkit-text-fill-color: currentColor;
+  color: #111318;
+}
+
+/* Navigation */
+.navbar {
+  background: rgba(247,245,241,0.84);
+  border-bottom: 1px solid rgba(17,19,24,0.08);
+  box-shadow: none;
+}
+.navbar__inner { height: 70px; }
+.navbar__logo {
+  color: #111318;
+  font-size: 1rem;
+  font-weight: 650;
+  letter-spacing: -0.035em;
+}
+.navbar__logo-icon {
+  width: 30px;
+  height: 30px;
+  border-radius: 999px;
+  background: #111318;
+  box-shadow: none;
+  font-size: 0.85rem;
+}
+.navbar__links a {
+  color: rgba(17,19,24,0.56);
+  font-size: 0.84rem;
+  font-weight: 500;
+}
+.navbar__links a:hover { color: #111318; }
+.navbar__cta,
+.btn-primary,
+.hero__button--dark {
+  background: #111318;
+  color: #FFFFFF;
+  box-shadow: none;
+  border: 1px solid #111318;
+}
+.navbar__cta:hover,
+.btn-primary:hover,
+.hero__button--dark:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 14px 36px rgba(17,19,24,0.12);
+  opacity: 1;
+}
+.btn-secondary,
+.hero__button--light {
+  background: rgba(255,255,255,0.72);
+  border: 1px solid rgba(17,19,24,0.12);
+  color: #111318;
+  box-shadow: none;
+}
+.btn-secondary:hover,
+.hero__button--light:hover {
+  background: #FFFFFF;
+}
+.mobile-menu { background: #F7F5F1; }
+.mobile-menu a { color: rgba(17,19,24,0.72); border-bottom-color: rgba(17,19,24,0.08); }
+.navbar__hamburger span { background: #111318; }
+
+/* Intro */
+.intro__grid { gap: 86px; align-items: start; }
+.intro__text p {
+  font-size: 1.03rem;
+  line-height: 1.86;
+  color: #68645E;
+}
+.intro__text .highlight {
+  background: transparent;
+  border-left: 1px solid #111318;
+  border-radius: 0;
+  padding: 0 0 0 22px;
+  color: #343434;
+  font-weight: 450;
+}
+.intro__cards { gap: 18px; }
+.intro__card,
+.module-card,
+.task-item,
+.prompt-guide-card,
+.prompt-tip-item,
+.bp-list,
+.faq-item {
+  background: rgba(255,255,255,0.72);
+  border: 1px solid rgba(17,19,24,0.10);
+  border-radius: 22px;
+  box-shadow: none;
+}
+.intro__card:hover,
+.module-card:hover,
+.prompt-guide-card:hover,
+.prompt-tip-item:hover,
+.task-item:hover,
+.faq-item:hover {
+  border-color: rgba(17,19,24,0.18);
+  box-shadow: 0 24px 70px rgba(17,19,24,0.06);
+  transform: translateY(-3px);
+}
+.intro__card-icon,
+.prompt-tip-item__icon {
+  width: 34px;
+  height: 34px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid rgba(17,19,24,0.12);
+  border-radius: 999px;
+  font-size: 0.72rem;
+  letter-spacing: 0.08em;
+  color: #111318;
+  margin-bottom: 18px;
+}
+.intro__card h4,
+.prompt-tip-item h4 { font-weight: 600; }
+.intro__card p,
+.prompt-tip-item p { color: #716D66; }
+.intro__card--wide {
+  background: #111318;
+  border-color: #111318;
+}
+.intro__card--wide h4,
+.intro__card--wide p { color: #FFFFFF; }
+.intro__card--wide .intro__card-icon {
+  color: #FFFFFF;
+  border-color: rgba(255,255,255,0.22);
+}
+
+/* Modules */
+.modules__tabs {
+  background: rgba(17,19,24,0.06);
+  padding: 4px;
+  border-radius: 999px;
+  margin-bottom: 58px;
+}
+.modules__tab {
+  color: rgba(17,19,24,0.58);
+  font-weight: 560;
+  padding: 11px 30px;
+}
+.modules__tab.active {
+  background: #111318;
+  color: #FFFFFF;
+  box-shadow: none;
+}
+.modules__note {
+  background: transparent;
+  border: 0;
+  border-top: 1px solid rgba(17,19,24,0.12);
+  border-bottom: 1px solid rgba(17,19,24,0.12);
+  border-radius: 0;
+  color: #68645E;
+  padding: 18px 0;
+}
+.modules__grid { gap: 22px; }
+.module-card { padding: 32px 28px; }
+.module-card::before {
+  height: 1px;
+  background: #111318;
+}
+.module-card__num {
+  color: #8A877F;
+  font-size: 0.68rem;
+  letter-spacing: 0.18em;
+  font-weight: 700;
+}
+.module-card__app {
+  background: transparent;
+  border: 1px solid rgba(17,19,24,0.12);
+  border-radius: 999px;
+  padding: 4px 12px;
+  color: #4A4A46;
+  font-weight: 560;
+}
+.module-card h3 {
+  color: #111318;
+  font-size: 1.08rem;
+  margin-top: 4px;
+}
+.module-card p { color: #746F67; }
+.module-card__time {
+  color: #111318;
+  font-size: 0.75rem;
+  letter-spacing: 0.02em;
+}
+
+/* Task accordions */
+.usecases__level-title { margin-bottom: 34px; }
+.usecases__level-badge {
+  background: transparent !important;
+  color: #111318 !important;
+  border: 1px solid rgba(17,19,24,0.16) !important;
+  border-radius: 999px;
+  font-size: 0.68rem;
+  letter-spacing: 0.16em;
+}
+.usecases__level-line { background: rgba(17,19,24,0.12); }
+.task-header { padding: 26px 28px; }
+.task-header__num {
+  background: #111318;
+  color: #FFFFFF;
+  border-radius: 999px;
+  font-weight: 600;
+}
+.task-header__meta h3 { color: #111318; }
+.task-header__app,
+.task-header__time { color: #77736C; }
+.task-header__chevron,
+.faq-icon {
+  background: transparent;
+  border: 1px solid rgba(17,19,24,0.12);
+  color: #111318;
+}
+.task-item.open {
+  border-color: rgba(17,19,24,0.22);
+  box-shadow: 0 24px 70px rgba(17,19,24,0.06);
+}
+.task-item.open .task-header__chevron,
+.faq-item.open .faq-icon {
+  background: #111318;
+  color: #FFFFFF;
+}
+.task-step__num {
+  background: transparent;
+  border: 1px solid rgba(17,19,24,0.16);
+  color: #111318;
+}
+.task-step__content h4 { color: #111318; }
+.task-step__content p { color: #716D66; }
+.task-step__location {
+  background: #F7F5F1;
+  border-color: rgba(17,19,24,0.12);
+  color: #68645E;
+}
+.result-box,
+.tip-box {
+  background: #F7F5F1;
+  border-color: rgba(17,19,24,0.10);
+}
+.result-box__text,
+.tip-box { color: #68645E; }
+.tip-box strong { color: #111318; }
+
+/* Prompt boxes */
+.prompt-box {
+  background: #111318;
+  border: 1px solid rgba(255,255,255,0.10);
+  border-radius: 18px;
+}
+.prompt-box__label,
+.prompt-tag {
+  color: #D6D0C6;
+  background: transparent;
+  letter-spacing: 0.18em;
+}
+.prompt-box__text { color: rgba(255,255,255,0.82); }
+.prompt-box__copy {
+  background: rgba(255,255,255,0.08);
+  border-color: rgba(255,255,255,0.16);
+  color: #FFFFFF;
+}
+.prompt-box__copy:hover { background: rgba(255,255,255,0.16); }
+.prompt-guide-card__header { border-bottom-color: rgba(17,19,24,0.08); }
+
+/* Best practice */
+.bp-list__header {
+  background: transparent !important;
+  border-bottom-color: rgba(17,19,24,0.08);
+}
+.bp-list__header h3 { font-weight: 600; }
+.bp-item {
+  color: #68645E;
+  border-bottom-color: rgba(17,19,24,0.07);
+}
+.bp-item__icon {
+  background: transparent !important;
+  border: 1px solid rgba(17,19,24,0.14);
+  color: #111318 !important;
+}
+
+/* FAQ */
+.faq-q { color: #111318; }
+.faq-a { color: #68645E; border-top-color: rgba(17,19,24,0.08); }
+
+/* Closing and footer */
+.closing {
+  background: #111318;
+  padding: 132px 0;
+}
+.closing::before {
+  background: radial-gradient(circle at 50% 20%, rgba(255,255,255,0.08), transparent 52%);
+}
+.closing h2 {
+  color: #FFFFFF;
+  font-size: clamp(2.1rem, 4.5vw, 4.7rem);
+  font-weight: 540;
+}
+.closing p { color: rgba(255,255,255,0.62); }
+.footer {
+  background: #0B0D12;
+  border-top-color: rgba(255,255,255,0.08);
+}
+.footer__copy,
+.footer__links a { color: rgba(255,255,255,0.46); }
+.footer__links a:hover { color: rgba(255,255,255,0.86); }
+
+/* Mobile refinements */
+@media (max-width: 768px) {
+  .section { padding: 86px 0; }
+  h2 { font-size: clamp(1.9rem, 9vw, 3.1rem); }
+  .section-header { margin-bottom: 46px; }
+  .intro__grid { gap: 46px; }
+  .navbar__inner { height: 64px; }
+  .module-card, .task-header { padding-left: 22px; padding-right: 22px; }
+}
+
+
+
+
+
+/* =============================================
+   AI LEARNING ACADEMY — editorial course center
+   ============================================= */
+.academy-shell {
+  position: relative;
+  background: #F7F5F1;
+  padding: 118px 0 112px;
+  overflow: hidden;
+}
+.academy-shell::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background:
+    radial-gradient(circle at 18% 12%, rgba(221,235,228,0.88), transparent 30%),
+    radial-gradient(circle at 86% 8%, rgba(230,222,210,0.62), transparent 28%),
+    linear-gradient(180deg, rgba(255,255,255,0.64), rgba(247,245,241,0));
+}
+.academy-shell .container { position: relative; z-index: 1; }
+.anchor-alias { display:block; position:relative; top:-88px; height:0; visibility:hidden; }
+.view-hidden { display: none !important; }
+.academy-home-view { display: block; }
+.course-page-stack { display: block; }
+.course-page-view { min-height: 62vh; }
+.course-page-view.visible { opacity: 1; transform: none; }
+.course-page-bar {
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:18px;
+  margin-bottom:34px;
+}
+.course-page-back {
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  min-height:42px;
+  padding:10px 18px;
+  border-radius:999px;
+  border:1px solid rgba(17,19,24,0.14);
+  background:rgba(255,255,255,0.62);
+  color:#111318;
+  font-size:0.84rem;
+  font-weight:720;
+  transition:transform var(--transition), background var(--transition), box-shadow var(--transition);
+}
+.course-page-back:hover {
+  transform:translateY(-1px);
+  background:#FFFFFF;
+  box-shadow:0 12px 30px rgba(17,19,24,0.06);
+}
+.course-page-count {
+  color:#817A70;
+  font-size:0.72rem;
+  font-weight:760;
+  letter-spacing:0.16em;
+  text-transform:uppercase;
+  white-space:nowrap;
+}
+.academy-kicker,
+.academy-course-card__eyebrow {
+  color: #817A70;
+  font-size: 0.72rem;
+  font-weight: 760;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+}
+.academy-kicker { margin-bottom: 16px; }
+.academy-hero { max-width: 820px; margin: 0 auto 72px; text-align: center; }
+.academy-hero h2 {
+  color: #111318;
+  font-size: clamp(2.7rem, 7vw, 5.9rem);
+  font-weight: 560;
+  letter-spacing: -0.055em;
+  line-height: 0.96;
+  margin-bottom: 24px;
+}
+.academy-hero p {
+  color: #5F5B54;
+  font-size: clamp(1.02rem, 2vw, 1.28rem);
+  line-height: 1.78;
+  max-width: 760px;
+  margin: 0 auto;
+}
+.academy-featured {
+  display: grid;
+  grid-template-columns: minmax(0, 1.05fr) minmax(360px, 0.95fr);
+  gap: 34px;
+  align-items: stretch;
+  background: #E6DED2;
+  border: 1px solid rgba(17,19,24,0.10);
+  border-radius: 28px;
+  padding: clamp(28px, 4vw, 54px);
+  box-shadow: 0 24px 80px rgba(17,19,24,0.055);
+  margin-bottom: 48px;
+}
+.academy-featured__copy { display:flex; flex-direction:column; justify-content:center; max-width:620px; }
+.academy-featured__copy h3 {
+  color:#111318;
+  font-size:clamp(2rem, 4vw, 3.4rem);
+  font-weight:560;
+  letter-spacing:-0.045em;
+  margin-bottom:16px;
+}
+.academy-featured__copy p { color:#4F4A43; font-size:1rem; line-height:1.8; margin-bottom:28px; }
+.academy-pill {
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  width:fit-content;
+  min-height:46px;
+  padding:12px 22px;
+  border-radius:999px;
+  background:#111318;
+  color:#FFFFFF;
+  border:1px solid #111318;
+  font-size:0.88rem;
+  font-weight:700;
+  transition:transform var(--transition), box-shadow var(--transition);
+}
+.academy-pill:hover { transform:translateY(-2px); box-shadow:0 16px 34px rgba(17,19,24,0.14); }
+.featured-course-grid { display:grid; grid-template-columns:repeat(2, minmax(0,1fr)); gap:16px; }
+.featured-course:nth-child(3) { grid-column:1 / -1; min-height:150px; }
+.featured-course {
+  min-height:220px;
+  display:flex;
+  flex-direction:column;
+  justify-content:space-between;
+  background:rgba(255,255,255,0.34);
+  border:1px solid rgba(17,19,24,0.09);
+  border-radius:20px;
+  padding:24px;
+  color:#111318;
+  transition:transform var(--transition), box-shadow var(--transition), background var(--transition), border-color var(--transition);
+}
+.featured-course:hover { transform:translateY(-4px); background:rgba(255,255,255,0.56); border-color:rgba(17,19,24,0.16); box-shadow:0 22px 56px rgba(17,19,24,0.08); }
+.featured-course span { color:#6F685D; font-size:0.72rem; font-weight:720; letter-spacing:0.12em; text-transform:uppercase; }
+.featured-course strong { display:block; margin-top:12px; color:#111318; font-size:clamp(1.05rem,2vw,1.32rem); font-weight:560; letter-spacing:-0.025em; line-height:1.28; }
+.featured-course i { align-self:flex-end; width:36px; height:36px; display:inline-flex; align-items:center; justify-content:center; border-radius:999px; border:1px solid rgba(17,19,24,0.14); font-style:normal; font-size:1.1rem; }
+.academy-note {
+  display:grid;
+  grid-template-columns:auto 1fr;
+  gap:18px;
+  align-items:start;
+  background:rgba(255,255,255,0.56);
+  border:1px solid rgba(17,19,24,0.10);
+  border-radius:22px;
+  padding:22px 24px;
+  color:#5F5B54;
+  line-height:1.72;
+  margin-bottom:48px;
+}
+.academy-note__mark { width:34px; height:34px; display:inline-flex; align-items:center; justify-content:center; border-radius:999px; background:#111318; color:#FFFFFF; font-size:0.78rem; font-weight:760; }
+.academy-course-grid { display:grid; gap:24px; margin-bottom:88px; }
+.academy-course-card {
+  display:grid;
+  grid-template-columns:minmax(0,1fr) minmax(280px,38%);
+  min-height:330px;
+  overflow:hidden;
+  border:1px solid rgba(17,19,24,0.10);
+  border-radius:28px;
+  background:#EFECE6;
+  color:#111318;
+  box-shadow:0 18px 60px rgba(17,19,24,0.045);
+  transition:transform var(--transition), box-shadow var(--transition), border-color var(--transition);
+}
+.academy-course-card:hover { transform:translateY(-4px); border-color:rgba(17,19,24,0.18); box-shadow:0 28px 82px rgba(17,19,24,0.08); }
+.academy-course-card--green { background:#DDEBE4; }
+.academy-course-card--clay { background:#E6DED2; }
+.academy-course-card--gray { background:#E9E6DF; }
+.academy-course-card__body { display:flex; flex-direction:column; justify-content:space-between; padding:clamp(28px,4.2vw,54px); }
+.academy-course-card__eyebrow { margin-bottom:18px; }
+.academy-course-card h3 { color:#111318; font-size:clamp(2rem,4.6vw,4.1rem); font-weight:540; letter-spacing:-0.055em; line-height:1; max-width:650px; margin-bottom:18px; }
+.academy-course-card p { color:#555048; max-width:650px; font-size:1rem; line-height:1.8; margin-bottom:28px; }
+.academy-course-card__visual { min-height:100%; padding:22px; display:flex; align-items:stretch; }
+.academy-course-card__visual img { width:100%; height:100%; min-height:270px; object-fit:cover; border-radius:22px; border:1px solid rgba(17,19,24,0.10); background:rgba(255,255,255,0.42); }
+.course-page-stack { display:block; }
+.course-detail {
+  scroll-margin-top:92px;
+  background:#F1EEE8;
+  border:1px solid rgba(17,19,24,0.10);
+  border-radius:28px;
+  padding:clamp(28px,4.6vw,56px);
+  box-shadow:0 18px 64px rgba(17,19,24,0.04);
+}
+.course-detail--green { background:#E8F1EC; }
+.course-detail--clay { background:#EEE6DB; }
+.course-detail__head { max-width:980px; margin-bottom:34px; }
+.course-detail__head h3 { color:#111318; font-size:clamp(2rem,4vw,3.2rem); font-weight:560; letter-spacing:-0.045em; margin-bottom:8px; }
+.course-detail__label { display:inline-flex; margin-bottom:24px; color:#746D62; font-size:0.92rem; font-weight:560; }
+.course-detail__head p { color:#5F5A52; font-size:1rem; line-height:1.85; }
+.course-preview-label { color:#8B857B; font-size:0.78rem; margin-bottom:14px; }
+.course-preview-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:18px; margin-bottom:34px; }
+.course-preview-grid--two { grid-template-columns:repeat(2,1fr); }
+.course-preview-grid img { width:100%; aspect-ratio:16/9; object-fit:cover; border-radius:14px; border:1px solid rgba(17,19,24,0.12); background:rgba(255,255,255,0.58); box-shadow:0 12px 34px rgba(17,19,24,0.045); }
+.lesson-list { display:grid; gap:14px; }
+.lesson-item { background:rgba(255,255,255,0.76); border:1px solid rgba(17,19,24,0.10); border-radius:20px; overflow:hidden; transition:border-color var(--transition), box-shadow var(--transition), background var(--transition); }
+.lesson-item:hover { border-color:rgba(17,19,24,0.18); box-shadow:0 18px 50px rgba(17,19,24,0.055); }
+.lesson-item.open { background:#FFFFFF; border-color:rgba(17,19,24,0.20); }
+.lesson-summary { width:100%; display:grid; grid-template-columns:auto 1fr auto; gap:18px; align-items:center; padding:22px 24px; text-align:left; color:#111318; }
+.lesson-num { width:42px; height:42px; display:inline-flex; align-items:center; justify-content:center; border-radius:999px; background:#111318; color:#FFFFFF; font-size:0.82rem; font-weight:720; }
+.lesson-summary h4 { color:#111318; font-size:1.02rem; letter-spacing:-0.02em; margin-bottom:8px; }
+.lesson-meta { display:flex; flex-wrap:wrap; gap:8px; align-items:center; }
+.app-badge,
+.time-badge { display:inline-flex; align-items:center; min-height:26px; padding:5px 10px; border-radius:999px; border:1px solid rgba(17,19,24,0.12); color:#5D5850; font-size:0.75rem; font-weight:640; background:rgba(247,245,241,0.72); }
+.lesson-short { display:block; color:#68635B; font-size:0.92rem; line-height:1.62; margin-top:10px; max-width:780px; }
+.lesson-toggle { display:inline-flex; align-items:center; justify-content:center; gap:8px; padding:10px 16px; border-radius:999px; border:1px solid rgba(17,19,24,0.14); color:#111318; font-size:0.82rem; font-weight:720; white-space:nowrap; background:rgba(255,255,255,0.62); transition:background var(--transition), transform var(--transition); }
+.lesson-toggle:hover { background:#FFFFFF; transform:translateY(-1px); }
+.lesson-toggle::after { content:"↓"; transition:transform var(--transition); }
+.lesson-item.open .lesson-toggle::after { transform:rotate(180deg); }
+.lesson-body { display:none; padding:0 24px 26px 84px; }
+.lesson-item.open .lesson-body { display:block; }
+.lesson-detail-grid { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:14px; margin-bottom:16px; }
+.lesson-detail { background:#F7F5F1; border:1px solid rgba(17,19,24,0.08); border-radius:16px; padding:16px; }
+.lesson-detail h5 { color:#111318; font-size:0.77rem; font-weight:780; letter-spacing:0.13em; text-transform:uppercase; margin-bottom:8px; }
+.lesson-detail p,
+.lesson-detail li { color:#625D55; font-size:0.9rem; line-height:1.7; }
+.lesson-detail ul { list-style:disc; padding-left:18px; }
+.prompt-box--academy { background:#111318; border-color:rgba(255,255,255,0.12); border-radius:16px; margin-top:0; }
+.prompt-library-grid { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:18px; }
+.prompt-card { position:relative; background:rgba(255,255,255,0.76); border:1px solid rgba(17,19,24,0.10); border-radius:20px; padding:22px; transition:transform var(--transition), box-shadow var(--transition), border-color var(--transition); }
+.prompt-card:hover { transform:translateY(-3px); border-color:rgba(17,19,24,0.18); box-shadow:0 20px 54px rgba(17,19,24,0.065); }
+.prompt-card h4 { color:#111318; font-size:1rem; margin-bottom:12px; padding-right:120px; }
+.prompt-card__text { color:#5F5A52; font-family:'Courier New', monospace; font-size:0.84rem; line-height:1.65; white-space:pre-line; }
+.prompt-card .prompt-box__copy { top:18px; right:18px; background:#111318; border-color:#111318; color:#FFFFFF; border-radius:999px; padding:7px 12px; }
+@media (max-width:980px) {
+  .academy-featured,
+  .academy-course-card { grid-template-columns:1fr; }
+  .featured-course-grid { grid-template-columns:1fr; }
+  .featured-course { min-height:156px; }
+  .academy-course-card__visual { min-height:auto; padding-top:0; }
+  .course-preview-grid,
+  .course-preview-grid--two,
+  .prompt-library-grid,
+  .lesson-detail-grid { grid-template-columns:1fr; }
+}
+@media (max-width:768px) {
+  .academy-shell { padding:86px 0 82px; }
+  .academy-hero { text-align:left; margin-bottom:46px; }
+  .academy-featured { padding:24px; border-radius:24px; }
+  .academy-note { grid-template-columns:1fr; }
+  .academy-course-card { min-height:0; border-radius:24px; }
+  .academy-course-card__body { padding:28px 24px; }
+  .academy-course-card__visual { padding:0 18px 18px; }
+  .academy-course-card__visual img { min-height:210px; border-radius:18px; }
+  .course-detail { border-radius:24px; padding:26px 20px; }
+  .course-page-bar { align-items:flex-start; flex-direction:column; margin-bottom:26px; }
+  .lesson-summary { grid-template-columns:1fr; gap:12px; padding:20px; }
+  .lesson-num { width:38px; height:38px; }
+  .lesson-toggle { width:100%; }
+  .lesson-body { padding:0 20px 22px; }
+  .prompt-card h4 { padding-right:0; }
+  .prompt-card .prompt-box__copy { position:static; margin-bottom:14px; }
+}
+
+/* =============================================
+   SKILLJAR-STYLE COURSE PAGE MODE
+   ============================================= */
+.course-site-header,
+.course-site-footer { display:none; }
+body.is-course-page {
+  background:#F7F5F1;
+}
+body.is-course-page .navbar,
+body.is-course-page .mobile-menu,
+body.is-course-page .hero,
+body.is-course-page .closing,
+body.is-course-page .footer {
+  display:none !important;
+}
+body.is-course-page .course-site-header {
+  position:sticky;
+  top:0;
+  z-index:1002;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  min-height:68px;
+  padding:0 clamp(18px, 3vw, 34px);
+  background:#F7F5F1;
+  border-bottom:1px solid rgba(17,19,24,0.06);
+}
+.course-site-brand {
+  display:inline-flex;
+  align-items:center;
+  gap:14px;
+  color:#111318;
+  font-size:1rem;
+  font-weight:800;
+  letter-spacing:0.06em;
+}
+.course-site-back {
+  font-size:1.15rem;
+  line-height:1;
+}
+.course-site-mark {
+  width:32px;
+  height:32px;
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  border-radius:999px;
+  background:#111318;
+  color:#FFFFFF;
+  font-size:0.82rem;
+  letter-spacing:0;
+}
+.course-site-nav {
+  display:flex;
+  align-items:center;
+  gap:32px;
+  color:#111318;
+  font-size:0.92rem;
+  font-weight:560;
+}
+.course-site-nav a {
+  transition:opacity var(--transition);
+}
+.course-site-nav a:hover { opacity:0.58; }
+body.is-course-page .course-site-footer {
+  display:block;
+  background:#111318;
+  color:#FFFFFF;
+}
+.course-site-footer__inner {
+  max-width:1180px;
+  min-height:220px;
+  margin:0 auto;
+  padding:54px 24px 28px;
+  display:flex;
+  flex-direction:column;
+  justify-content:space-between;
+}
+.course-site-footer__brand {
+  display:flex;
+  align-items:center;
+  gap:12px;
+  color:#FFFFFF;
+  font-size:1.8rem;
+  font-weight:760;
+  letter-spacing:-0.04em;
+}
+.course-site-footer__brand span {
+  width:44px;
+  height:44px;
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  border-radius:999px;
+  border:1px solid rgba(255,255,255,0.22);
+  font-size:1rem;
+}
+.course-site-footer__rule {
+  height:1px;
+  background:rgba(255,255,255,0.16);
+  margin:44px 0 26px;
+}
+.course-site-footer__bottom {
+  display:flex;
+  justify-content:space-between;
+  gap:20px;
+  color:rgba(255,255,255,0.56);
+  font-size:0.82rem;
+}
+body.is-course-page .academy-shell {
+  background:#F7F5F1;
+  padding:54px 0 88px;
+  overflow:visible;
+}
+body.is-course-page .academy-shell::before { display:none; }
+body.is-course-page .academy-shell .container {
+  max-width:1180px;
+  padding:0 24px;
+}
+body.is-course-page .course-page-stack {
+  display:block;
+}
+.skilljar-course-page {
+  scroll-margin-top:84px;
+  color:#2A2925;
+}
+.skilljar-course-hero {
+  display:grid;
+  grid-template-columns:minmax(0, 0.95fr) minmax(420px, 1fr);
+  gap:clamp(46px, 7vw, 96px);
+  align-items:start;
+  padding:22px 0 104px;
+}
+.course-hero-left {
+  padding-top:18px;
+}
+.course-breadcrumb {
+  color:#7A756D;
+  font-size:0.86rem;
+  letter-spacing:0.03em;
+  margin-bottom:28px;
+}
+.skilljar-course-page h1 {
+  color:#262520;
+  font-size:clamp(3.15rem, 6.5vw, 5.15rem);
+  font-weight:540;
+  letter-spacing:-0.065em;
+  line-height:0.98;
+  margin-bottom:22px;
+  max-width:760px;
+}
+.course-hero-left > p {
+  color:#57524B;
+  font-size:clamp(1rem, 1.45vw, 1.18rem);
+  line-height:1.72;
+  max-width:650px;
+}
+.course-actions {
+  display:flex;
+  align-items:center;
+  flex-wrap:wrap;
+  gap:14px;
+  margin:36px 0 14px;
+}
+.enroll-button {
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  min-height:48px;
+  padding:13px 30px;
+  border-radius:7px;
+  background:#25231F;
+  color:#FFFFFF;
+  font-size:0.95rem;
+  font-weight:720;
+  transition:transform var(--transition), opacity var(--transition);
+}
+.enroll-button:hover {
+  transform:translateY(-1px);
+  opacity:0.9;
+}
+.course-free-badge {
+  display:inline-flex;
+  align-items:center;
+  min-height:34px;
+  padding:7px 13px;
+  border-radius:5px;
+  background:#ECE9E2;
+  color:#777169;
+  font-size:0.78rem;
+  font-weight:760;
+  letter-spacing:0.06em;
+}
+.already-note {
+  color:#716C65 !important;
+  font-size:0.92rem !important;
+}
+.course-hero-right {
+  display:flex;
+  flex-direction:column;
+  gap:22px;
+}
+.course-hero-media {
+  overflow:hidden;
+  border-radius:8px;
+  border:1px solid rgba(17,19,24,0.12);
+  background:#EDE9E1;
+}
+.course-hero-media img {
+  width:100%;
+  aspect-ratio:16/9;
+  object-fit:cover;
+}
+.course-meta-row {
+  display:flex;
+  flex-wrap:wrap;
+  gap:10px 24px;
+  padding-top:18px;
+  border-top:1px solid rgba(17,19,24,0.14);
+  color:#6B655D;
+  font-size:0.83rem;
+}
+.course-meta-row span {
+  display:inline-flex;
+  align-items:center;
+  gap:6px;
+}
+.course-meta-row strong {
+  color:#292722;
+  font-weight:780;
+}
+.about-course-card,
+.course-section-card {
+  background:#EFECE6;
+  border:1px solid rgba(17,19,24,0.08);
+  border-radius:10px;
+}
+.about-course-card {
+  padding:clamp(34px, 5vw, 58px);
+  margin-bottom:74px;
+}
+.about-course-card h2,
+.course-sections h2,
+.course-faq h2 {
+  color:#272520;
+  font-size:clamp(2rem, 3vw, 2.65rem);
+  font-weight:540;
+  letter-spacing:-0.045em;
+  margin-bottom:26px;
+}
+.about-course-card p {
+  color:#4E4A43;
+  font-size:clamp(1.02rem, 1.6vw, 1.2rem);
+  line-height:1.82;
+  max-width:980px;
+}
+.course-sections {
+  margin-bottom:86px;
+}
+.course-sections h2 {
+  margin-bottom:30px;
+}
+.course-section-list {
+  display:grid;
+  gap:28px;
+}
+.course-section-card {
+  padding:clamp(28px, 4vw, 44px);
+}
+.course-section-card__top {
+  display:flex;
+  align-items:flex-start;
+  justify-content:space-between;
+  gap:24px;
+  margin-bottom:22px;
+}
+.course-section-card h3 {
+  color:#282620;
+  font-size:clamp(1.5rem, 2.4vw, 2.05rem);
+  font-weight:580;
+  letter-spacing:-0.04em;
+}
+.course-section-card__count {
+  color:#776F65;
+  font-size:0.92rem;
+  white-space:nowrap;
+  padding-top:8px;
+}
+.course-section-card p {
+  color:#555049;
+  line-height:1.78;
+  max-width:980px;
+  margin-bottom:26px;
+}
+.course-section-lessons {
+  display:flex;
+  flex-wrap:wrap;
+  gap:10px;
+  margin:0 0 30px;
+}
+.course-section-lessons li {
+  display:inline-flex;
+  align-items:center;
+  min-height:34px;
+  padding:7px 12px;
+  border-radius:999px;
+  background:rgba(255,255,255,0.66);
+  border:1px solid rgba(17,19,24,0.08);
+  color:#555049;
+  font-size:0.82rem;
+  font-weight:620;
+}
+.course-lesson-content {
+  margin: 28px 0 34px;
+  display: grid;
+  gap: 28px;
+}
+.course-lesson-block {
+  padding: 0 0 28px;
+  border-bottom: 1px solid rgba(17,19,24,0.10);
+}
+.course-lesson-block:last-child {
+  padding-bottom: 0;
+  border-bottom: 0;
+}
+.course-lesson-block__head {
+  display: flex;
+  align-items: flex-start;
+  gap: 14px;
+  margin-bottom: 18px;
+}
+.course-lesson-number {
+  width: 34px;
+  height: 34px;
+  border-radius: 999px;
+  background: #111318;
+  color: #fff;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.78rem;
+  font-weight: 700;
+  flex-shrink: 0;
+}
+.course-lesson-block__head h4 {
+  color: #282620;
+  font-size: 1.05rem;
+  font-weight: 650;
+  letter-spacing: -0.025em;
+  margin-bottom: 3px;
+}
+.course-lesson-block__head p {
+  color: #776F65;
+  font-size: 0.82rem;
+  margin: 0;
+}
+.course-lesson-text-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 0.85fr) minmax(0, 1.15fr);
+  gap: 22px;
+  margin-bottom: 18px;
+}
+.course-lesson-text-grid h5,
+.course-lesson-prompt h5 {
+  font-size: 0.74rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  margin-bottom: 8px;
+  color: #111318;
+}
+.course-lesson-text-grid p,
+.course-lesson-text-grid li {
+  color: #5F5A52;
+  font-size: 0.92rem;
+  line-height: 1.75;
+}
+.course-lesson-text-grid p {
+  margin-bottom: 0;
+}
+.course-lesson-text-grid ol {
+  padding-left: 18px;
+}
+.course-lesson-prompt {
+  background: #111318;
+  color: #fff;
+  border-radius: 10px;
+  padding: 16px;
+  margin-bottom: 12px;
+}
+.course-lesson-prompt__top {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 10px;
+}
+.course-lesson-prompt h5 {
+  color: rgba(255,255,255,0.72);
+  margin-bottom: 0;
+}
+.course-lesson-prompt button {
+  background: rgba(255,255,255,0.10);
+  border: 1px solid rgba(255,255,255,0.18);
+  color: #fff;
+  border-radius: 999px;
+  padding: 7px 12px;
+  font-size: 0.75rem;
+  font-weight: 700;
+}
+.course-lesson-prompt pre {
+  color: rgba(255,255,255,0.86);
+  white-space: pre-line;
+  font-family: 'Courier New', monospace;
+  font-size: 0.84rem;
+  line-height: 1.65;
+  margin: 0;
+}
+.course-lesson-tip {
+  background: rgba(255,255,255,0.46);
+  border-left: 1px solid rgba(17,19,24,0.22);
+  padding: 10px 0 10px 16px;
+  color: #5F5A52;
+  font-size: 0.9rem;
+  line-height: 1.7;
+}
+.course-lesson-tip strong {
+  color: #111318;
+}
+.course-preview-label {
+  color:#8A847C;
+  font-size:0.78rem;
+  margin-bottom:14px;
+}
+.course-preview-images {
+  display:grid;
+  grid-template-columns:repeat(auto-fit, minmax(230px, 1fr));
+  gap:clamp(18px, 3vw, 36px);
+  align-items:center;
+}
+.course-preview-images img {
+  width:100%;
+  aspect-ratio:16/9;
+  object-fit:cover;
+  border-radius:6px;
+  border:1px solid rgba(17,19,24,0.12);
+  background:#F7F5F1;
+}
+.course-prompt-panel {
+  margin-top:30px;
+}
+.skilljar-prompt-grid {
+  display:grid;
+  grid-template-columns:repeat(2, minmax(0, 1fr));
+  gap:18px;
+}
+.skilljar-prompt-grid .prompt-card {
+  background:#F7F5F1;
+  border-radius:10px;
+  box-shadow:none;
+}
+.skilljar-prompt-grid .prompt-card:hover {
+  transform:translateY(-2px);
+  box-shadow:0 16px 40px rgba(17,19,24,0.06);
+}
+.course-faq {
+  max-width:1040px;
+  margin:0 auto;
+}
+.course-faq h2 {
+  margin-bottom:22px;
+}
+.course-note-list {
+  border-top:1px solid rgba(17,19,24,0.22);
+}
+.course-note-item {
+  border-bottom:1px solid rgba(17,19,24,0.22);
+}
+.course-note-question {
+  width:100%;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:22px;
+  padding:24px 0;
+  color:#3B3934;
+  text-align:left;
+  font-size:1.05rem;
+  font-weight:650;
+  line-height:1.45;
+}
+.course-note-icon {
+  flex:0 0 auto;
+  color:#111318;
+  font-size:1.55rem;
+  font-weight:400;
+  transition:transform var(--transition);
+}
+.course-note-answer {
+  display:none;
+  color:#5F5A52;
+  line-height:1.75;
+  padding:0 48px 24px 0;
+}
+.course-note-item.open .course-note-answer {
+  display:block;
+}
+.course-note-item.open .course-note-icon {
+  transform:rotate(45deg);
+}
+@media (max-width:980px) {
+  body.is-course-page .academy-shell { padding-top:34px; }
+  .skilljar-course-hero {
+    grid-template-columns:1fr;
+    gap:42px;
+    padding-bottom:72px;
+  }
+  .course-hero-left { padding-top:0; }
+  .course-site-nav { gap:20px; }
+}
+@media (max-width:768px) {
+  body.is-course-page .course-site-header {
+    min-height:auto;
+    padding:16px 18px;
+    align-items:flex-start;
+    gap:14px;
+    flex-direction:column;
+  }
+  .course-site-nav {
+    width:100%;
+    justify-content:space-between;
+    gap:12px;
+    font-size:0.82rem;
+  }
+  body.is-course-page .academy-shell {
+    padding:28px 0 64px;
+  }
+  .skilljar-course-page h1 {
+    font-size:clamp(2.55rem, 13vw, 4.1rem);
+  }
+  .skilljar-course-hero {
+    padding-bottom:58px;
+  }
+  .course-actions {
+    align-items:stretch;
+    flex-direction:column;
+  }
+  .enroll-button,
+  .course-free-badge {
+    width:100%;
+  }
+  .course-meta-row {
+    gap:10px 18px;
+  }
+  .about-course-card {
+    margin-bottom:56px;
+  }
+  .course-section-card__top {
+    flex-direction:column;
+    gap:4px;
+  }
+  .course-section-card__count {
+    padding-top:0;
+  }
+  .course-lesson-text-grid {
+    grid-template-columns: 1fr;
+    gap: 16px;
+  }
+  .course-lesson-prompt__top {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+  .skilljar-prompt-grid {
+    grid-template-columns:1fr;
+  }
+  .course-site-footer__inner {
+    min-height:190px;
+  }
+  .course-site-footer__bottom {
+    flex-direction:column;
+  }
+}
+
+/* =============================================
+   CLOSING CTA — animated aurora background
+   Adapted from the aurora prompt for this static HTML website.
+   Applies only to the dark CTA section above the footer, not the footer.
+   ============================================= */
+.closing {
+  background: #060814 !important;
+  position: relative;
+  overflow: hidden;
+  isolation: isolate;
+}
+.closing::before,
+.closing::after {
+  content: none !important;
+}
+.closing__aurora {
+  position: absolute;
+  inset: -24%;
+  z-index: 0;
+  pointer-events: none;
+  overflow: hidden;
+  background:
+    linear-gradient(135deg, rgba(15, 23, 42, 0.96) 0%, rgba(18, 13, 38, 0.98) 48%, rgba(4, 7, 17, 1) 100%);
+}
+.closing__aurora-base,
+.closing__aurora-depth,
+.closing__aurora-wave {
+  position: absolute;
+  inset: 0;
+  will-change: transform, opacity;
+}
+.closing__aurora-base {
+  opacity: 0.86;
+  background:
+    radial-gradient(ellipse 900px 460px at 50% 24%, rgba(59, 130, 246, 0.22) 0%, transparent 58%),
+    radial-gradient(ellipse 760px 420px at 82% 34%, rgba(139, 92, 246, 0.24) 0%, transparent 56%),
+    radial-gradient(ellipse 840px 480px at 18% 64%, rgba(15, 23, 42, 0.75) 0%, transparent 64%);
+}
+.closing__aurora-wave--1 {
+  opacity: 0.62;
+  background: radial-gradient(ellipse 820px 560px at 48% 18%, rgba(59, 130, 246, 0.34) 0%, rgba(59, 130, 246, 0.16) 28%, transparent 58%);
+  animation: closingAurora1 10s ease-in-out infinite alternate;
+}
+.closing__aurora-wave--2 {
+  opacity: 0.54;
+  background: radial-gradient(ellipse 640px 430px at 76% 30%, rgba(139, 92, 246, 0.38) 0%, rgba(139, 92, 246, 0.14) 34%, transparent 60%);
+  animation: closingAurora2 8s ease-in-out infinite alternate-reverse;
+}
+.closing__aurora-wave--3 {
+  opacity: 0.40;
+  background: radial-gradient(ellipse 760px 520px at 18% 62%, rgba(236, 72, 153, 0.23) 0%, rgba(236, 72, 153, 0.10) 32%, transparent 60%);
+  animation: closingAurora3 12s ease-in-out infinite alternate;
+}
+.closing__aurora-wave--4 {
+  opacity: 0.30;
+  background: radial-gradient(ellipse 920px 340px at 58% 86%, rgba(34, 197, 94, 0.18) 0%, rgba(34, 197, 94, 0.07) 34%, transparent 62%);
+  animation: closingAurora4 9s ease-in-out infinite alternate-reverse;
+}
+.closing__aurora-depth {
+  z-index: 1;
+  background:
+    radial-gradient(circle at 50% 42%, transparent 0%, rgba(3, 5, 12, 0.12) 48%, rgba(3, 5, 12, 0.50) 100%),
+    linear-gradient(180deg, rgba(3, 5, 12, 0.26) 0%, transparent 34%, rgba(3, 5, 12, 0.58) 100%);
+}
+.closing .container,
+.closing__inner {
+  position: relative;
+  z-index: 2;
+}
+.closing h2 {
+  color: rgba(255,255,255,0.96) !important;
+  text-shadow: 0 22px 70px rgba(0,0,0,0.34);
+}
+.closing p {
+  color: rgba(255,255,255,0.66) !important;
+}
+.closing .label {
+  color: rgba(255,255,255,0.48) !important;
+}
+.closing .label::before {
+  background: rgba(255,255,255,0.42) !important;
+}
+.closing .btn-primary {
+  background: rgba(255,255,255,0.10) !important;
+  color: #fff !important;
+  border-color: rgba(255,255,255,0.18) !important;
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+}
+.closing .btn-secondary {
+  background: rgba(255,255,255,0.86) !important;
+  color: #111318 !important;
+  border-color: rgba(255,255,255,0.28) !important;
+}
+
+@keyframes closingAurora1 {
+  0% { transform: translate3d(-100px, -50px, 0) rotate(0deg) scale(1); }
+  50% { transform: translate3d(45px, 28px, 0) rotate(180deg) scale(1.12); }
+  100% { transform: translate3d(110px, -30px, 0) rotate(360deg) scale(0.92); }
+}
+@keyframes closingAurora2 {
+  0% { transform: translate3d(82px, 42px, 0) rotate(45deg) scale(0.86); }
+  50% { transform: translate3d(-32px, -24px, 0) rotate(225deg) scale(1.18); }
+  100% { transform: translate3d(-86px, 62px, 0) rotate(405deg) scale(0.92); }
+}
+@keyframes closingAurora3 {
+  0% { transform: translate3d(-54px, 22px, 0) rotate(90deg) scale(1.08); }
+  50% { transform: translate3d(72px, -38px, 0) rotate(270deg) scale(0.86); }
+  100% { transform: translate3d(-24px, 54px, 0) rotate(450deg) scale(1); }
+}
+@keyframes closingAurora4 {
+  0% { transform: translate3d(34px, -22px, 0) rotate(135deg) scale(0.92); }
+  50% { transform: translate3d(-62px, 12px, 0) rotate(315deg) scale(1.10); }
+  100% { transform: translate3d(42px, -62px, 0) rotate(495deg) scale(0.86); }
+}
+@media (max-width: 768px) {
+  .closing__aurora { inset: -38%; }
+  .closing__aurora-wave--1 { animation-duration: 12s; }
+  .closing__aurora-wave--2 { animation-duration: 10s; }
+  .closing__aurora-wave--3 { animation-duration: 14s; }
+  .closing__aurora-wave--4 { animation-duration: 11s; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .closing__aurora-wave { animation: none !important; }
+}
+</style>
+</head>
+<body>
+
+<!-- ========================= NAVBAR ========================= -->
+<nav class="navbar" id="navbar">
+  <div class="container">
+    <div class="navbar__inner">
+      <a href="#" class="navbar__logo">
+        <div class="navbar__logo-icon">✦</div>
+        AI Learning
+      </a>
+      <div class="navbar__links">
+        <a href="#academy">Modul</a>
+        <a href="#course-email">Panduan Langkah</a>
+        <a href="#course-prompting">Cara Prompting</a>
+      </div>
+      <a href="#academy" class="navbar__cta">Mulai Belajar →</a>
+      <button class="navbar__hamburger" id="hamburger" aria-label="Menu">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
+  </div>
+</nav>
+<div class="mobile-menu" id="mobile-menu">
+  <a href="#academy" onclick="closeMobileMenu()">Modul</a>
+  <a href="#course-email" onclick="closeMobileMenu()">Panduan Langkah</a>
+  <a href="#course-prompting" onclick="closeMobileMenu()">Cara Prompting</a>
+  <a href="#academy" onclick="closeMobileMenu()" style="color:#111318;font-weight:700;">→ Mulai Belajar</a>
+</div>
+
+<!-- ========================= COURSE PAGE HEADER ========================= -->
+<header class="course-site-header" aria-label="Course page navigation">
+  <a class="course-site-brand" href="#academy" aria-label="Kembali ke AI Learning Academy">
+    <span class="course-site-back">←</span>
+    <span class="course-site-mark">✦</span>
+    <span>AI LEARNING</span>
+  </a>
+  <nav class="course-site-nav" aria-label="Course navigation">
+    <a href="#academy">AI Learning Academy</a>
+    <a href="#academy-courses">Courses</a>
+    <a href="#academy">Internal Guide</a>
+  </nav>
+</header>
+
+<!-- ========================= HERO ========================= -->
+<section class="hero" id="hero">
+  <div class="hero__stage" id="heroStage">
+    <!--
+      Replace these image URLs with your own files anytime.
+      Example: assets/hero/hero-01.jpg, assets/hero/hero-02.jpg, etc.
+    -->
+    <div class="hero__ring" id="heroRing" aria-hidden="true">
+      <figure class="hero__tile" data-index="0">
+        <img src="https://images.unsplash.com/photo-1516321318423-f06f85e504b3?auto=format&fit=crop&w=420&q=80" alt="AI learning visual 01" loading="eager" />
+      </figure>
+      <figure class="hero__tile" data-index="1">
+        <img src="https://images.unsplash.com/photo-1498050108023-c5249f4df085?auto=format&fit=crop&w=420&q=80" alt="AI learning visual 02" loading="eager" />
+      </figure>
+      <figure class="hero__tile" data-index="2">
+        <img src="https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?auto=format&fit=crop&w=420&q=80" alt="AI learning visual 03" loading="eager" />
+      </figure>
+      <figure class="hero__tile" data-index="3">
+        <img src="https://images.unsplash.com/photo-1516321165247-4aa89a48be28?auto=format&fit=crop&w=420&q=80" alt="AI learning visual 04" loading="eager" />
+      </figure>
+      <figure class="hero__tile" data-index="4">
+        <img src="https://images.unsplash.com/photo-1520607162513-77705c0f0d4a?auto=format&fit=crop&w=420&q=80" alt="AI learning visual 05" loading="eager" />
+      </figure>
+      <figure class="hero__tile" data-index="5">
+        <img src="https://images.unsplash.com/photo-1519389950473-47ba0277781c?auto=format&fit=crop&w=420&q=80" alt="AI learning visual 06" loading="eager" />
+      </figure>
+      <figure class="hero__tile" data-index="6">
+        <img src="https://images.unsplash.com/photo-1516321318423-f06f85e504b3?auto=format&fit=crop&w=420&q=80" alt="AI learning visual 07" loading="eager" />
+      </figure>
+      <figure class="hero__tile" data-index="7">
+        <img src="https://images.unsplash.com/photo-1522202176988-66273c2fd55f?auto=format&fit=crop&w=420&q=80" alt="AI learning visual 08" loading="eager" />
+      </figure>
+      <figure class="hero__tile" data-index="8">
+        <img src="https://images.unsplash.com/photo-1516321497487-e288fb19713f?auto=format&fit=crop&w=420&q=80" alt="AI learning visual 09" loading="eager" />
+      </figure>
+      <figure class="hero__tile" data-index="9">
+        <img src="https://images.unsplash.com/photo-1498050108023-c5249f4df085?auto=format&fit=crop&w=420&q=80" alt="AI learning visual 10" loading="eager" />
+      </figure>
+      <figure class="hero__tile" data-index="10">
+        <img src="https://images.unsplash.com/photo-1517245386807-bb43f82c33c4?auto=format&fit=crop&w=420&q=80" alt="AI learning visual 11" loading="eager" />
+      </figure>
+      <figure class="hero__tile" data-index="11">
+        <img src="https://images.unsplash.com/photo-1552664730-d307ca884978?auto=format&fit=crop&w=420&q=80" alt="AI learning visual 12" loading="eager" />
+      </figure>
+      <figure class="hero__tile" data-index="12">
+        <img src="https://images.unsplash.com/photo-1497366811353-6870744d04b2?auto=format&fit=crop&w=420&q=80" alt="AI learning visual 13" loading="eager" />
+      </figure>
+      <figure class="hero__tile" data-index="13">
+        <img src="https://images.unsplash.com/photo-1496171367470-9ed9a91ea931?auto=format&fit=crop&w=420&q=80" alt="AI learning visual 14" loading="eager" />
+      </figure>
+      <figure class="hero__tile" data-index="14">
+        <img src="https://images.unsplash.com/photo-1516321165247-4aa89a48be28?auto=format&fit=crop&w=420&q=80" alt="AI learning visual 15" loading="eager" />
+      </figure>
+      <figure class="hero__tile" data-index="15">
+        <img src="https://images.unsplash.com/photo-1497366216548-37526070297c?auto=format&fit=crop&w=420&q=80" alt="AI learning visual 16" loading="eager" />
+      </figure>
+      <figure class="hero__tile" data-index="16">
+        <img src="https://images.unsplash.com/photo-1504384308090-c894fdcc538d?auto=format&fit=crop&w=420&q=80" alt="AI learning visual 17" loading="eager" />
+      </figure>
+      <figure class="hero__tile" data-index="17">
+        <img src="https://images.unsplash.com/photo-1484417894907-623942c8ee29?auto=format&fit=crop&w=420&q=80" alt="AI learning visual 18" loading="eager" />
+      </figure>
+      <figure class="hero__tile" data-index="18">
+        <img src="https://images.unsplash.com/photo-1527631746610-bca00a040d60?auto=format&fit=crop&w=420&q=80" alt="AI learning visual 19" loading="eager" />
+      </figure>
+      <figure class="hero__tile" data-index="19">
+        <img src="https://images.unsplash.com/photo-1566073771259-6a8506099945?auto=format&fit=crop&w=420&q=80" alt="AI learning visual 20" loading="eager" />
+      </figure>
+    </div>
+
+    <div class="hero__copy hero__copy--intro animate-in">
+      <h1 class="hero__title">Panduan AI &amp; Copilot<br/>untuk Kerja Sehari-hari</h1>
+      <div class="hero__micro">Scroll untuk mulai</div>
+    </div>
+
+    <div class="hero__copy hero__copy--detail">
+      <h2 class="hero__title hero__title--secondary">Pelajari Copilot dengan Lebih Mudah</h2>
+      <p class="hero__subtitle">Gunakan panduan ini untuk memahami modul, contoh prompt, langkah penggunaan, dan praktik terbaik dalam memakai AI sebagai asisten kerja, bukan pengganti manusia.</p>
+      <div class="hero__actions">
+        <a href="#academy" class="hero__button hero__button--dark">Mulai Belajar →</a>
+        <a href="#course-email" class="hero__button hero__button--light">Lihat Panduan</a>
+      </div>
+    </div>
+
+    <a class="hero__scroll" href="#academy">Scroll</a>
+  </div>
+</section>
+
+<!-- ========================= AI LEARNING ACADEMY ========================= -->
+<section class="academy-shell" id="academy">
+  <span class="anchor-alias" id="modules"></span>
+  <div class="container">
+    <div class="academy-home-view">
+    <div class="academy-hero reveal">
+      <div class="academy-kicker">AI Learning Center</div>
+      <h2>AI Learning Academy</h2>
+      <p>Panduan praktis menggunakan Microsoft Copilot untuk membantu pekerjaan operasional DMC, mulai dari email, jadwal meeting, rekap rapat, itinerary, hingga hotel knowledge agent.</p>
+    </div>
+
+    <div class="academy-featured reveal">
+      <div class="academy-featured__copy">
+        <h3>Featured Learning</h3>
+        <p>Mulai dari kebutuhan kerja yang paling sering digunakan oleh tim: membalas email, merangkum meeting, membuat itinerary, mencari informasi kerja, dan membangun knowledge agent.</p>
+        <a class="academy-pill" href="#course-email">Lihat Semua Course</a>
+      </div>
+      <div class="featured-course-grid" aria-label="Featured courses">
+        <a class="featured-course" href="#course-email"><span>Featured Course</span><strong>Outlook Copilot for Email</strong><i>→</i></a>
+        <a class="featured-course" href="#course-meeting"><span>Featured Course</span><strong>Calendar &amp; Meeting Productivity</strong><i>→</i></a>
+        <a class="featured-course" href="#course-agent"><span>Featured Course</span><strong>Hotel Knowledge Agent</strong><i>→</i></a>
+      </div>
+    </div>
+
+    <div class="academy-note reveal">
+      <span class="academy-note__mark">AI</span>
+      <p>AI adalah assistant kerja, bukan pengganti manusia. Gunakan Copilot untuk mempercepat pekerjaan repetitif, lalu selalu review nama, angka, rate, tanggal, availability, sumber informasi, dan gaya komunikasi sebelum dikirim ke klien, supplier, partner, atau tim internal. Untuk pencarian email dan file lama, gunakan Microsoft 365 Copilot karena Copilot Chat biasa tidak dapat membaca email kerja.</p>
+    </div>
+
+    <div class="academy-course-grid" id="academy-courses">
+      <a class="academy-course-card academy-course-card--green reveal" href="#course-email">
+        <div class="academy-course-card__body"><div><div class="academy-course-card__eyebrow">Course 01</div><h3>Email &amp; Communication</h3><p>Gunakan Copilot untuk membalas email, merangkum thread panjang, menerjemahkan inquiry, memperbaiki gaya penulisan, dan membuat booking request ke supplier.</p></div><span class="academy-pill">Buka Course</span></div>
+        <div class="academy-course-card__visual"><img src="assets/preview-email.png" alt="Preview mockup Outlook email panel" loading="lazy" /></div>
+      </a>
+      <a class="academy-course-card reveal" href="#course-meeting">
+        <div class="academy-course-card__body"><div><div class="academy-course-card__eyebrow">Course 02</div><h3>Calendar &amp; Meeting</h3><p>Pelajari cara menggunakan Copilot untuk mengecek jadwal, mencari waktu meeting, membuat agenda, dan merangkum hasil rapat Teams menjadi action items.</p></div><span class="academy-pill">Buka Course</span></div>
+        <div class="academy-course-card__visual"><img src="assets/preview-calendar.png" alt="Preview mockup calendar schedule panel" loading="lazy" /></div>
+      </a>
+      <a class="academy-course-card academy-course-card--clay reveal" href="#course-itinerary">
+        <div class="academy-course-card__body"><div><div class="academy-course-card__eyebrow">Course 03</div><h3>Itinerary &amp; Work Drafting</h3><p>Gunakan Copilot Chat untuk membuat draft itinerary awal, menyusun ide program, dan membuat draft dokumen kerja yang bisa diedit kembali oleh tim.</p></div><span class="academy-pill">Buka Course</span></div>
+        <div class="academy-course-card__visual"><img src="assets/preview-itinerary.png" alt="Preview mockup itinerary table" loading="lazy" /></div>
+      </a>
+      <a class="academy-course-card academy-course-card--green reveal" href="#course-agent">
+        <div class="academy-course-card__body"><div><div class="academy-course-card__eyebrow">Course 04</div><h3>Knowledge Agent</h3><p>Bangun hotel knowledge agent dari file internal agar tim bisa mencari informasi hotel berdasarkan area, star rating, rate, fasilitas, direct contact, dan catatan penting.</p></div><span class="academy-pill">Buka Course</span></div>
+        <div class="academy-course-card__visual"><img src="assets/preview-agent.png" alt="Preview mockup hotel knowledge agent chat" loading="lazy" /></div>
+      </a>
+      <a class="academy-course-card academy-course-card--gray reveal" href="#course-prompting">
+        <div class="academy-course-card__body"><div><div class="academy-course-card__eyebrow">Course 05</div><h3>Prompt Library</h3><p>Kumpulan prompt siap pakai untuk email, translation, meeting recap, booking request, itinerary, schedule, dan hotel knowledge agent.</p></div><span class="academy-pill">Lihat Prompt</span></div>
+        <div class="academy-course-card__visual"><img src="assets/preview-prompting.png" alt="Preview mockup prompt card library" loading="lazy" /></div>
+      </a>
+    </div>
+
+    </div>
+
+    <div class="course-page-stack">
+      <span class="anchor-alias" id="usecases"></span>
+
+      <section class="course-page-view view-hidden" id="course-email" data-course="email">
+        <main class="skilljar-course-page">
+          <section class="skilljar-course-hero">
+            <div class="course-hero-left">
+              <div class="course-breadcrumb">AI Learning Academy / Courses</div>
+              <h1>Email &amp; Communication</h1>
+              <p>Pelajari cara menggunakan Copilot di Outlook untuk mempercepat pekerjaan email harian, mulai dari membuat draft balasan, merangkum thread panjang, menerjemahkan inquiry, memperbaiki gaya penulisan, hingga membuat permintaan booking ke supplier.</p>
+              <div class="course-actions">
+                <button class="enroll-button" type="button" onclick="scrollCourseSections(this)">Mulai Course</button>
+                <span class="course-free-badge">INTERNAL</span>
+              </div>
+              <p class="already-note">Panduan ini dibuat untuk karyawan DMC.</p>
+            </div>
+            <div class="course-hero-right">
+              <div class="course-hero-media"><img src="assets/preview-email.png" alt="Preview Outlook email course" loading="lazy" /></div>
+              <div class="course-meta-row">
+                <span><strong>5</strong> lessons</span>
+                <span><strong>±60</strong> min guide</span>
+                <span><strong>Outlook</strong></span>
+                <span><strong>✓</strong> review required</span>
+              </div>
+            </div>
+          </section>
+
+          <section class="about-course-card">
+            <h2>About this course</h2>
+            <p>Course ini membantu tim memahami bagaimana Copilot dapat digunakan sebagai assistant kerja untuk menangani email operasional DMC. Materi mencakup pembuatan draft balasan, ringkasan thread panjang, translation inquiry, perbaikan tone email, dan booking request ke supplier. Semua hasil tetap perlu dicek ulang sebelum dikirim ke klien atau supplier.</p>
+          </section>
+
+          <section class="course-sections">
+            <h2>Course sections</h2>
+            <div class="course-section-list">
+              <article class="course-section-card">
+                <div class="course-section-card__top"><h3>Outlook Email Basics</h3><span class="course-section-card__count">2 lessons</span></div>
+                <p>Mulai dari membuat draft balasan email dan merangkum thread panjang agar informasi penting lebih cepat dipahami.</p>
+                <ul class="course-section-lessons"><li>Balas Email Secara Otomatis</li><li>Rangkum Thread Email Panjang</li></ul>
+                <div class="course-lesson-content">
+                <div class="course-lesson-block">
+                  <div class="course-lesson-block__head">
+                    <span class="course-lesson-number">01</span>
+                    <div>
+                      <h4>Balas Email Secara Otomatis</h4>
+                      <p>Outlook · ±15 menit</p>
+                    </div>
+                  </div>
+                    <div class="course-lesson-text-grid">
+                      <div>
+                        <h5>Di mana klik</h5>
+                        <p>Buka email → Klik Reply → Cari ikon Copilot di toolbar → Klik “Draft with Copilot”. Jika ikon tidak terlihat, klik tiga titik (...) di toolbar reply.</p>
+                      </div>
+                      <div>
+                        <h5>Langkah operasional</h5>
+                        <ol>
+                  <li>Buka email dari travel agent atau klien.</li>
+                  <li>Klik Reply.</li>
+                  <li>Buka Copilot atau Draft with Copilot.</li>
+                  <li>Tulis poin utama yang ingin disampaikan.</li>
+                  <li>Review nama, tanggal, jumlah tamu, budget, dan tone email.</li>
+                  <li>Edit jika perlu, lalu kirim.</li>
+                        </ol>
+                      </div>
+                    </div>
+                    <div class="course-lesson-prompt">
+                      <div class="course-lesson-prompt__top">
+                        <h5>Prompt siap pakai</h5>
+                        <button onclick="copyPrompt(this)">Salin Prompt</button>
+                      </div>
+                      <pre class="prompt-card__text">Konfirmasi bahwa kami sudah menerima inquiry mereka. Tanyakan tanggal perjalanan, jumlah tamu, dan kisaran budget. Gunakan bahasa yang profesional dan ramah.</pre>
+                    </div>
+                    <div class="course-lesson-tip"><strong>Hasil / Tips:</strong> Email balasan profesional bisa dibuat lebih cepat, tetapi tetap wajib direview sebelum dikirim.</div>
+                </div>
+                <div class="course-lesson-block">
+                  <div class="course-lesson-block__head">
+                    <span class="course-lesson-number">02</span>
+                    <div>
+                      <h4>Rangkum Thread Email Panjang</h4>
+                      <p>Outlook · ±10 menit</p>
+                    </div>
+                  </div>
+                    <div class="course-lesson-text-grid">
+                      <div>
+                        <h5>Di mana klik</h5>
+                        <p>Buka thread email → Bagian atas email pilih “Summarize this email” atau klik ikon Copilot di toolbar.</p>
+                      </div>
+                      <div>
+                        <h5>Langkah operasional</h5>
+                        <ol>
+                  <li>Buka thread email yang panjang.</li>
+                  <li>Klik Summary by Copilot / Summarize this email.</li>
+                  <li>Baca ringkasan awal.</li>
+                  <li>Tanyakan hal lanjutan seperti keputusan terakhir, pending item, atau pilihan hotel terakhir.</li>
+                  <li>Cek ulang email sumber jika ada angka, tanggal, atau keputusan penting.</li>
+                        </ol>
+                      </div>
+                    </div>
+                    <div class="course-lesson-prompt">
+                      <div class="course-lesson-prompt__top">
+                        <h5>Prompt siap pakai</h5>
+                        <button onclick="copyPrompt(this)">Salin Prompt</button>
+                      </div>
+                      <pre class="prompt-card__text">Apa yang sudah disetujui klien dalam thread ini? Apa yang masih belum dikonfirmasi? Hotel apa yang akhirnya mereka pilih?</pre>
+                    </div>
+                    <div class="course-lesson-tip"><strong>Hasil / Tips:</strong> Ringkasan membantu memahami siapa yang tanya apa, apa yang sudah disepakati, dan apa yang masih pending.</div>
+                </div>
+                </div>
+                <div class="course-preview-label">Course preview images</div>
+                <div class="course-preview-images"><img src="assets/preview-email.png" alt="Outlook email panel preview" loading="lazy" /><img src="assets/preview-prompting.png" alt="Prompting preview" loading="lazy" /></div>
+              </article>
+              <article class="course-section-card">
+                <div class="course-section-card__top"><h3>Inquiry Translation &amp; Writing Style</h3><span class="course-section-card__count">2 lessons</span></div>
+                <p>Gunakan Copilot untuk menerjemahkan inquiry berbahasa asing dan memperbaiki gaya penulisan email agar lebih profesional.</p>
+                <ul class="course-section-lessons"><li>Terjemahkan Inquiry &amp; Buat Balasan</li><li>Perbaiki Nada &amp; Gaya Penulisan Email</li></ul>
+                <div class="course-lesson-content">
+                <div class="course-lesson-block">
+                  <div class="course-lesson-block__head">
+                    <span class="course-lesson-number">03</span>
+                    <div>
+                      <h4>Terjemahkan Inquiry &amp; Buat Balasan</h4>
+                      <p>Outlook web · ±20 menit</p>
+                    </div>
+                  </div>
+                    <div class="course-lesson-text-grid">
+                      <div>
+                        <h5>Di mana klik</h5>
+                        <p>Outlook web → Buka email berbahasa asing → Klik ikon Copilot di kanan atas → Sidebar Copilot terbuka.</p>
+                      </div>
+                      <div>
+                        <h5>Langkah operasional</h5>
+                        <ol>
+                  <li>Buka inquiry berbahasa asing.</li>
+                  <li>Klik ikon Copilot di kanan atas Outlook.</li>
+                  <li>Masukkan prompt ke sidebar Copilot.</li>
+                  <li>Salin draft balasan dari Copilot.</li>
+                  <li>Tempel ke reply email.</li>
+                  <li>Review istilah, tanggal, jumlah tamu, dan gaya bahasa sebelum dikirim.</li>
+                        </ol>
+                      </div>
+                    </div>
+                    <div class="course-lesson-prompt">
+                      <div class="course-lesson-prompt__top">
+                        <h5>Prompt siap pakai</h5>
+                        <button onclick="copyPrompt(this)">Salin Prompt</button>
+                      </div>
+                      <pre class="prompt-card__text">Terjemahkan email yang sedang saya baca. Lalu buat balasan profesional dalam Bahasa Inggris yang mengkonfirmasi bahwa kami sudah menerima inquiry, dan tanyakan: tanggal perjalanan, jumlah tamu, preferensi kategori hotel, dan total budget.</pre>
+                    </div>
+                    <div class="course-lesson-tip"><strong>Hasil / Tips:</strong> Jika ingin balasan dalam bahasa klien juga, tambahkan: “Buat juga versi balasan dalam Bahasa Jepang.”</div>
+                </div>
+                <div class="course-lesson-block">
+                  <div class="course-lesson-block__head">
+                    <span class="course-lesson-number">04</span>
+                    <div>
+                      <h4>Perbaiki Nada &amp; Gaya Penulisan Email</h4>
+                      <p>Outlook · ±5-10 menit</p>
+                    </div>
+                  </div>
+                    <div class="course-lesson-text-grid">
+                      <div>
+                        <h5>Di mana klik</h5>
+                        <p>Outlook → Pilih teks draft email → Gunakan Rewrite with Copilot atau Coaching by Copilot jika tersedia.</p>
+                      </div>
+                      <div>
+                        <h5>Langkah operasional</h5>
+                        <ol>
+                  <li>Tulis draft email singkat terlebih dahulu.</li>
+                  <li>Pilih teks yang ingin diperbaiki.</li>
+                  <li>Gunakan Rewrite with Copilot atau Coaching by Copilot.</li>
+                  <li>Pilih atau tulis instruksi tone seperti formal, ramah, singkat, atau lebih jelas.</li>
+                  <li>Bandingkan hasil dengan maksud awal.</li>
+                  <li>Pastikan Copilot tidak mengubah maksud pesan.</li>
+                        </ol>
+                      </div>
+                    </div>
+                    <div class="course-lesson-prompt">
+                      <div class="course-lesson-prompt__top">
+                        <h5>Prompt siap pakai</h5>
+                        <button onclick="copyPrompt(this)">Salin Prompt</button>
+                      </div>
+                      <pre class="prompt-card__text">Buat lebih profesional dan formal.
+Buat lebih hangat dan ramah.
+Persingkat - pertahankan hanya poin utamanya.
+Tulis ulang dalam Bahasa Inggris yang jelas dan mudah dipahami.</pre>
+                    </div>
+                    <div class="course-lesson-tip"><strong>Hasil / Tips:</strong> Gunakan untuk memperbaiki tone, bukan untuk mengubah isi utama pesan.</div>
+                </div>
+                </div>
+                <div class="course-preview-label">Course preview images</div>
+                <div class="course-preview-images"><img src="assets/preview-email.png" alt="Translation inquiry preview" loading="lazy" /><img src="assets/preview-prompting.png" alt="Writing style prompt preview" loading="lazy" /></div>
+              </article>
+              <article class="course-section-card">
+                <div class="course-section-card__top"><h3>Supplier Booking Request</h3><span class="course-section-card__count">1 lesson</span></div>
+                <p>Buat email permintaan booking ke hotel atau supplier dengan detail yang lengkap dan nada profesional.</p>
+                <ul class="course-section-lessons"><li>Tulis Permintaan Booking ke Supplier</li></ul>
+                <div class="course-lesson-content">
+                <div class="course-lesson-block">
+                  <div class="course-lesson-block__head">
+                    <span class="course-lesson-number">05</span>
+                    <div>
+                      <h4>Tulis Permintaan Booking ke Supplier</h4>
+                      <p>Outlook · ±10 menit</p>
+                    </div>
+                  </div>
+                    <div class="course-lesson-text-grid">
+                      <div>
+                        <h5>Di mana klik</h5>
+                        <p>Compose email baru → Toolbar → Draft with Copilot.</p>
+                      </div>
+                      <div>
+                        <h5>Langkah operasional</h5>
+                        <ol>
+                  <li>Buka compose email baru ke hotel atau supplier.</li>
+                  <li>Klik Draft with Copilot.</li>
+                  <li>Masukkan detail booking.</li>
+                  <li>Review rate, periode, availability, tipe kamar, dan kontak supplier.</li>
+                  <li>Edit jika perlu, lalu kirim.</li>
+                        </ol>
+                      </div>
+                    </div>
+                    <div class="course-lesson-prompt">
+                      <div class="course-lesson-prompt__top">
+                        <h5>Prompt siap pakai</h5>
+                        <button onclick="copyPrompt(this)">Salin Prompt</button>
+                      </div>
+                      <pre class="prompt-card__text">Tulis permintaan booking ke hotel. Detail:
+- Hotel: The Layar Seminyak
+- Grup: 22 pax, semua dewasa
+- Tanggal: 14-18 Agustus 2025
+- Tipe kamar: Deluxe dengan sarapan
+- Butuh: konfirmasi ketersediaan dan harga terbaik untuk grup
+- Nada: profesional</pre>
+                    </div>
+                    <div class="course-lesson-tip"><strong>Hasil / Tips:</strong> Semakin lengkap detail yang diberikan, semakin siap draft yang dihasilkan. Selalu sertakan nama hotel, tanggal, jumlah pax, tipe kamar, dan kebutuhan konfirmasi.</div>
+                </div>
+                </div>
+                <div class="course-preview-label">Course preview images</div>
+                <div class="course-preview-images"><img src="assets/preview-email.png" alt="Supplier booking request preview" loading="lazy" /></div>
+              </article>
+            </div>
+          </section>
+
+          <section class="course-faq">
+            <h2>Important Notes</h2>
+            <div class="course-note-list">
+              <article class="course-note-item"><button class="course-note-question" type="button" onclick="toggleCourseNote(this)" aria-expanded="false"><span>Apakah hasil Copilot boleh langsung dikirim?</span><span class="course-note-icon">+</span></button><div class="course-note-answer">Tidak. Selalu review nama, tanggal, jumlah tamu, rate, dan konteks sebelum mengirim.</div></article>
+              <article class="course-note-item"><button class="course-note-question" type="button" onclick="toggleCourseNote(this)" aria-expanded="false"><span>Apa yang dilakukan jika ikon Copilot tidak terlihat?</span><span class="course-note-icon">+</span></button><div class="course-note-answer">Cek menu tiga titik di toolbar Outlook atau pastikan lisensi/fitur tersedia.</div></article>
+              <article class="course-note-item"><button class="course-note-question" type="button" onclick="toggleCourseNote(this)" aria-expanded="false"><span>Apakah Copilot menggantikan user?</span><span class="course-note-icon">+</span></button><div class="course-note-answer">Tidak. Copilot hanya assistant kerja.</div></article>
+            </div>
+          </section>
+        </main>
+      </section>
+
+      <section class="course-page-view view-hidden" id="course-meeting" data-course="meeting">
+        <main class="skilljar-course-page">
+          <section class="skilljar-course-hero">
+            <div class="course-hero-left">
+              <div class="course-breadcrumb">AI Learning Academy / Courses</div>
+              <h1>Calendar &amp; Meeting</h1>
+              <p>Gunakan Copilot untuk membantu mengecek jadwal, mencari slot meeting, membuat agenda, serta merangkum rapat Teams menjadi poin utama dan action items.</p>
+              <div class="course-actions"><button class="enroll-button" type="button" onclick="scrollCourseSections(this)">Mulai Course</button><span class="course-free-badge">INTERNAL</span></div>
+              <p class="already-note">Panduan ini dibuat untuk karyawan DMC.</p>
+            </div>
+            <div class="course-hero-right">
+              <div class="course-hero-media"><img src="assets/preview-calendar.png" alt="Preview calendar and meeting course" loading="lazy" /></div>
+              <div class="course-meta-row"><span><strong>2</strong> lessons</span><span><strong>±35</strong> min guide</span><span><strong>Outlook Calendar / Teams</strong></span><span><strong>✓</strong> transcript required</span></div>
+            </div>
+          </section>
+
+          <section class="about-course-card">
+            <h2>About this course</h2>
+            <p>Course ini membantu tim menggunakan Copilot untuk pekerjaan meeting dan schedule. Materi mencakup pencarian slot meeting, pembuatan agenda singkat, dan rekap rapat Teams menjadi action items yang bisa langsung ditindaklanjuti.</p>
+          </section>
+
+          <section class="course-sections">
+            <h2>Course sections</h2>
+            <div class="course-section-list">
+              <article class="course-section-card">
+                <div class="course-section-card__top"><h3>Calendar Scheduling</h3><span class="course-section-card__count">1 lesson</span></div>
+                <p>Pelajari cara meminta Copilot mencari waktu meeting, menyusun agenda, dan membantu membuat draft undangan.</p>
+                <ul class="course-section-lessons"><li>Cek Jadwal &amp; Cari Waktu Meeting</li></ul>
+                <div class="course-lesson-content">
+                <div class="course-lesson-block">
+                  <div class="course-lesson-block__head">
+                    <span class="course-lesson-number">01</span>
+                    <div>
+                      <h4>Cek Jadwal &amp; Cari Waktu Meeting</h4>
+                      <p>Outlook Calendar · ±15 menit</p>
+                    </div>
+                  </div>
+                    <div class="course-lesson-text-grid">
+                      <div>
+                        <h5>Di mana klik</h5>
+                        <p>Outlook Calendar → New Event → Copilot / Scheduling Assistant, atau email thread → Schedule with Copilot.</p>
+                      </div>
+                      <div>
+                        <h5>Langkah operasional</h5>
+                        <ol>
+                  <li>Buka Outlook Calendar atau email thread terkait.</li>
+                  <li>Buka Copilot atau Schedule with Copilot.</li>
+                  <li>Masukkan peserta, durasi meeting, topik, dan rentang waktu.</li>
+                  <li>Minta Copilot mencari slot kosong.</li>
+                  <li>Review tanggal, jam, peserta, agenda, zona waktu, dan link Teams sebelum mengirim.</li>
+                        </ol>
+                      </div>
+                    </div>
+                    <div class="course-lesson-prompt">
+                      <div class="course-lesson-prompt__top">
+                        <h5>Prompt siap pakai</h5>
+                        <button onclick="copyPrompt(this)">Salin Prompt</button>
+                      </div>
+                      <pre class="prompt-card__text">Cek schedule saya minggu ini dan sarankan waktu kosong untuk meeting 30 menit dengan tim Sales. Jika memungkinkan, pilih slot antara pukul 10:00-16:00. Buatkan juga draft agenda singkat untuk membahas update inquiry, pending quotation, dan next action.</pre>
+                    </div>
+                    <div class="course-lesson-tip"><strong>Hasil / Tips:</strong> Gunakan nama peserta yang jelas, sebutkan durasi meeting, dan tambahkan zona waktu jika meeting lintas negara.</div>
+                </div>
+                </div>
+                <div class="course-preview-label">Course preview images</div>
+                <div class="course-preview-images"><img src="assets/preview-calendar.png" alt="Calendar scheduling preview" loading="lazy" /></div>
+              </article>
+              <article class="course-section-card">
+                <div class="course-section-card__top"><h3>Teams Meeting Recap</h3><span class="course-section-card__count">1 lesson</span></div>
+                <p>Gunakan Copilot untuk mengambil ringkasan rapat, keputusan utama, dan daftar tindakan dari Teams recap.</p>
+                <ul class="course-section-lessons"><li>Rekap Rapat &amp; Daftar Tindakan</li></ul>
+                <div class="course-lesson-content">
+                <div class="course-lesson-block">
+                  <div class="course-lesson-block__head">
+                    <span class="course-lesson-number">02</span>
+                    <div>
+                      <h4>Rekap Rapat &amp; Daftar Tindakan</h4>
+                      <p>Teams · ±20 menit</p>
+                    </div>
+                  </div>
+                    <div class="course-lesson-text-grid">
+                      <div>
+                        <h5>Di mana klik</h5>
+                        <p>Kalender Teams → Klik rapat yang sudah lewat → Tab Recap → Klik Copilot.</p>
+                      </div>
+                      <div>
+                        <h5>Langkah operasional</h5>
+                        <ol>
+                  <li>Pastikan Record &amp; Transcribe aktif saat meeting.</li>
+                  <li>Setelah rapat selesai, buka meeting dari kalender Teams.</li>
+                  <li>Masuk ke tab Recap.</li>
+                  <li>Klik Copilot.</li>
+                  <li>Minta daftar action item, keputusan, atau ringkasan poin utama.</li>
+                  <li>Review hasil sebelum dibagikan.</li>
+                        </ol>
+                      </div>
+                    </div>
+                    <div class="course-lesson-prompt">
+                      <div class="course-lesson-prompt__top">
+                        <h5>Prompt siap pakai</h5>
+                        <button onclick="copyPrompt(this)">Salin Prompt</button>
+                      </div>
+                      <pre class="prompt-card__text">Daftarkan semua action item dari rapat ini. Hotel apa yang kita sepakati untuk dimasukkan ke dalam program? Apa keputusan tentang kedatangan grup di Hari 1? Rangkum poin utama dalam 5 bullet point.</pre>
+                    </div>
+                    <div class="course-lesson-tip"><strong>Hasil / Tips:</strong> Teams recap membutuhkan meeting yang direkam atau transkripsi aktif. Tanpa transkrip, Copilot tidak punya sumber untuk dibaca.</div>
+                </div>
+                </div>
+                <div class="course-preview-label">Course preview images</div>
+                <div class="course-preview-images"><img src="assets/preview-meeting.png" alt="Teams recap preview" loading="lazy" /></div>
+              </article>
+            </div>
+          </section>
+
+          <section class="course-faq">
+            <h2>Important Notes</h2>
+            <div class="course-note-list">
+              <article class="course-note-item"><button class="course-note-question" type="button" onclick="toggleCourseNote(this)" aria-expanded="false"><span>Apakah Teams recap bisa digunakan tanpa transkrip?</span><span class="course-note-icon">+</span></button><div class="course-note-answer">Tidak. Rapat harus direkam atau transkripsi aktif.</div></article>
+              <article class="course-note-item"><button class="course-note-question" type="button" onclick="toggleCourseNote(this)" aria-expanded="false"><span>Apa yang harus dicek sebelum mengirim undangan meeting?</span><span class="course-note-icon">+</span></button><div class="course-note-answer">Tanggal, jam, peserta, agenda, link Teams, dan zona waktu.</div></article>
+              <article class="course-note-item"><button class="course-note-question" type="button" onclick="toggleCourseNote(this)" aria-expanded="false"><span>Apakah fitur Calendar membutuhkan M365 Copilot?</span><span class="course-note-icon">+</span></button><div class="course-note-answer">Beberapa fitur Copilot tertentu membutuhkan Microsoft 365 Copilot.</div></article>
+            </div>
+          </section>
+        </main>
+      </section>
+
+      <section class="course-page-view view-hidden" id="course-itinerary" data-course="itinerary">
+        <main class="skilljar-course-page">
+          <section class="skilljar-course-hero">
+            <div class="course-hero-left">
+              <div class="course-breadcrumb">AI Learning Academy / Courses</div>
+              <h1>Itinerary &amp; Work Drafting</h1>
+              <p>Gunakan Copilot Chat untuk membuat draft itinerary awal berdasarkan detail grup, area perjalanan, budget, minat wisata, dan format output yang dibutuhkan.</p>
+              <div class="course-actions"><button class="enroll-button" type="button" onclick="scrollCourseSections(this)">Mulai Course</button><span class="course-free-badge">INTERNAL</span></div>
+              <p class="already-note">Panduan ini dibuat untuk karyawan DMC.</p>
+            </div>
+            <div class="course-hero-right">
+              <div class="course-hero-media"><img src="assets/preview-itinerary.png" alt="Preview itinerary drafting course" loading="lazy" /></div>
+              <div class="course-meta-row"><span><strong>1</strong> lesson</span><span><strong>±30</strong> min guide</span><span><strong>Copilot Chat</strong></span><span><strong>✓</strong> manual edit required</span></div>
+            </div>
+          </section>
+
+          <section class="about-course-card">
+            <h2>About this course</h2>
+            <p>Course ini membantu tim membuat draft awal itinerary dan dokumen kerja menggunakan Copilot Chat. Output dari Copilot bersifat draft awal dan harus diedit kembali agar sesuai dengan supplier kontrak, durasi perjalanan, hotel, aktivitas, dan kebutuhan klien.</p>
+          </section>
+
+          <section class="course-sections">
+            <h2>Course sections</h2>
+            <div class="course-section-list">
+              <article class="course-section-card">
+                <div class="course-section-card__top"><h3>Draft Itinerary Creation</h3><span class="course-section-card__count">1 lesson</span></div>
+                <p>Buat itinerary awal dalam format tabel berdasarkan detail grup, destinasi, budget, minat, dan area perjalanan.</p>
+                <ul class="course-section-lessons"><li>Buat Draft Itinerary Tur</li></ul>
+                <div class="course-lesson-content">
+                <div class="course-lesson-block">
+                  <div class="course-lesson-block__head">
+                    <span class="course-lesson-number">01</span>
+                    <div>
+                      <h4>Buat Draft Itinerary Tur</h4>
+                      <p>Copilot Chat · ±30 menit</p>
+                    </div>
+                  </div>
+                    <div class="course-lesson-text-grid">
+                      <div>
+                        <h5>Di mana klik</h5>
+                        <p>Buka copilot.microsoft.com atau Teams → aplikasi Copilot, atau Microsoft 365 → Copilot.</p>
+                      </div>
+                      <div>
+                        <h5>Langkah operasional</h5>
+                        <ol>
+                  <li>Buka Microsoft Copilot Chat.</li>
+                  <li>Tulis prompt dengan detail grup, budget, minat, area, dan format output.</li>
+                  <li>Salin hasil ke Word atau dokumen kerja.</li>
+                  <li>Ganti hotel generik dengan hotel/supplier kontrak.</li>
+                  <li>Sesuaikan waktu, aktivitas, transfer, dan kebutuhan klien.</li>
+                        </ol>
+                      </div>
+                    </div>
+                    <div class="course-lesson-prompt">
+                      <div class="course-lesson-prompt__top">
+                        <h5>Prompt siap pakai</h5>
+                        <button onclick="copyPrompt(this)">Salin Prompt</button>
+                      </div>
+                      <pre class="prompt-card__text">Buat itinerary tur Bali 5 hari untuk grup 20 orang dewasa dari Australia. Budget menengah. Minat: budaya, sawah, makanan lokal.
+Hari 1-2: Area Ubud
+Hari 3: Transfer ke Seminyak
+Hari 4-5: Seminyak dan pantai
+Untuk setiap hari sertakan:
+- Aktivitas pagi
+- Saran makan siang
+- Aktivitas sore
+- Saran makan malam
+- Kategori hotel (bintang 3 atau 4)
+Format sebagai tabel.</pre>
+                    </div>
+                    <div class="course-lesson-tip"><strong>Hasil / Tips:</strong> Copilot memberikan itinerary generik. Tim tetap harus mengganti hotel, aktivitas, supplier, waktu, dan info transfer sebelum dikirim ke klien.</div>
+                </div>
+                </div>
+                <div class="course-preview-label">Course preview images</div>
+                <div class="course-preview-images"><img src="assets/preview-itinerary.png" alt="Itinerary table preview" loading="lazy" /><img src="assets/preview-prompting.png" alt="Itinerary prompt preview" loading="lazy" /></div>
+              </article>
+            </div>
+          </section>
+
+          <section class="course-faq">
+            <h2>Important Notes</h2>
+            <div class="course-note-list">
+              <article class="course-note-item"><button class="course-note-question" type="button" onclick="toggleCourseNote(this)" aria-expanded="false"><span>Apakah itinerary dari Copilot bisa langsung dikirim ke klien?</span><span class="course-note-icon">+</span></button><div class="course-note-answer">Tidak. Harus disesuaikan dengan kontrak hotel, supplier, waktu perjalanan, dan kebutuhan klien.</div></article>
+              <article class="course-note-item"><button class="course-note-question" type="button" onclick="toggleCourseNote(this)" aria-expanded="false"><span>Apa yang harus dimasukkan ke prompt itinerary?</span><span class="course-note-icon">+</span></button><div class="course-note-answer">Jumlah pax, asal negara, durasi, budget, minat wisata, area, dan format output.</div></article>
+              <article class="course-note-item"><button class="course-note-question" type="button" onclick="toggleCourseNote(this)" aria-expanded="false"><span>Apakah Copilot Chat bisa mencari email lama?</span><span class="course-note-icon">+</span></button><div class="course-note-answer">Copilot Chat biasa tidak bisa membaca email kerja. Untuk itu perlu Microsoft 365 Copilot.</div></article>
+            </div>
+          </section>
+        </main>
+      </section>
+
+      <section class="course-page-view view-hidden" id="course-agent" data-course="agent">
+        <main class="skilljar-course-page">
+          <section class="skilljar-course-hero">
+            <div class="course-hero-left">
+              <div class="course-breadcrumb">AI Learning Academy / Courses</div>
+              <h1>Knowledge Agent</h1>
+              <p>Buat hotel knowledge agent menggunakan Microsoft 365 Copilot Agent Builder atau Copilot Studio agar tim dapat mencari informasi hotel dari file internal dengan lebih cepat.</p>
+              <div class="course-actions"><button class="enroll-button" type="button" onclick="scrollCourseSections(this)">Mulai Course</button><span class="course-free-badge">INTERNAL</span></div>
+              <p class="already-note">Panduan ini dibuat untuk karyawan DMC.</p>
+            </div>
+            <div class="course-hero-right">
+              <div class="course-hero-media"><img src="assets/preview-agent.png" alt="Preview knowledge agent course" loading="lazy" /></div>
+              <div class="course-meta-row"><span><strong>1</strong> lesson</span><span><strong>±45</strong> min setup guide</span><span><strong>Agent Builder / Copilot Studio</strong></span><span><strong>✓</strong> knowledge source required</span></div>
+            </div>
+          </section>
+
+          <section class="about-course-card">
+            <h2>About this course</h2>
+            <p>Course ini menjelaskan cara membuat hotel knowledge agent dari file internal agar tim dapat mencari informasi hotel berdasarkan area, star rating, room type, rate, inclusion, direct contact, blackout date, group size, notes, dan last updated. Agent hanya boleh menjawab berdasarkan file atau knowledge source yang diberikan.</p>
+          </section>
+
+          <section class="course-sections">
+            <h2>Course sections</h2>
+            <div class="course-section-list">
+              <article class="course-section-card">
+                <div class="course-section-card__top"><h3>Build Hotel Knowledge Agent</h3><span class="course-section-card__count">1 lesson</span></div>
+                <p>Siapkan file hotel, upload sebagai knowledge source, test jawaban agent, lalu share jika sudah siap digunakan oleh tim.</p>
+                <ul class="course-section-lessons"><li>Buat dan Gunakan Hotel Knowledge Agent</li></ul>
+                <div class="course-lesson-content">
+                <div class="course-lesson-block">
+                  <div class="course-lesson-block__head">
+                    <span class="course-lesson-number">01</span>
+                    <div>
+                      <h4>Buat dan Gunakan Hotel Knowledge Agent</h4>
+                      <p>Agent Builder / Copilot Studio · ±45 menit</p>
+                    </div>
+                  </div>
+                    <div class="course-lesson-text-grid">
+                      <div>
+                        <h5>Di mana klik</h5>
+                        <p>Microsoft 365 Copilot → New agent → Describe / Configure → Add knowledge → Upload files atau Attach cloud files → Test. Alternatif: copilotstudio.microsoft.com → Create agent → Add knowledge → Upload file / OneDrive / SharePoint → Test → Share/Publish jika diperlukan.</p>
+                      </div>
+                      <div>
+                        <h5>Langkah operasional</h5>
+                        <ol>
+                  <li>Siapkan file hotel yang rapi.</li>
+                  <li>Pastikan data berisi Hotel Name, Area, Star Rating, Room Types, Rate/Night, Currency, Period, Inclusions, Direct Contact, Blackout Dates, Group Size, Notes, dan Last Updated.</li>
+                  <li>Buat agent baru di Microsoft 365 Copilot atau Copilot Studio.</li>
+                  <li>Tambahkan knowledge source melalui upload file langsung atau OneDrive/SharePoint.</li>
+                  <li>Test pertanyaan tentang area, harga, room type, inclusion, direct contact, atau blackout date.</li>
+                  <li>Review hasil agent.</li>
+                  <li>Share jika sudah siap. Teams hanya opsional jika agent ingin dipakai bersama tim.</li>
+                        </ol>
+                      </div>
+                    </div>
+                    <div class="course-lesson-prompt">
+                      <div class="course-lesson-prompt__top">
+                        <h5>Prompt siap pakai</h5>
+                        <button onclick="copyPrompt(this)">Salin Prompt</button>
+                      </div>
+                      <pre class="prompt-card__text">Create a hotel knowledge assistant for DMC operations. Use the uploaded hotel data file as the main knowledge source. Help staff search hotel information by area, star rating, room type, rate/night, period, inclusions, direct contact, blackout date, group size, and notes.
+
+Rules:
+- Answer only based on the uploaded file or connected knowledge source.
+- If information is missing, say: “Data not found in the uploaded hotel file.”
+- Do not invent hotel rates, contact details, availability, or inclusions.
+- Remind the user to re-check final rate and availability with the hotel/supplier.
+- Reply in the same language as the user’s question.
+
+Starter prompts:
+1. Find a 4-star hotel in Seminyak for 10 pax, under USD 90/night, with breakfast.
+2. Which hotels in Ubud have a pool and accept groups over 20 pax?
+3. What is the direct contact for Villa Tjitrap in Canggu?
+4. Which hotels have blackout dates in August?</pre>
+                    </div>
+                    <div class="course-lesson-tip"><strong>Hasil / Tips:</strong> Agent hanya menjawab berdasarkan file atau knowledge source. Jika data tidak ditemukan, gunakan kalimat “Data not found in the uploaded hotel file.” Tetap cek rate, periode, availability, dan direct contact sebelum informasi dibagikan.</div>
+                </div>
+                </div>
+                <div class="course-preview-label">Course preview images</div>
+                <div class="course-preview-images"><img src="assets/preview-agent.png" alt="Hotel agent chat preview" loading="lazy" /><img src="assets/preview-meeting.png" alt="Knowledge source preview" loading="lazy" /></div>
+              </article>
+            </div>
+          </section>
+
+          <section class="course-faq">
+            <h2>Important Notes</h2>
+            <div class="course-note-list">
+              <article class="course-note-item"><button class="course-note-question" type="button" onclick="toggleCourseNote(this)" aria-expanded="false"><span>Apakah Teams wajib?</span><span class="course-note-icon">+</span></button><div class="course-note-answer">Tidak. Teams hanya opsional jika agent ingin dipakai bersama tim.</div></article>
+              <article class="course-note-item"><button class="course-note-question" type="button" onclick="toggleCourseNote(this)" aria-expanded="false"><span>Apakah agent boleh mengarang data?</span><span class="course-note-icon">+</span></button><div class="course-note-answer">Tidak. Jika data tidak ditemukan, agent harus menjawab: “Data not found in the uploaded hotel file.”</div></article>
+              <article class="course-note-item"><button class="course-note-question" type="button" onclick="toggleCourseNote(this)" aria-expanded="false"><span>Apa yang tetap harus dicek manual?</span><span class="course-note-icon">+</span></button><div class="course-note-answer">Final rate, availability, periode, inclusion, blackout date, dan direct contact.</div></article>
+            </div>
+          </section>
+        </main>
+      </section>
+
+      <span class="anchor-alias" id="prompting"></span>
+      <section class="course-page-view view-hidden" id="course-prompting" data-course="prompting">
+        <main class="skilljar-course-page">
+          <section class="skilljar-course-hero">
+            <div class="course-hero-left">
+              <div class="course-breadcrumb">AI Learning Academy / Courses</div>
+              <h1>Prompt Library</h1>
+              <p>Kumpulan prompt siap pakai untuk email, translation, meeting recap, booking request, itinerary, schedule, dan hotel knowledge agent.</p>
+              <div class="course-actions"><button class="enroll-button" type="button" onclick="scrollCourseSections(this)">Mulai Course</button><span class="course-free-badge">INTERNAL</span></div>
+              <p class="already-note">Prompt ini bisa langsung disalin dan disesuaikan dengan kebutuhan kerja harian.</p>
+            </div>
+            <div class="course-hero-right">
+              <div class="course-hero-media"><img src="assets/preview-prompting.png" alt="Preview prompt library course" loading="lazy" /></div>
+              <div class="course-meta-row"><span><strong>8</strong> prompts</span><span><strong>Copy</strong> ready</span><span><strong>All workflows</strong></span><span><strong>✓</strong> review required</span></div>
+            </div>
+          </section>
+
+          <section class="about-course-card">
+            <h2>About this course</h2>
+            <p>Prompt Library berisi prompt yang bisa langsung disalin dan disesuaikan dengan kebutuhan kerja harian. Prompt ini membantu user memberikan konteks yang jelas kepada Copilot agar hasilnya lebih rapi, relevan, dan mudah direview.</p>
+          </section>
+
+          <section class="course-sections">
+            <h2>Course sections</h2>
+            <div class="course-section-list">
+              <article class="course-section-card">
+                <div class="course-section-card__top"><h3>Email &amp; Translation Prompts</h3><span class="course-section-card__count">3 prompts</span></div>
+                <p>Prompt untuk balasan email, ringkasan thread, dan menerjemahkan inquiry.</p>
+                <div class="course-lesson-tip"><strong>Detail:</strong> Digunakan untuk reply email, summarize thread, translate inquiry, dan memperbaiki gaya bahasa. Prompt siap salin tetap tersedia di bagian Prompt Library di bawah.</div>
+                <div class="course-preview-label">Course preview images</div>
+                <div class="course-preview-images"><img src="assets/preview-email.png" alt="Email prompt preview" loading="lazy" /><img src="assets/preview-prompting.png" alt="Prompt card preview" loading="lazy" /></div>
+              </article>
+              <article class="course-section-card">
+                <div class="course-section-card__top"><h3>Meeting &amp; Schedule Prompts</h3><span class="course-section-card__count">2 prompts</span></div>
+                <p>Prompt untuk mencari waktu meeting, membuat agenda, dan merangkum hasil rapat.</p>
+                <div class="course-lesson-tip"><strong>Detail:</strong> Digunakan untuk mencari jadwal kosong, membuat agenda singkat, dan merangkum meeting Teams menjadi action items.</div>
+                <div class="course-preview-label">Course preview images</div>
+                <div class="course-preview-images"><img src="assets/preview-calendar.png" alt="Calendar prompt preview" loading="lazy" /><img src="assets/preview-meeting.png" alt="Meeting recap prompt preview" loading="lazy" /></div>
+              </article>
+              <article class="course-section-card">
+                <div class="course-section-card__top"><h3>DMC Work Drafting Prompts</h3><span class="course-section-card__count">3 prompts</span></div>
+                <p>Prompt untuk booking request, itinerary, dan hotel knowledge agent.</p>
+                <div class="course-lesson-tip"><strong>Detail:</strong> Digunakan untuk booking request, draft itinerary, pencarian info kerja, dan build instruction untuk hotel knowledge agent.</div>
+                <div class="course-preview-label">Course preview images</div>
+                <div class="course-preview-images"><img src="assets/preview-itinerary.png" alt="Itinerary prompt preview" loading="lazy" /><img src="assets/preview-agent.png" alt="Hotel agent prompt preview" loading="lazy" /></div>
+              </article>
+            </div>
+
+            <div class="course-prompt-panel">
+              <div class="skilljar-prompt-grid">
+                <article class="prompt-card"><h4>Email reply prompt</h4><button class="prompt-box__copy" onclick="copyPrompt(this)">Salin Prompt</button><div class="prompt-card__text">Konfirmasi bahwa kami sudah menerima inquiry mereka. Tanyakan tanggal perjalanan, jumlah tamu, dan kisaran budget. Gunakan bahasa yang profesional dan ramah.</div></article>
+                <article class="prompt-card"><h4>Email thread summary prompt</h4><button class="prompt-box__copy" onclick="copyPrompt(this)">Salin Prompt</button><div class="prompt-card__text">Apa yang sudah disetujui klien dalam thread ini? Apa yang masih belum dikonfirmasi? Hotel apa yang akhirnya mereka pilih?</div></article>
+                <article class="prompt-card"><h4>Translation inquiry prompt</h4><button class="prompt-box__copy" onclick="copyPrompt(this)">Salin Prompt</button><div class="prompt-card__text">Terjemahkan email yang sedang saya baca. Lalu buat balasan profesional dalam Bahasa Inggris yang mengkonfirmasi bahwa kami sudah menerima inquiry, dan tanyakan: tanggal perjalanan, jumlah tamu, preferensi kategori hotel, dan total budget.</div></article>
+                <article class="prompt-card"><h4>Meeting recap prompt</h4><button class="prompt-box__copy" onclick="copyPrompt(this)">Salin Prompt</button><div class="prompt-card__text">Daftarkan semua action item dari rapat ini. Hotel apa yang kita sepakati untuk dimasukkan ke dalam program? Apa keputusan tentang kedatangan grup di Hari 1? Rangkum poin utama dalam 5 bullet point.</div></article>
+                <article class="prompt-card"><h4>Booking request prompt</h4><button class="prompt-box__copy" onclick="copyPrompt(this)">Salin Prompt</button><div class="prompt-card__text">Tulis permintaan booking ke hotel. Detail:
+- Hotel: The Layar Seminyak
+- Grup: 22 pax, semua dewasa
+- Tanggal: 14-18 Agustus 2025
+- Tipe kamar: Deluxe dengan sarapan
+- Butuh: konfirmasi ketersediaan dan harga terbaik untuk grup
+- Nada: profesional</div></article>
+                <article class="prompt-card"><h4>Calendar/schedule prompt</h4><button class="prompt-box__copy" onclick="copyPrompt(this)">Salin Prompt</button><div class="prompt-card__text">Cek schedule saya minggu ini dan sarankan waktu kosong untuk meeting 30 menit dengan tim Sales. Jika memungkinkan, pilih slot antara pukul 10:00-16:00. Buatkan juga draft agenda singkat untuk membahas update inquiry, pending quotation, dan next action.</div></article>
+                <article class="prompt-card"><h4>Itinerary prompt</h4><button class="prompt-box__copy" onclick="copyPrompt(this)">Salin Prompt</button><div class="prompt-card__text">Buat itinerary tur Bali 5 hari untuk grup 20 orang dewasa dari Australia. Budget menengah. Minat: budaya, sawah, makanan lokal.
+Hari 1-2: Area Ubud
+Hari 3: Transfer ke Seminyak
+Hari 4-5: Seminyak dan pantai
+Untuk setiap hari sertakan aktivitas pagi, saran makan siang, aktivitas sore, saran makan malam, dan kategori hotel. Format sebagai tabel.</div></article>
+                <article class="prompt-card"><h4>Hotel agent build prompt</h4><button class="prompt-box__copy" onclick="copyPrompt(this)">Salin Prompt</button><div class="prompt-card__text">Create a hotel knowledge assistant for DMC operations. Use the uploaded hotel data file as the main knowledge source. Help staff search hotel information by area, star rating, room type, rate/night, currency, period, inclusions, direct contact, blackout date, group size, and notes. Answer only based on the uploaded file or connected knowledge source. If information is missing, say: “Data not found in the uploaded hotel file.” Do not invent hotel rates, contact details, availability, or inclusions.</div></article>
+              </div>
+            </div>
+          </section>
+
+          <section class="course-faq">
+            <h2>Important Notes</h2>
+            <div class="course-note-list">
+              <article class="course-note-item"><button class="course-note-question" type="button" onclick="toggleCourseNote(this)" aria-expanded="false"><span>Apakah prompt harus selalu sama?</span><span class="course-note-icon">+</span></button><div class="course-note-answer">Tidak. Prompt harus disesuaikan dengan detail pekerjaan.</div></article>
+              <article class="course-note-item"><button class="course-note-question" type="button" onclick="toggleCourseNote(this)" aria-expanded="false"><span>Apa yang membuat prompt lebih baik?</span><span class="course-note-icon">+</span></button><div class="course-note-answer">Konteks, data spesifik, format output, dan instruksi bahasa/tone.</div></article>
+              <article class="course-note-item"><button class="course-note-question" type="button" onclick="toggleCourseNote(this)" aria-expanded="false"><span>Apakah hasil prompt harus direview?</span><span class="course-note-icon">+</span></button><div class="course-note-answer">Ya. Semua hasil AI harus dicek sebelum dipakai.</div></article>
+            </div>
+          </section>
+        </main>
+      </section>
+    </div>
+  </div>
+</section>
+
+<!-- ========================= COURSE PAGE FOOTER ========================= -->
+<footer class="course-site-footer" aria-label="Course page footer">
+  <div class="course-site-footer__inner">
+    <div class="course-site-footer__brand"><span>✦</span> AI Learning</div>
+    <div class="course-site-footer__rule"></div>
+    <div class="course-site-footer__bottom">
+      <span>© 2026 AI Learning Guide — Internal Training.</span>
+      <span>Internal DMC Learning</span>
+    </div>
+  </div>
+</footer>
+
+<!-- ========================= CLOSING CTA ========================= -->
+<section class="closing" id="closing">
+  <div class="closing__aurora" aria-hidden="true">
+    <div class="closing__aurora-base"></div>
+    <div class="closing__aurora-wave closing__aurora-wave--1"></div>
+    <div class="closing__aurora-wave closing__aurora-wave--2"></div>
+    <div class="closing__aurora-wave closing__aurora-wave--3"></div>
+    <div class="closing__aurora-wave closing__aurora-wave--4"></div>
+    <div class="closing__aurora-depth"></div>
+  </div>
+  <div class="container">
+    <div class="closing__inner">
+      <span class="label reveal" style="margin-bottom:20px;">Butuh Bantuan?</span>
+      <h2 class="reveal">Butuh bantuan memakai AI?<br/>Kami siap mendampingi</h2>
+      <p class="reveal">Jika ada pertanyaan, butuh arahan penggunaan, atau ingin menyesuaikan prompt dengan kebutuhan kerja, hubungi kami melalui WhatsApp.</p>
+      <div class="closing__actions reveal">
+        <a href="https://wa.me/6285156945398?text=Halo%20tim%20AI%20Learning%2C%20saya%20perlu%20bantuan%20terkait%20penggunaan%20Copilot%20dan%20panduan%20AI." target="_blank" rel="noopener noreferrer" class="btn-primary">Hubungi via WhatsApp →</a>
+        <a href="AI_Copilot_Guideline_DMC_v3.docx" download class="btn-secondary">Download Modul ↓</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ========================= FOOTER ========================= -->
+<footer class="footer">
+  <div class="container">
+    <div class="footer__inner">
+      <div class="footer__copy">© 2025 AI Learning Guide — Internal Training. Dibuat untuk karyawan DMC.</div>
+      <div class="footer__links">
+        <a href="#intro">Tentang</a>
+        <a href="#modules">Modul</a>
+        <a href="#usecases">Panduan</a>
+      </div>
+    </div>
+  </div>
+</footer>
+
+<!-- ========================= JAVASCRIPT ========================= -->
+<script>
+/* ---------- Mobile menu ---------- */
+const hamburger = document.getElementById('hamburger');
+const mobileMenu = document.getElementById('mobile-menu');
+hamburger.addEventListener('click', () => {
+  mobileMenu.classList.toggle('open');
+});
+function closeMobileMenu() { mobileMenu.classList.remove('open'); }
+
+/* ---------- Module tabs ---------- */
+function switchTab(level, btn) {
+  document.querySelectorAll('.modules__tab').forEach(b => b.classList.remove('active'));
+  document.querySelectorAll('.modules__panel').forEach(p => p.classList.remove('active'));
+  btn.classList.add('active');
+  document.getElementById('tab-' + level).classList.add('active');
+}
+
+/* ---------- Task accordion ---------- */
+function toggleTask(header) {
+  const item = header.closest('.task-item');
+  const isOpen = item.classList.contains('open');
+  document.querySelectorAll('.task-item').forEach(i => i.classList.remove('open'));
+  if (!isOpen) item.classList.add('open');
+}
+
+/* ---------- FAQ accordion ---------- */
+function toggleFaq(item) {
+  const isOpen = item.classList.contains('open');
+  document.querySelectorAll('.faq-item').forEach(i => i.classList.remove('open'));
+  if (!isOpen) item.classList.add('open');
+}
+
+/* ---------- Course lessons ---------- */
+function toggleCourseLesson(trigger) {
+  const item = trigger.closest('.lesson-item');
+  if (!item) return;
+  const isOpen = item.classList.contains('open');
+  const section = item.closest('.course-detail');
+  if (!section) return;
+  section.querySelectorAll('.lesson-item').forEach(i => {
+    i.classList.remove('open');
+    const button = i.querySelector('.lesson-summary');
+    if (button) button.setAttribute('aria-expanded', 'false');
+  });
+  if (!isOpen) {
+    item.classList.add('open');
+    trigger.setAttribute('aria-expanded', 'true');
+  }
+}
+
+/* ---------- Course page notes ---------- */
+function toggleCourseNote(trigger) {
+  const item = trigger.closest('.course-note-item');
+  const list = trigger.closest('.course-note-list');
+  if (!item || !list) return;
+  const isOpen = item.classList.contains('open');
+  list.querySelectorAll('.course-note-item').forEach(note => {
+    note.classList.remove('open');
+    const button = note.querySelector('.course-note-question');
+    if (button) button.setAttribute('aria-expanded', 'false');
+  });
+  if (!isOpen) {
+    item.classList.add('open');
+    trigger.setAttribute('aria-expanded', 'true');
+  }
+}
+
+function scrollCourseSections(trigger) {
+  const page = trigger.closest('.skilljar-course-page');
+  const target = page ? page.querySelector('.course-sections') : null;
+  if (target) target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+}
+
+/* ---------- Copy prompt ---------- */
+function copyPrompt(btn) {
+  const scope = btn.closest('.prompt-box') || btn.closest('.prompt-card') || btn.closest('.course-lesson-prompt');
+  const source = scope ? scope.querySelector('.prompt-box__text, .prompt-card__text') : null;
+  if (!source) return;
+  const text = source.textContent.trim();
+  const showCopied = () => {
+    const orig = btn.textContent;
+    btn.textContent = '✓ Tersalin';
+    setTimeout(() => { btn.textContent = orig; }, 2000);
+  };
+  const fallbackCopy = () => {
+    const textarea = document.createElement('textarea');
+    textarea.value = text;
+    textarea.setAttribute('readonly', '');
+    textarea.style.position = 'fixed';
+    textarea.style.top = '-999px';
+    textarea.style.opacity = '0';
+    document.body.appendChild(textarea);
+    textarea.select();
+    if (typeof document.execCommand === 'function') document.execCommand('copy');
+    textarea.remove();
+    showCopied();
+  };
+  if (typeof navigator !== 'undefined' && navigator.clipboard && window.isSecureContext) {
+    navigator.clipboard.writeText(text).then(showCopied).catch(fallbackCopy);
+  } else {
+    fallbackCopy();
+  }
+}
+
+
+/* ---------- Academy course routing ---------- */
+const courseRoutes = {
+  'course-email': 'email',
+  'course-meeting': 'meeting',
+  'course-itinerary': 'itinerary',
+  'course-agent': 'agent',
+  'course-prompting': 'prompting',
+  'usecases': 'email',
+  'prompting': 'prompting'
+};
+
+function scrollToAcademyTarget(target, behavior = 'smooth') {
+  const fallback = document.getElementById('academy');
+  const node = target || fallback;
+  if (!node) return;
+  node.scrollIntoView({ behavior, block: 'start' });
+}
+
+function showAcademy(updateHash = true, behavior = 'smooth') {
+  const home = document.querySelector('.academy-home-view');
+  const academy = document.getElementById('academy');
+  document.body.classList.remove('is-course-page');
+  if (home) home.classList.remove('view-hidden');
+  document.querySelectorAll('.course-page-view').forEach(page => {
+    page.classList.add('view-hidden');
+    page.classList.remove('visible');
+    page.querySelectorAll('.course-note-item').forEach(note => note.classList.remove('open'));
+    page.querySelectorAll('.course-note-question').forEach(button => button.setAttribute('aria-expanded', 'false'));
+  });
+  if (academy) academy.classList.remove('course-mode');
+  if (typeof closeMobileMenu === 'function') closeMobileMenu();
+  if (updateHash && window.location.hash !== '#academy') {
+    window.location.hash = 'academy';
+    return;
+  }
+  scrollToAcademyTarget(academy, behavior);
+}
+
+function showCourse(courseId, updateHash = true, behavior = 'smooth') {
+  const routeKey = courseId.startsWith('course-') ? courseId : 'course-' + courseId;
+  const page = document.getElementById(routeKey);
+  const home = document.querySelector('.academy-home-view');
+  const academy = document.getElementById('academy');
+  if (!page) {
+    showAcademy(true, behavior);
+    return;
+  }
+  document.body.classList.add('is-course-page');
+  if (home) home.classList.add('view-hidden');
+  document.querySelectorAll('.course-page-view').forEach(item => {
+    item.classList.toggle('view-hidden', item !== page);
+    item.classList.remove('visible');
+  });
+  page.classList.add('visible');
+  if (academy) academy.classList.add('course-mode');
+  if (typeof closeMobileMenu === 'function') closeMobileMenu();
+  if (updateHash && window.location.hash !== '#' + routeKey) {
+    window.location.hash = routeKey;
+    return;
+  }
+  scrollToAcademyTarget(page, behavior);
+}
+
+function routeFromHash(behavior = 'smooth') {
+  const hash = window.location.hash.replace('#', '');
+  if (!hash || hash === 'academy') {
+    showAcademy(false, behavior);
+    return;
+  }
+  if (hash === 'modules' || hash === 'academy-courses') {
+    showAcademy(hash === 'modules', behavior);
+    const target = hash === 'academy-courses' ? document.getElementById('academy-courses') : document.getElementById('academy');
+    scrollToAcademyTarget(target, behavior);
+    return;
+  }
+  if (courseRoutes[hash]) {
+    const canonicalHash = hash.startsWith('course-');
+    showCourse(courseRoutes[hash], !canonicalHash, behavior);
+    return;
+  }
+  showAcademy(true, behavior);
+}
+
+/* ---------- Scroll reveal ---------- */
+const revealObserver = new IntersectionObserver((entries) => {
+  entries.forEach(e => {
+    if (e.isIntersecting) {
+      e.target.classList.add('visible');
+      revealObserver.unobserve(e.target);
+    }
+  });
+}, { threshold: 0.1, rootMargin: '0px 0px -40px 0px' });
+
+document.querySelectorAll('.reveal').forEach(el => revealObserver.observe(el));
+
+routeFromHash('auto');
+window.addEventListener('hashchange', () => routeFromHash('smooth'));
+document.addEventListener('DOMContentLoaded', () => routeFromHash('auto'));
+
+/* ---------- Hero scroll-morph image ring ---------- */
+(function initHeroMorph() {
+  const hero = document.getElementById('hero');
+  const stage = document.getElementById('heroStage');
+  const cards = Array.from(document.querySelectorAll('.hero__tile'));
+  if (!hero || !stage || !cards.length) return;
+
+  const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const total = cards.length;
+  const scatter = cards.map((_, i) => {
+    const seed = Math.sin(i * 37.719) * 10000;
+    const rand = seed - Math.floor(seed);
+    const seed2 = Math.sin(i * 12.417) * 10000;
+    const rand2 = seed2 - Math.floor(seed2);
+    return {
+      x: (rand - 0.5) * 980,
+      y: (rand2 - 0.5) * 640,
+      r: (rand - 0.5) * 120,
+      s: 0.62,
+      o: 0
+    };
+  });
+
+  let phase = 'scatter';
+  let morphProgress = 0;
+  let targetProgress = 0;
+  let mouseShift = 0;
+  let rafId = null;
+
+  const lerp = (a, b, t) => a + (b - a) * t;
+  const clamp = (v, min, max) => Math.min(max, Math.max(min, v));
+  const ease = t => 1 - Math.pow(1 - t, 3);
+
+  function getMetrics() {
+    const rect = stage.getBoundingClientRect();
+    const w = rect.width || window.innerWidth;
+    const h = rect.height || window.innerHeight;
+    const mobile = w < 640;
+    return {
+      w,
+      h,
+      mobile,
+      circleRx: mobile ? Math.min(w * 0.42, 190) : Math.min(w * 0.31, 385),
+      circleRy: mobile ? Math.min(h * 0.27, 180) : Math.min(h * 0.30, 268),
+      lineSpacing: mobile ? 48 : 72,
+      bottomRx: mobile ? w * 0.72 : w * 0.58,
+      bottomRy: mobile ? 70 : 132,
+      bottomBaseline: mobile ? h * 0.45 : h * 0.48
+    };
+  }
+
+  function circlePosition(i, m) {
+    const angle = (i / total) * Math.PI * 2 - Math.PI / 2;
+    const x = Math.cos(angle) * m.circleRx;
+    const y = Math.sin(angle) * m.circleRy;
+    const r = (angle * 180 / Math.PI) + 90;
+    return { x, y, r, s: 1, o: 1 };
+  }
+
+  function linePosition(i, m) {
+    const center = (total - 1) / 2;
+    const x = (i - center) * m.lineSpacing;
+    return { x, y: 0, r: 0, s: 0.95, o: 1 };
+  }
+
+  function bottomArcPosition(i, m) {
+    const start = 205 * Math.PI / 180;
+    const end = 335 * Math.PI / 180;
+    const angle = start + (end - start) * (i / (total - 1));
+    const x = Math.cos(angle) * m.bottomRx;
+    const y = m.bottomBaseline + Math.sin(angle) * m.bottomRy;
+    const r = (angle * 180 / Math.PI) - 270;
+    return { x, y, r, s: m.mobile ? 0.84 : 1.02, o: 1 };
+  }
+
+  function blend(a, b, t) {
+    return {
+      x: lerp(a.x, b.x, t),
+      y: lerp(a.y, b.y, t),
+      r: lerp(a.r, b.r, t),
+      s: lerp(a.s, b.s, t),
+      o: lerp(a.o, b.o, t)
+    };
+  }
+
+  function setCard(card, pos, delay = 0) {
+    card.style.opacity = pos.o.toFixed(3);
+    card.style.transition = reduceMotion ? 'none' : `transform 900ms cubic-bezier(0.22, 1, 0.36, 1) ${delay}ms, opacity 700ms ease ${delay}ms`;
+    card.style.transform = `translate3d(${pos.x + mouseShift}px, ${pos.y}px, 0) rotate(${pos.r}deg) scale(${pos.s})`;
+  }
+
+  function paint(immediate = false) {
+    const m = getMetrics();
+    const t = ease(morphProgress);
+    cards.forEach((card, i) => {
+      let base;
+      if (phase === 'scatter') base = scatter[i];
+      else if (phase === 'line') base = linePosition(i, m);
+      else base = circlePosition(i, m);
+      const bottom = bottomArcPosition(i, m);
+      const pos = phase === 'circle' ? blend(base, bottom, t) : base;
+      if (immediate) card.style.transition = 'none';
+      setCard(card, pos, immediate ? 0 : i * 18);
+    });
+    hero.classList.toggle('is-morphed', morphProgress > 0.52);
+  }
+
+  function updateTargetFromScroll() {
+    if (reduceMotion) {
+      targetProgress = 0;
+      return;
+    }
+    const rect = hero.getBoundingClientRect();
+    const range = Math.min(620, window.innerHeight * 0.70);
+    targetProgress = clamp(-rect.top / range, 0, 1);
+  }
+
+  function animate() {
+    morphProgress += (targetProgress - morphProgress) * 0.09;
+    if (Math.abs(targetProgress - morphProgress) < 0.001) morphProgress = targetProgress;
+    paint(true);
+    rafId = requestAnimationFrame(animate);
+  }
+
+  function startIntro() {
+    paint(true);
+    if (reduceMotion) {
+      phase = 'circle';
+      paint(true);
+      return;
+    }
+    setTimeout(() => { phase = 'line'; paint(); }, 180);
+    setTimeout(() => { phase = 'circle'; paint(); }, 1500);
+  }
+
+  stage.addEventListener('mousemove', (e) => {
+    if (reduceMotion || window.innerWidth < 768) return;
+    const rect = stage.getBoundingClientRect();
+    const normalized = ((e.clientX - rect.left) / rect.width) * 2 - 1;
+    mouseShift = normalized * 22;
+  });
+  stage.addEventListener('mouseleave', () => { mouseShift = 0; });
+  window.addEventListener('scroll', updateTargetFromScroll, { passive: true });
+  window.addEventListener('resize', () => { updateTargetFromScroll(); paint(true); });
+
+  startIntro();
+  updateTargetFromScroll();
+  if (!reduceMotion) animate();
+})();
+</script>
+</body>
+</html>
