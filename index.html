@@ -3242,7 +3242,7 @@ body.is-course-page .academy-shell .container {
       </a>
       <div class="navbar__links">
         <a href="#academy">Modul</a>
-        <a href="#course-email">Panduan Langkah</a>
+        <a href="#course-personalization">Panduan Langkah</a>
         <a href="#course-prompting">Cara Prompting</a>
       </div>
       <a href="#academy" class="navbar__cta">Mulai Belajar →</a>
@@ -3254,7 +3254,7 @@ body.is-course-page .academy-shell .container {
 </nav>
 <div class="mobile-menu" id="mobile-menu">
   <a href="#academy" onclick="closeMobileMenu()">Modul</a>
-  <a href="#course-email" onclick="closeMobileMenu()">Panduan Langkah</a>
+  <a href="#course-personalization" onclick="closeMobileMenu()">Panduan Langkah</a>
   <a href="#course-prompting" onclick="closeMobileMenu()">Cara Prompting</a>
   <a href="#academy" onclick="closeMobileMenu()" style="color:#111318;font-weight:700;">→ Mulai Belajar</a>
 </div>
@@ -3319,12 +3319,24 @@ body.is-course-page .academy-shell .container {
         <div class="lumina-modules">
           <h3>Comprehensive Modules</h3>
 
+          <a class="lumina-module-card" href="#course-personalization">
+            <div class="lumina-module-card__image">
+              <img src="assets/preview-personalization.png" alt="Copilot Personalization" loading="lazy" />
+            </div>
+            <div class="lumina-module-card__content">
+              <span>Module 01</span>
+              <h4>Copilot Personalization</h4>
+              <p>Atur gaya jawaban Copilot agar lebih sesuai dengan kebutuhan kerja DMC, mulai dari email, ringkasan, itinerary, hingga komunikasi dengan supplier.</p>
+              <strong>Buka Course →</strong>
+            </div>
+          </a>
+
           <a class="lumina-module-card" href="#course-email">
             <div class="lumina-module-card__image">
               <img src="assets/preview-email.png" alt="Email &amp; Communication" loading="lazy" />
             </div>
             <div class="lumina-module-card__content">
-              <span>Module 01</span>
+              <span>Module 02</span>
               <h4>Email &amp; Communication</h4>
               <p>Kuasai seni korespondensi cepat dengan bantuan AI untuk draf, ringkasan, dan terjemahan.</p>
               <strong>Buka Course →</strong>
@@ -3336,7 +3348,7 @@ body.is-course-page .academy-shell .container {
               <img src="assets/preview-calendar.png" alt="Calendar &amp; Meeting Intelligence" loading="lazy" />
             </div>
             <div class="lumina-module-card__content">
-              <span>Module 02</span>
+              <span>Module 03</span>
               <h4>Calendar &amp; Meeting Intelligence</h4>
               <p>Optimalkan jadwal dan ringkas poin penting dari setiap rapat Teams secara otomatis.</p>
               <strong>Buka Course →</strong>
@@ -3348,7 +3360,7 @@ body.is-course-page .academy-shell .container {
               <img src="assets/preview-itinerary.png" alt="Smart Travel Itinerary" loading="lazy" />
             </div>
             <div class="lumina-module-card__content">
-              <span>Module 03</span>
+              <span>Module 04</span>
               <h4>Smart Travel Itinerary</h4>
               <p>Susun rencana perjalanan dan draft itinerary awal dengan bantuan assistant cerdas.</p>
               <strong>Buka Course →</strong>
@@ -3360,7 +3372,7 @@ body.is-course-page .academy-shell .container {
               <img src="assets/preview-agent.png" alt="Knowledge Agent Setup" loading="lazy" />
             </div>
             <div class="lumina-module-card__content">
-              <span>Module 04</span>
+              <span>Module 05</span>
               <h4>Knowledge Agent Setup</h4>
               <p>Pelajari cara membangun knowledge agent dari file internal yang mudah diakses oleh tim Anda.</p>
               <strong>Buka Course →</strong>
@@ -3372,7 +3384,7 @@ body.is-course-page .academy-shell .container {
               <img src="assets/preview-prompting.png" alt="Prompt Library" loading="lazy" />
             </div>
             <div class="lumina-module-card__content">
-              <span>Module 05</span>
+              <span>Module 06</span>
               <h4>Prompt Library</h4>
               <p>Koleksi instruksi siap pakai untuk berbagai skenario kerja harian di DMC.</p>
               <strong>Buka Course →</strong>
@@ -3384,6 +3396,64 @@ body.is-course-page .academy-shell .container {
 
     <div class="course-page-stack">
       <span class="anchor-alias" id="usecases"></span>
+
+      <section class="course-page-view view-hidden" id="course-personalization" data-course="personalization">
+        <main class="stitch-course-page">
+          <section class="stitch-course-hero">
+            <div class="stitch-course-hero__copy">
+              <div class="stitch-breadcrumb"><span>AI LEARNING ACADEMY</span><span>/</span><span>COURSES</span></div>
+              <h1>Copilot Personalization</h1>
+              <p>Gunakan Copilot Personalization untuk mengatur gaya jawaban Copilot agar lebih sesuai dengan kebutuhan kerja DMC, seperti email ke klien, supplier, hotel, itinerary, ringkasan meeting, dan pencarian informasi kerja.</p>
+              <div class="stitch-course-actions">
+                <button class="stitch-primary-btn" type="button" onclick="scrollCourseSections(this)">Mulai Course →</button>
+              </div>
+              <div class="stitch-meta-row"><span>▣ 1 lesson</span><span>◷ ±10 min guide</span><span>Microsoft Copilot</span><span>✓ custom instructions</span></div>
+            </div>
+            <div class="stitch-course-hero__media"><img src="assets/preview-personalization.png" alt="Preview Copilot Personalization course" loading="lazy" /></div>
+          </section>
+
+          <section class="stitch-about-card">
+            <h2>About this course</h2>
+            <p>Course ini membantu user mengatur Custom instructions agar Copilot memahami konteks kerja DMC dan menghasilkan jawaban yang lebih konsisten, profesional, dan mudah direview.</p>
+          </section>
+
+          <section class="stitch-course-sections">
+            <h2>Course sections</h2>
+            <div class="stitch-timeline">
+              <article class="stitch-section">
+                <div class="stitch-section__dot"></div>
+                <div class="stitch-section__intro"><h3>Copilot Setup</h3><p>Pelajari cara mengatur Custom instructions agar Copilot memahami konteks kerja DMC dan menghasilkan jawaban yang lebih konsisten, profesional, dan mudah direview.</p></div>
+                <div class="stitch-lesson-card open">
+                  <button class="stitch-lesson-summary" type="button" onclick="toggleStitchLesson(this)" aria-expanded="true"><div><span>LESSON 01</span><h4>Copilot Personalization</h4></div><div><em>Microsoft Copilot / Copilot Chat · ±5-10 menit</em><i>−</i></div></button>
+                  <div class="stitch-lesson-body"><div class="stitch-lesson-inner">
+                    <div class="stitch-info-block"><h5>⌖ Di mana klik</h5><p>Microsoft Copilot → Klik ikon tiga titik (...) kanan atas → Settings → Personalization → Custom instructions → Edit instructions</p></div>
+                    <div class="stitch-info-block"><h5>▤ Langkah operasional</h5><ol><li>Buka Microsoft Copilot dari browser atau Microsoft 365 menggunakan akun kerja.</li><li>Klik ikon tiga titik (...) di pojok kanan atas layar Copilot.</li><li>Pilih Settings untuk membuka pengaturan chat.</li><li>Masuk ke menu Personalization di panel kiri.</li><li>Aktifkan Custom instructions jika ingin Copilot mengikuti preferensi jawaban.</li><li>Klik Edit instructions.</li><li>Isi instruksi personalisasi sesuai kebutuhan pekerjaan DMC.</li><li>Klik Save instructions.</li><li>Setelah disimpan, gunakan Copilot seperti biasa untuk email, itinerary, meeting notes, atau pencarian informasi kerja.</li></ol></div>
+                    <div class="stitch-prompt-block"><div class="stitch-prompt-block__top"><h5>▸ Prompt siap pakai</h5><button onclick="copyPrompt(this)">Salin</button></div><pre class="prompt-card__text">Saya bekerja di DMC / travel operation office. Bantu saya membuat jawaban yang profesional, jelas, ramah, dan mudah dipahami.
+
+Untuk email ke klien, agent, supplier, atau hotel, gunakan bahasa yang sopan dan business-friendly.
+
+Jika membuat ringkasan, gunakan poin-poin singkat dan highlight bagian penting seperti tanggal, jumlah pax, hotel, budget, pending items, dan next action.
+
+Jangan membuat informasi yang tidak ada datanya. Jika detail belum jelas, bantu saya menanyakan informasi yang masih kurang.</pre></div>
+                    <div class="stitch-info-block stitch-tip-block"><h5>Hasil / Tips</h5><p>Copilot dapat memberikan jawaban yang lebih konsisten dengan gaya kerja DMC dan lebih siap digunakan untuk email, ringkasan, itinerary, atau draft dokumen kerja. Gunakan instruksi yang spesifik sesuai pekerjaan sehari-hari. Jika sering menangani inquiry, booking request, itinerary, atau supplier email, tuliskan konteks tersebut agar Copilot memberikan jawaban yang lebih relevan. Custom instructions membantu Copilot menyesuaikan gaya jawaban, tetapi user tetap wajib mengecek ulang isi, detail booking, harga, tanggal, nama hotel, dan informasi penting sebelum dikirim ke klien, supplier, hotel, atau partner.</p></div>
+                    <div class="stitch-preview-block"><h5>▧ Course preview images</h5><div class="stitch-preview-grid"><img src="assets/preview-personalization.png" alt="Copilot Personalization settings preview" loading="lazy" /><img src="assets/preview-personalization-settings.png" alt="Custom instructions settings preview" loading="lazy" /></div></div>
+                  </div></div>
+                </div>
+              </article>
+            </div>
+          </section>
+
+          <section class="course-faq">
+            <h2>Important Notes</h2>
+            <div class="course-note-list">
+              <article class="course-note-item"><button class="course-note-question" type="button" onclick="toggleCourseNote(this)" aria-expanded="false"><span>Apakah Copilot Personalization wajib?</span><span class="course-note-icon">+</span></button><div class="course-note-answer">Tidak wajib, tetapi sangat disarankan agar jawaban Copilot lebih konsisten dengan konteks kerja DMC, terutama untuk email, ringkasan, itinerary, dan komunikasi dengan supplier.</div></article>
+              <article class="course-note-item"><button class="course-note-question" type="button" onclick="toggleCourseNote(this)" aria-expanded="false"><span>Apakah Custom instructions berlaku untuk semua jawaban Copilot?</span><span class="course-note-icon">+</span></button><div class="course-note-answer">Custom instructions membantu mengarahkan gaya dan konteks jawaban, tetapi hasil tetap bergantung pada prompt, data yang diberikan, dan fitur Copilot yang sedang digunakan.</div></article>
+              <article class="course-note-item"><button class="course-note-question" type="button" onclick="toggleCourseNote(this)" aria-expanded="false"><span>Apakah hasil Copilot tetap harus direview?</span><span class="course-note-icon">+</span></button><div class="course-note-answer">Ya. Semua hasil Copilot tetap harus direview, terutama nama, tanggal, jumlah pax, rate, hotel, supplier, dan informasi penting lain.</div></article>
+              <article class="course-note-item"><button class="course-note-question" type="button" onclick="toggleCourseNote(this)" aria-expanded="false"><span>Apakah Copilot boleh mengarang data jika informasi tidak lengkap?</span><span class="course-note-icon">+</span></button><div class="course-note-answer">Tidak. Jika detail belum jelas, Copilot harus membantu menanyakan informasi yang masih kurang.</div></article>
+            </div>
+          </section>
+        </main>
+      </section>
 
       <section class="course-page-view view-hidden" id="course-email" data-course="email">
         <main class="stitch-course-page">
@@ -3721,7 +3791,7 @@ Starter prompts:
               <h1>Prompt Library</h1>
               <p>Kumpulan prompt siap pakai untuk email, translation, meeting recap, booking request, itinerary, schedule, dan hotel knowledge agent.</p>
               <div class="stitch-course-actions"><button class="stitch-primary-btn" type="button" onclick="scrollCourseSections(this)">Mulai Course →</button></div>
-              <div class="stitch-meta-row"><span>▣ 8 prompts</span><span>Copy ready</span><span>All workflows</span><span>✓ review required</span></div>
+              <div class="stitch-meta-row"><span>▣ 9 prompts</span><span>Copy ready</span><span>All workflows</span><span>✓ review required</span></div>
             </div>
             <div class="stitch-course-hero__media"><img src="assets/preview-prompting.png" alt="Preview prompt library course" loading="lazy" /></div>
           </section>
@@ -3736,13 +3806,20 @@ Starter prompts:
             <div class="stitch-timeline">
               <article class="stitch-section">
                 <div class="stitch-section__dot"></div>
-                <div class="stitch-section__intro"><h3>Email &amp; Translation Prompts</h3><p>Prompt untuk balasan email, ringkasan thread, dan menerjemahkan inquiry.</p></div>
+                <div class="stitch-section__intro"><h3>Email &amp; Translation Prompts</h3><p>Prompt untuk personalisasi Copilot, balasan email, ringkasan thread, dan menerjemahkan inquiry.</p></div>
                 <div class="stitch-lesson-card open">
-                  <button class="stitch-lesson-summary" type="button" onclick="toggleStitchLesson(this)" aria-expanded="true"><div><span>PROMPT GROUP 01</span><h4>Email &amp; Translation Prompt Set</h4></div><div><em>Prompt Library · 3 prompts</em><i>−</i></div></button>
+                  <button class="stitch-lesson-summary" type="button" onclick="toggleStitchLesson(this)" aria-expanded="true"><div><span>PROMPT GROUP 01</span><h4>Email &amp; Translation Prompt Set</h4></div><div><em>Prompt Library · 4 prompts</em><i>−</i></div></button>
                   <div class="stitch-lesson-body"><div class="stitch-lesson-inner">
                     <div class="stitch-info-block stitch-tip-block"><h5>Detail</h5><p>Digunakan untuk reply email, summarize thread, translate inquiry, dan memperbaiki gaya bahasa. Prompt siap salin tetap tersedia di bagian Prompt Library di bawah.</p></div>
                     <div class="stitch-preview-block"><h5>▧ Course preview images</h5><div class="stitch-preview-grid"><img src="assets/preview-email.png" alt="Email prompt preview" loading="lazy" /><img src="assets/preview-prompting.png" alt="Prompt card preview" loading="lazy" /></div></div>
                     <div class="stitch-prompt-grid">
+                      <article class="prompt-card stitch-prompt-card"><h4>Copilot Personalization</h4><button class="prompt-box__copy" onclick="copyPrompt(this)">Salin Prompt</button><div class="prompt-card__text">Saya bekerja di DMC / travel operation office. Bantu saya membuat jawaban yang profesional, jelas, ramah, dan mudah dipahami.
+
+Untuk email ke klien, agent, supplier, atau hotel, gunakan bahasa yang sopan dan business-friendly.
+
+Jika membuat ringkasan, gunakan poin-poin singkat dan highlight bagian penting seperti tanggal, jumlah pax, hotel, budget, pending items, dan next action.
+
+Jangan membuat informasi yang tidak ada datanya. Jika detail belum jelas, bantu saya menanyakan informasi yang masih kurang.</div></article>
                       <article class="prompt-card stitch-prompt-card"><h4>Email reply prompt</h4><button class="prompt-box__copy" onclick="copyPrompt(this)">Salin Prompt</button><div class="prompt-card__text">Konfirmasi bahwa kami sudah menerima inquiry mereka. Tanyakan tanggal perjalanan, jumlah tamu, dan kisaran budget. Gunakan bahasa yang profesional dan ramah.</div></article>
                       <article class="prompt-card stitch-prompt-card"><h4>Email thread summary prompt</h4><button class="prompt-box__copy" onclick="copyPrompt(this)">Salin Prompt</button><div class="prompt-card__text">Apa yang sudah disetujui klien dalam thread ini? Apa yang masih belum dikonfirmasi? Hotel apa yang akhirnya mereka pilih?</div></article>
                       <article class="prompt-card stitch-prompt-card"><h4>Translation inquiry prompt</h4><button class="prompt-box__copy" onclick="copyPrompt(this)">Salin Prompt</button><div class="prompt-card__text">Terjemahkan email yang sedang saya baca. Lalu buat balasan profesional dalam Bahasa Inggris yang mengkonfirmasi bahwa kami sudah menerima inquiry, dan tanyakan: tanggal perjalanan, jumlah tamu, preferensi kategori hotel, dan total budget.</div></article>
@@ -4012,6 +4089,7 @@ function copyPrompt(btn) {
 
 /* ---------- Academy course routing ---------- */
 const courseRoutes = {
+  'course-personalization': 'personalization',
   'course-email': 'email',
   'course-meeting': 'meeting',
   'course-itinerary': 'itinerary',
