@@ -2863,6 +2863,13 @@ body.is-course-page .academy-shell .container {
   background:#f3f3f4;
   border:0.5px solid rgba(195,200,193,0.5);
   padding:10px;
+  cursor:zoom-in;
+  transition:transform 220ms ease, box-shadow 220ms ease, border-color 220ms ease;
+}
+.stitch-preview-grid img:hover {
+  transform:translateY(-2px);
+  border-color:rgba(74,93,78,0.38);
+  box-shadow:0 12px 34px rgba(26,28,28,0.10);
 }
 .stitch-prompt-grid {
   display:grid;
@@ -3227,6 +3234,98 @@ body.is-course-page .academy-shell .container {
 }
 .hero-image__grid {
   display:none !important;
+}
+.image-lightbox {
+  position:fixed;
+  inset:0;
+  z-index:9999;
+  display:none;
+  align-items:center;
+  justify-content:center;
+  padding:28px;
+}
+.image-lightbox.is-open {
+  display:flex;
+}
+.image-lightbox__backdrop {
+  position:absolute;
+  inset:0;
+  background:rgba(10,12,12,0.78);
+  backdrop-filter:blur(10px);
+  -webkit-backdrop-filter:blur(10px);
+}
+.image-lightbox__figure {
+  position:relative;
+  z-index:2;
+  max-width:92vw;
+  max-height:88vh;
+  margin:0;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  gap:12px;
+}
+.image-lightbox__img {
+  max-width:92vw;
+  max-height:82vh;
+  width:auto;
+  height:auto;
+  object-fit:contain;
+  border-radius:16px;
+  background:#ffffff;
+  border:1px solid rgba(255,255,255,0.20);
+  box-shadow:0 30px 90px rgba(0,0,0,0.34);
+}
+.image-lightbox__caption {
+  color:rgba(255,255,255,0.82);
+  font-size:0.85rem;
+  line-height:1.5;
+  text-align:center;
+  max-width:760px;
+}
+.image-lightbox__close {
+  position:fixed;
+  top:22px;
+  right:22px;
+  z-index:3;
+  width:44px;
+  height:44px;
+  border-radius:999px;
+  background:rgba(255,255,255,0.92);
+  color:#111318;
+  font-size:1.8rem;
+  line-height:1;
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  transition:transform 220ms ease, background 220ms ease;
+}
+.image-lightbox__close:hover {
+  transform:scale(1.04);
+  background:#ffffff;
+}
+body.lightbox-open {
+  overflow:hidden;
+}
+@media (max-width:768px) {
+  .image-lightbox {
+    padding:16px;
+  }
+  .image-lightbox__img {
+    max-width:94vw;
+    max-height:78vh;
+    border-radius:12px;
+  }
+  .image-lightbox__close {
+    top:14px;
+    right:14px;
+    width:40px;
+    height:40px;
+    font-size:1.55rem;
+  }
+  .image-lightbox__caption {
+    font-size:0.78rem;
+  }
 }
 </style>
 </head>
@@ -3904,6 +4003,15 @@ Starter prompts:
   </div>
 </footer>
 
+<div class="image-lightbox" id="image-lightbox" aria-hidden="true">
+  <button class="image-lightbox__close" type="button" aria-label="Close image preview">×</button>
+  <div class="image-lightbox__backdrop" data-lightbox-close></div>
+  <figure class="image-lightbox__figure">
+    <img class="image-lightbox__img" src="" alt="" />
+    <figcaption class="image-lightbox__caption"></figcaption>
+  </figure>
+</div>
+
 <!-- ========================= JAVASCRIPT ========================= -->
 <script>
 /* ---------- Mobile menu ---------- */
@@ -4151,6 +4259,67 @@ const revealObserver = new IntersectionObserver((entries) => {
 }, { threshold: 0.1, rootMargin: '0px 0px -40px 0px' });
 
 document.querySelectorAll('.reveal').forEach(el => revealObserver.observe(el));
+
+(function initImageLightbox() {
+  const lightbox = document.getElementById('image-lightbox');
+  if (!lightbox) return;
+
+  const lightboxImg = lightbox.querySelector('.image-lightbox__img');
+  const caption = lightbox.querySelector('.image-lightbox__caption');
+  const closeBtn = lightbox.querySelector('.image-lightbox__close');
+
+  function openLightbox(img) {
+    if (!img || !lightboxImg) return;
+
+    lightboxImg.src = img.currentSrc || img.src;
+    lightboxImg.alt = img.alt || 'Course preview image';
+
+    if (caption) {
+      caption.textContent = img.alt || '';
+      caption.style.display = img.alt ? 'block' : 'none';
+    }
+
+    lightbox.classList.add('is-open');
+    lightbox.setAttribute('aria-hidden', 'false');
+    document.body.classList.add('lightbox-open');
+  }
+
+  function closeLightbox() {
+    lightbox.classList.remove('is-open');
+    lightbox.setAttribute('aria-hidden', 'true');
+    document.body.classList.remove('lightbox-open');
+
+    setTimeout(() => {
+      if (lightboxImg) {
+        lightboxImg.src = '';
+        lightboxImg.alt = '';
+      }
+    }, 180);
+  }
+
+  document.addEventListener('click', function(event) {
+    const previewImg = event.target.closest('.stitch-preview-grid img');
+    if (previewImg) {
+      event.preventDefault();
+      openLightbox(previewImg);
+      return;
+    }
+
+    if (event.target.matches('[data-lightbox-close]')) {
+      closeLightbox();
+    }
+  });
+
+  if (closeBtn) {
+    closeBtn.addEventListener('click', closeLightbox);
+  }
+
+  document.addEventListener('keydown', function(event) {
+    if (event.key === 'Escape' && lightbox.classList.contains('is-open')) {
+      closeLightbox();
+    }
+  });
+})();
 
 routeFromHash('auto');
 window.addEventListener('hashchange', () => routeFromHash('smooth'));
