@@ -3709,16 +3709,16 @@ Prompt alternatif:
             <div class="stitch-course-hero__copy">
               <div class="stitch-breadcrumb"><span>AI LEARNING ACADEMY</span><span>/</span><span>COURSES</span></div>
               <h1>Itinerary &amp; Work Drafting</h1>
-              <p>Gunakan Copilot Chat untuk membuat draft itinerary awal yang rapi, lalu sesuaikan dengan supplier kontrak, kebutuhan klien, dan detail operasional DMC.</p>
+              <p>Gunakan Copilot untuk membuat draft itinerary awal berdasarkan kebutuhan grup. Copilot bisa dibuka dari panel Copilot di Outlook atau langsung melalui website Copilot. Jika tersedia, gunakan source internal seperti hotel contract, rate sheet, daftar supplier, atau itinerary lama agar hasil itinerary lebih sesuai dengan data kantor.</p>
               <div class="stitch-course-actions"><button class="stitch-primary-btn" type="button" onclick="scrollCourseSections(this)">Mulai Course →</button></div>
-              <div class="stitch-meta-row"><span>▣ 1 lesson</span><span>◷ 1-2 hour guide</span><span>Copilot Chat</span><span>✓ manual edit required</span></div>
+              <div class="stitch-meta-row"><span>▣ 1 lesson</span><span>◷ 1-2 hour guide</span><span>Outlook / Copilot Chat</span><span>✓ manual edit required</span></div>
             </div>
             <div class="stitch-course-hero__media"><img src="assets/preview-itinerary.png" alt="Preview itinerary course" loading="lazy" /></div>
           </section>
 
           <section class="stitch-about-card">
             <h2>About this course</h2>
-            <p>Course level menengah ini membantu user membuat draft itinerary tur dari Copilot Chat di copilot.microsoft.com, Teams, atau halaman Microsoft 365. Hasil Copilot bersifat generik dan wajib disesuaikan dengan data supplier sebenarnya.</p>
+            <p>Course level menengah ini membantu user membuat draft itinerary tur dari Copilot di Outlook atau website Copilot. User dapat memasukkan detail grup, kebutuhan perjalanan, dan source internal seperti file Excel hotel contract, rate sheet, daftar supplier, Word, PDF, atau itinerary lama. Karena source file bisa berubah, gunakan file terbaru dan tetap review hasil sebelum dikirim ke klien.</p>
           </section>
 
           <section class="stitch-course-sections">
@@ -3728,21 +3728,27 @@ Prompt alternatif:
                 <div class="stitch-section__dot"></div>
                 <div class="stitch-section__intro"><h3>Draft Itinerary Creation</h3><p>Buat draft itinerary awal dengan detail grup, budget, minat, area, dan format output yang jelas.</p></div>
                 <div class="stitch-lesson-card open">
-                  <button class="stitch-lesson-summary" type="button" onclick="toggleStitchLesson(this)" aria-expanded="true"><div><span>LESSON 01</span><h4>Buat Draft Itinerary Tur</h4></div><div><em>Copilot Chat · 1-2 jam</em><i>−</i></div></button>
+                  <button class="stitch-lesson-summary" type="button" onclick="toggleStitchLesson(this)" aria-expanded="true"><div><span>LESSON 01</span><h4>Buat Draft Itinerary Tur</h4></div><div><em>Outlook / Copilot Chat · 1-2 jam</em><i>−</i></div></button>
                   <div class="stitch-lesson-body"><div class="stitch-lesson-inner">
-                    <div class="stitch-info-block"><h5>▤ Langkah operasional</h5><ol><li>Buka Microsoft Copilot Chat dari copilot.microsoft.com, Teams, atau halaman Microsoft 365.</li><li>Ketik prompt yang detail berisi detail grup, budget, minat, area, dan format output yang diinginkan.</li><li>Salin hasil dan tempel ke Word.</li><li>Ganti nama hotel generik dengan properti yang sudah dikontrak.</li><li>Sesuaikan waktu, aktivitas, dan tambahkan info transfer.</li></ol></div>
-                    <div class="stitch-prompt-block"><div class="stitch-prompt-block__top"><h5>▸ Contoh Prompt Siap Pakai</h5><button onclick="copyPrompt(this)">Salin</button></div><pre class="prompt-card__text">Buat itinerary tur Bali 5 hari untuk grup 20 orang dewasa dari Australia. Budget menengah. Minat: budaya, sawah, makanan lokal.
+                    <div class="stitch-info-block"><h5>▤ Langkah operasional</h5><ol><li>Buka Copilot dari Outlook atau website Copilot. Dari Outlook, klik ikon Copilot di bagian kanan atas. Atau buka copilot.microsoft.com / Microsoft 365 Copilot.</li><li>Masukkan detail grup dan kebutuhan itinerary. Sertakan jumlah pax, negara asal tamu, durasi perjalanan, budget, minat, area menginap, gaya perjalanan, dan format output yang diinginkan.</li><li>Upload atau attach source internal jika tersedia. Contohnya file Excel hotel contract, rate sheet, daftar supplier, dokumen Word/PDF, atau itinerary lama. Pastikan menggunakan file terbaru karena data hotel, rate, dan supplier bisa berubah.</li><li>Minta Copilot membuat draft itinerary berdasarkan detail grup dan source yang diberikan. Jika data hotel, rate, atau supplier tidak tersedia di source, Copilot tidak boleh mengarang.</li><li>Salin hasil ke Word atau dokumen kerja. Review dan sesuaikan hotel, aktivitas, waktu perjalanan, transfer, supplier, rate, availability, dan detail operasional sebelum dikirim ke klien.</li></ol></div>
+                    <div class="stitch-prompt-block"><div class="stitch-prompt-block__top"><h5>▸ Contoh Prompt Siap Pakai</h5><button onclick="copyPrompt(this)">Salin</button></div><pre class="prompt-card__text">Buat itinerary tur Bali 5 hari untuk grup 20 orang dewasa dari Australia. Budget menengah. Minat: budaya, sawah, makanan lokal, dan pantai.
+
+Gunakan file hotel contract / hotel source yang saya lampirkan sebagai referensi utama untuk rekomendasi hotel. Jika informasi hotel, rate, area, atau supplier tidak tersedia di file, jangan mengarang. Tulis bahwa data tidak ditemukan di source.
+
 Hari 1-2: Area Ubud
 Hari 3: Transfer ke Seminyak
 Hari 4-5: Seminyak dan pantai
+
 Untuk setiap hari sertakan:
 - Aktivitas pagi
 - Saran makan siang
 - Aktivitas sore
 - Saran makan malam
-- Kategori hotel (bintang 3 atau 4)
+- Rekomendasi area atau hotel berdasarkan source
+- Catatan transfer atau jarak jika relevan
+- Catatan yang perlu dicek ulang oleh tim
 Format sebagai tabel.</pre></div>
-                    <div class="stitch-info-block stitch-tip-block"><h5>Hasil / Tips</h5><p>Copilot memberikan itinerary generik. User harus mengganti hotel dan aktivitas dengan supplier kontrak yang sebenarnya sebelum dikirim ke klien.</p></div>
+                    <div class="stitch-info-block stitch-tip-block"><h5>Hasil / Tips</h5><p>Copilot membantu membuat draft itinerary awal yang lebih cepat dan rapi. Jika source internal dilampirkan, hasil dapat diarahkan agar lebih sesuai dengan hotel contract, rate sheet, atau supplier kantor. Namun user tetap wajib mengecek ulang hotel, rate, periode, availability, supplier, waktu perjalanan, dan detail operasional sebelum itinerary dikirim ke klien.</p></div>
                     <div class="stitch-preview-block"><h5>▧ Course preview images</h5><div class="stitch-preview-grid"><img src="assets/preview-itinerary.png" alt="Itinerary draft preview" loading="lazy" /><img src="assets/preview-prompting.png" alt="Itinerary prompt preview" loading="lazy" /></div></div>
                   </div></div>
                 </div>
@@ -3753,9 +3759,9 @@ Format sebagai tabel.</pre></div>
           <section class="course-faq">
             <h2>Important Notes</h2>
             <div class="course-note-list">
-              <article class="course-note-item"><button class="course-note-question" type="button" onclick="toggleCourseNote(this)" aria-expanded="false"><span>Apakah itinerary dari Copilot siap dikirim ke klien?</span><span class="course-note-icon">+</span></button><div class="course-note-answer">Tidak. Copilot memberikan draft generik yang harus diganti dengan hotel, aktivitas, waktu, dan supplier kontrak yang sebenarnya.</div></article>
-              <article class="course-note-item"><button class="course-note-question" type="button" onclick="toggleCourseNote(this)" aria-expanded="false"><span>Apa yang harus dimasukkan ke prompt itinerary?</span><span class="course-note-icon">+</span></button><div class="course-note-answer">Detail grup, budget, minat, area, durasi, dan format output yang diinginkan.</div></article>
-              <article class="course-note-item"><button class="course-note-question" type="button" onclick="toggleCourseNote(this)" aria-expanded="false"><span>Apa yang wajib direview manual?</span><span class="course-note-icon">+</span></button><div class="course-note-answer">Nama hotel, aktivitas, waktu perjalanan, transfer, harga, dan ketersediaan supplier.</div></article>
+              <article class="course-note-item"><button class="course-note-question" type="button" onclick="toggleCourseNote(this)" aria-expanded="false"><span>Apakah itinerary dari Copilot siap dikirim ke klien?</span><span class="course-note-icon">+</span></button><div class="course-note-answer">Tidak. Copilot membantu membuat draft awal, tetapi hasil tetap harus direview. Pastikan hotel, rate, periode, availability, supplier, waktu perjalanan, dan informasi transfer sudah sesuai dengan kontrak atau source internal terbaru.</div></article>
+              <article class="course-note-item"><button class="course-note-question" type="button" onclick="toggleCourseNote(this)" aria-expanded="false"><span>Apa yang harus dimasukkan ke prompt itinerary?</span><span class="course-note-icon">+</span></button><div class="course-note-answer">Masukkan detail grup, budget, minat, area, durasi, format output, serta source internal jika tersedia seperti hotel contract, rate sheet, daftar supplier, atau itinerary lama.</div></article>
+              <article class="course-note-item"><button class="course-note-question" type="button" onclick="toggleCourseNote(this)" aria-expanded="false"><span>Apa yang wajib direview manual?</span><span class="course-note-icon">+</span></button><div class="course-note-answer">Nama hotel, rate, periode, availability, aktivitas, waktu perjalanan, transfer, supplier, inclusion, dan semua detail operasional sebelum dikirim ke klien.</div></article>
             </div>
           </section>
         </main>
@@ -3905,16 +3911,22 @@ Prompt alternatif:
                     <div class="stitch-info-block stitch-tip-block"><h5>Catatan</h5><p>Untuk mencari email lama, mulai dari Copilot di Outlook agar konteksnya langsung ke mailbox. Gunakan kata kunci yang jelas seperti nama grup, hotel, supplier, bulan, atau booking number, lalu cek source email yang ditampilkan.</p></div>
                     <div class="stitch-preview-block"><h5>▧ Course preview images</h5><div class="stitch-preview-grid"><img src="assets/preview-itinerary.png" alt="Itinerary prompt preview" loading="lazy" /><img src="assets/preview-agent.png" alt="Hotel agent prompt preview" loading="lazy" /></div></div>
                     <div class="stitch-prompt-grid">
-                      <article class="prompt-card stitch-prompt-card"><h4>Buat draft itinerary tur</h4><button class="prompt-box__copy" onclick="copyPrompt(this)">Salin Prompt</button><div class="prompt-card__text">Buat itinerary tur Bali 5 hari untuk grup 20 orang dewasa dari Australia. Budget menengah. Minat: budaya, sawah, makanan lokal.
+                      <article class="prompt-card stitch-prompt-card"><h4>Buat draft itinerary tur</h4><button class="prompt-box__copy" onclick="copyPrompt(this)">Salin Prompt</button><div class="prompt-card__text">Buat itinerary tur Bali 5 hari untuk grup 20 orang dewasa dari Australia. Budget menengah. Minat: budaya, sawah, makanan lokal, dan pantai.
+
+Gunakan file hotel contract / hotel source yang saya lampirkan sebagai referensi utama untuk rekomendasi hotel. Jika informasi hotel, rate, area, atau supplier tidak tersedia di file, jangan mengarang. Tulis bahwa data tidak ditemukan di source.
+
 Hari 1-2: Area Ubud
 Hari 3: Transfer ke Seminyak
 Hari 4-5: Seminyak dan pantai
+
 Untuk setiap hari sertakan:
 - Aktivitas pagi
 - Saran makan siang
 - Aktivitas sore
 - Saran makan malam
-- Kategori hotel (bintang 3 atau 4)
+- Rekomendasi area atau hotel berdasarkan source
+- Catatan transfer atau jarak jika relevan
+- Catatan yang perlu dicek ulang oleh tim
 Format sebagai tabel.</div></article>
                       <article class="prompt-card stitch-prompt-card"><h4>Cari info dari email dan file lama</h4><button class="prompt-box__copy" onclick="copyPrompt(this)">Salin Prompt</button><div class="prompt-card__text">Temukan email tentang grup Tanaka dari Jepang dalam 3 bulan terakhir.
 Cari thread terakhir tentang booking grup incentive Singapura di bulan September.
